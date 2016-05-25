@@ -2,7 +2,6 @@ package com.tumpaca.tumpaca
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
@@ -11,7 +10,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val i = 2
+        val i = 7
 
         when (i) {
             0 -> setText("i is 0")
@@ -19,6 +18,12 @@ class MainActivity : AppCompatActivity() {
             3, 4 -> setText("i is 3 or 4")
             5 or 6 -> setText("i is 5 or 6")
             else -> setText("else")
+        }
+
+        when {
+            i == 0 -> setText("i is 0")
+            i in 1..2 -> setText("i is 1 or 2")
+            i in Pair(3,4).toList() -> setText("i is 3 or 4")
         }
 
     }
