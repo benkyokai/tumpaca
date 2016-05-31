@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Tumpaca</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_mail">E メール</string>
+    <string name="main_activity_password">パスワード</string>
+    <string name="main_activity_login">ログイン</string>
 </resources>
