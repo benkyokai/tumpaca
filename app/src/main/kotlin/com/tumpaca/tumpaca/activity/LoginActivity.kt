@@ -10,16 +10,16 @@ import android.widget.EditText
 import android.widget.TextView
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.SimpleTextWatcher
-import com.tumpaca.tumpaca.viewmodel.MainActivityViewModel
+import com.tumpaca.tumpaca.viewmodel.LoginActivityViewModel
 
-class MainActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
-    var vm: MainActivityViewModel? = null
+    var vm: LoginActivityViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // layout ファイルから View を生成してルートビューにセット。
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login)
 
         //
         // ViewModel を生成
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         //
         val mail = savedInstanceState?.getString("mail")
         val password = savedInstanceState?.getString("password")
-        vm = MainActivityViewModel(mail ?: "", password ?: "")
+        vm = LoginActivityViewModel(mail ?: "", password ?: "")
 
         //
         // ビューとバインド
