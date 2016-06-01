@@ -1,13 +1,9 @@
 package com.tumpaca.tumpaca.activity
 
-import android.content.DialogInterface
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.SimpleTextWatcher
 import com.tumpaca.tumpaca.viewmodel.LoginActivityViewModel
