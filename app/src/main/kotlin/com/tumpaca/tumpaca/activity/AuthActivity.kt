@@ -1,5 +1,6 @@
 package com.tumpaca.tumpaca.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -41,6 +42,12 @@ class AuthActivity: AppCompatActivity() {
 
     fun onLogin(r: LoginResult) {
         Log.v(tag, "Got login result: ${r.oAuthToken}, ${r.oAuthTokenSecret}")
+        var intent = Intent(this, DashboardActivity::class.java)
+        intent.putExtra("consumerKey", consumerKey)
+        intent.putExtra("consumerSecret", consumerSecret)
+        intent.putExtra("authToken", r.oAuthToken)
+        intent.putExtra("authTokenSecret", r.oAuthTokenSecret)
+        startActivity(intent)
     }
 
     fun onException(r: RuntimeException) {

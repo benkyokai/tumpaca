@@ -44,6 +44,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.daksh:loglr:1.0.0'
+    compile 'com.tumblr:jumblr:0.0.11'
 }
 repositories {
     mavenCentral()
