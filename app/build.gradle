@@ -38,6 +38,26 @@ android {
     }
 }
 
+preBuild {
+    // TumblrのAPIキーをlocal.propertiesから読み込んでアプリに組み込まれるリソースを生成
+    def authFile = file('src/main/res/raw/auth.properties')
+    outputs.file authFile
+    doLast {
+        def localProps = new Properties()
+        rootProject.file('local.properties').withReader { localProps.load it }
+        def props = new Properties()
+        ['tumblr.consumer.key', 'tumblr.consumer.secret'].each {
+            def val = localProps.get(it)
+            if (val == null) {
+                throw new GradleException("$it は定義されていない。 local.properties にて定義してください。")
+            }
+            props.putAll((it): val.toString().bytes.encodeBase64().toString())
+        }
+        authFile.parentFile.mkdirs()
+        authFile.withWriter { props.store it, null }
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
