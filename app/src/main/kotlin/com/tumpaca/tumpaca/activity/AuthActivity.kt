@@ -39,7 +39,13 @@ class AuthActivity: AppCompatActivity() {
         setContentView(R.layout.activity_auth)
 
         var authButton = findViewById(R.id.button_authorize) as Button
-        authButton.setOnClickListener { doAuth() }
+        authButton.setOnClickListener {
+            if (haveCredentials()) {
+                goToDashboard()
+            } else {
+                doAuth()
+            }
+        }
     }
 
     fun loadCredentials() {
@@ -54,6 +60,10 @@ class AuthActivity: AppCompatActivity() {
         val prefs = getPreferences(MODE_PRIVATE)
         prefs.getString(authTokenProp, null)?.let { authToken = String(Base64.decode(it, Base64.DEFAULT)) }
         prefs.getString(authTokenSecretProp, null)?.let { authTokenSecret = String(Base64.decode(it, Base64.DEFAULT)) }
+    }
+
+    fun haveCredentials(): Boolean {
+        return listOf(authToken, authTokenSecret).all { it != null }
     }
 
     fun doAuth() {
