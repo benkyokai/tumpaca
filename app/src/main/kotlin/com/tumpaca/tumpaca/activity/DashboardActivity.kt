@@ -1,6 +1,5 @@
 package com.tumpaca.tumpaca.activity
 
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -9,6 +8,7 @@ import android.widget.ListView
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
+import com.tumpaca.tumpaca.util.AsyncTaskHelper
 
 /**
  * Created by amake on 6/1/16.
@@ -37,15 +37,11 @@ class DashboardActivity: AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        object: AsyncTask<Void, Void, List<Post>>() {
-            override fun doInBackground(vararg p0: Void?): List<Post>? {
-                return client?.userDashboard()
-            }
-
-            override fun onPostExecute(result: List<Post>?) {
-                Log.v(tag, "Loaded ${result?.size} dashboard posts")
-                posts?.adapter = ArrayAdapter<String>(this@DashboardActivity, R.layout.list_item, result?.map { it.slug })
-            }
-        }.execute()
+        AsyncTaskHelper.first<Void, Void, List<Post>?> {
+            client?.userDashboard()
+        }.then { result ->
+            Log.v(tag, "Loaded ${result?.size} dashboard posts")
+            posts?.adapter = ArrayAdapter<String>(this@DashboardActivity, R.layout.list_item, result?.map { it.slug })
+        }.go()
     }
 }
