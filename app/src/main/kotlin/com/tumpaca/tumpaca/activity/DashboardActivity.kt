@@ -15,7 +15,7 @@ import com.tumpaca.tumpaca.util.AsyncTaskHelper
  */
 class DashboardActivity: AppCompatActivity() {
 
-    var tag = "DashboardActivity"
+    val tag = "DashboardActivity"
 
     var client: JumblrClient? = null
     var posts: ListView? = null

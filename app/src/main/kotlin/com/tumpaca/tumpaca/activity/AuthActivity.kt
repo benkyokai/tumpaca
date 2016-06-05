@@ -16,19 +16,19 @@ import java.util.*
  */
 class AuthActivity: AppCompatActivity() {
 
-    final var credentialsFile = "credentials.properties"
-    final var urlCallback = "tumpaca://tumblr/auth/ok"
-    final var consumerKeyProp = "tumblr.consumer.key"
-    final var consumerSecretProp = "tumblr.consumer.secret"
-    final var authTokenProp = "auth.token"
-    final var authTokenSecretProp = "auth.token.secret"
+    val credentialsFile = "credentials.properties"
+    val urlCallback = "tumpaca://tumblr/auth/ok"
+    val consumerKeyProp = "tumblr.consumer.key"
+    val consumerSecretProp = "tumblr.consumer.secret"
+    val authTokenProp = "auth.token"
+    val authTokenSecretProp = "auth.token.secret"
 
     var consumerKey: String? = null
     var consumerSecret: String? = null
     var authToken: String? = null
     var authTokenSecret: String? = null
 
-    var tag = "AuthActivity"
+    val tag = "AuthActivity"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +38,7 @@ class AuthActivity: AppCompatActivity() {
 
         setContentView(R.layout.activity_auth)
 
-        var authButton = findViewById(R.id.button_authorize) as Button
+        val authButton = findViewById(R.id.button_authorize) as Button
         authButton.setOnClickListener {
             if (haveCredentials()) {
                 goToDashboard()
@@ -49,7 +49,7 @@ class AuthActivity: AppCompatActivity() {
     }
 
     fun loadCredentials() {
-        var authProps = Properties()
+        val authProps = Properties()
         resources.openRawResource(R.raw.auth).use { authProps.load(it) }
         consumerKey = String(Base64.decode(authProps.get(consumerKeyProp) as String, Base64.DEFAULT))
         consumerSecret = String(Base64.decode(authProps.get(consumerSecretProp) as String, Base64.DEFAULT))
@@ -90,7 +90,7 @@ class AuthActivity: AppCompatActivity() {
     fun goToDashboard() {
         assert(authToken != null, { "authToken がまだ null のまま Dashboard を開こうとしている" })
         assert(authTokenSecret != null, { "authTokenSecret がまだ null のまま Dashboard を開こうとしている" })
-        var intent = Intent(this, DashboardActivity::class.java)
+        val intent = Intent(this, DashboardActivity::class.java)
         intent.putExtra("consumerKey", consumerKey)
         intent.putExtra("consumerSecret", consumerSecret)
         intent.putExtra("authToken", authToken)
