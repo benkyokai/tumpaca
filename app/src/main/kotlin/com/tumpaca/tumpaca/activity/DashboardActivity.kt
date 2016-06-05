@@ -9,6 +9,7 @@ import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.AsyncTaskHelper
+import com.tumpaca.tumpaca.util.Credentials
 
 /**
  * Created by amake on 6/1/16.
@@ -25,11 +26,9 @@ class DashboardActivity: AppCompatActivity() {
 
         setContentView(R.layout.activity_dashboard)
 
-        var consumerKey = intent.getStringExtra("consumerKey")
-        var consumerSecret = intent.getStringExtra("consumerSecret")
-        var authToken = intent.getStringExtra("authToken")
-        var authTokenSecret = intent.getStringExtra("authTokenSecret")
-        client = JumblrClient(consumerKey, consumerSecret, authToken, authTokenSecret)
+        val credentials = intent.getParcelableExtra<Credentials>("credentials")
+        client = JumblrClient(credentials.consumerKey, credentials.consumerSecret,
+                credentials.authToken, credentials.authTokenSecret)
 
         posts = findViewById(R.id.list_posts) as ListView
     }
