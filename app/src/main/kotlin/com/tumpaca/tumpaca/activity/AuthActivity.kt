@@ -10,6 +10,7 @@ import com.tumblr.loglr.LoginResult
 import com.tumblr.loglr.Loglr
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.Credentials
+import com.tumpaca.tumpaca.util.editPreferences
 import java.util.*
 
 /**
@@ -69,11 +70,10 @@ class AuthActivity: AppCompatActivity() {
     fun onLogin(r: LoginResult) {
         credentials.authToken = r.oAuthToken
         credentials.authTokenSecret = r.oAuthTokenSecret
-        val editor = getPreferences(MODE_PRIVATE).edit()
-        editor.putString(authTokenProp, Base64.encodeToString(r.oAuthToken.toByteArray(Charsets.UTF_8), Base64.DEFAULT))
-        editor.putString(authTokenSecretProp, Base64.encodeToString(r.oAuthTokenSecret.toByteArray(Charsets.UTF_8), Base64.DEFAULT))
-        val committed = editor.commit()
-        assert(committed)
+        editPreferences {
+            it.putString(authTokenProp, Base64.encodeToString(r.oAuthToken.toByteArray(Charsets.UTF_8), Base64.DEFAULT))
+            it.putString(authTokenSecretProp, Base64.encodeToString(r.oAuthTokenSecret.toByteArray(Charsets.UTF_8), Base64.DEFAULT))
+        }
         goToDashboard()
     }
 
