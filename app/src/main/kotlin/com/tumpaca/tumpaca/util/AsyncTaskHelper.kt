@@ -5,7 +5,7 @@ import android.os.AsyncTask
 /**
  * Created by amake on 6/3/16.
  */
-class AsyncTaskHelper<Params, Progress, Result>(first: (Array<out Params>) -> Result) {
+class AsyncTaskHelper<Params, Progress, Result> private constructor(first: (Array<out Params>) -> Result) {
 
     companion object {
         fun <Params, Progress, Result> first(doInBackground: (Array<out Params>) -> Result): AsyncTaskHelper<Params, Progress, Result> {
