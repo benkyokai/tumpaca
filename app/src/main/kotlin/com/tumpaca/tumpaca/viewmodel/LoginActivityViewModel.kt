@@ -2,8 +2,8 @@ package com.tumpaca.tumpaca.viewmodel;
 
 import android.util.Log
 
-class MainActivityViewModel(mail: String, password: String) {
-    final val TAG = "MainActivityViewModel"
+class LoginActivityViewModel(mail: String, password: String) {
+    final val TAG = "LoginActivityViewModel"
 
     var mail = mail
     var password = password

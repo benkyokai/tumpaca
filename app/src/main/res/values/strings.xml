@@ -2,7 +2,8 @@
     <string name="app_name">Tumpaca</string>
 
     <!-- Main Activity -->
-    <string name="main_activity_mail">E メール</string>
-    <string name="main_activity_password">パスワード</string>
-    <string name="main_activity_login">ログイン</string>
+    <string name="login_activity_mail">E メール</string>
+    <string name="login_activity_password">パスワード</string>
+    <string name="login_activity_login">ログイン</string>
+    <string name="auth_activity_authorize_button">認証</string>
 </resources>
