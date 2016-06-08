@@ -5,9 +5,10 @@
     android:baselineAligned="false">
 
     <ListView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:id="@+id/list_posts"
         android:layout_gravity="center_vertical"
-        android:layout_weight="1" />
+        android:background="#35465c"/>
 </LinearLayout>
