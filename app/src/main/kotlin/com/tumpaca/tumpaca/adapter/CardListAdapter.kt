@@ -35,7 +35,7 @@ class CardListAdapter(ctx: Context): ArrayAdapter<Post>(ctx, 0) {
     val mInflater = LayoutInflater.from(ctx)
     val packageManager = ctx.packageManager
 
-    val credentialsFile = "credentials.properties"
+    val AuthSharedPreferenceName = "activity.AuthActivity"
     val consumerKeyProp = "tumblr.consumer.key"
     val consumerSecretProp = "tumblr.consumer.secret"
     val authTokenProp = "auth.token"
@@ -50,17 +50,9 @@ class CardListAdapter(ctx: Context): ArrayAdapter<Post>(ctx, 0) {
         credentials.consumerKey = String(Base64.decode(authProps.get(consumerKeyProp) as String, Base64.DEFAULT))
         credentials.consumerSecret = String(Base64.decode(authProps.get(consumerSecretProp) as String, Base64.DEFAULT))
 
-        try {
-            context.openFileInput(credentialsFile).use { authProps.load(it) }
-            authProps.get(authTokenProp)?.let {
-                credentials.authToken = String(Base64.decode(it as String, Base64.DEFAULT))
-            }
-            authProps.get(authTokenSecretProp)?.let {
-                credentials.authTokenSecret = String(Base64.decode(it as String, Base64.DEFAULT))
-            }
-        } catch (e: FileNotFoundException) {
-            // まだ認証したことがないのでスルー
-        }
+        val prefs = context.getSharedPreferences(AuthSharedPreferenceName, Context.MODE_PRIVATE)
+        prefs.getString(authTokenProp, null)?.let { credentials.authToken = String(Base64.decode(it, Base64.DEFAULT)) }
+        prefs.getString(authTokenSecretProp, null)?.let { credentials.authTokenSecret = String(Base64.decode(it, Base64.DEFAULT)) }
     }
 
     fun getClient(): JumblrClient {
