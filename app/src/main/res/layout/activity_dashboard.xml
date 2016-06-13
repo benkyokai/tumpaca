@@ -4,11 +4,8 @@
     android:layout_height="match_parent"
     android:baselineAligned="false">
 
-    <ListView
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:id="@+id/list_posts"
-        android:layout_gravity="center_vertical"
-        android:background="#35465c"/>
+        android:layout_height="match_parent" />
 </LinearLayout>
