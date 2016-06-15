@@ -18,7 +18,7 @@ import java.util.*
 class DashboardActivity: AppCompatActivity() {
 
     val tag = "DashboardActivity"
-    var mViewPager: ViewPager? = null
+    var viewPager: ViewPager? = null
 
     var client: JumblrClient? = null
     var dashboardAdapter: DashboardPagerAdapter? = null
@@ -31,10 +31,9 @@ class DashboardActivity: AppCompatActivity() {
                 credentials.authToken, credentials.authTokenSecret)
 
         setContentView(R.layout.activity_dashboard)
-        mViewPager = findViewById(R.id.view_pager) as? ViewPager
+        viewPager = findViewById(R.id.view_pager) as? ViewPager
         val fm = supportFragmentManager
         dashboardAdapter = DashboardPagerAdapter(fm)
-
     }
 
     override fun onResume() {
@@ -45,7 +44,7 @@ class DashboardActivity: AppCompatActivity() {
         }.then { result ->
             Log.v(tag, "Loaded ${result?.size} dashboard posts")
             dashboardAdapter?.addAll(ArrayList(result))
-            mViewPager?.adapter = dashboardAdapter
+            viewPager?.adapter = dashboardAdapter
         }.go()
     }
 }
