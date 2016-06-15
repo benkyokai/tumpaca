@@ -86,3 +86,63 @@ class DownloadImageTask(val imageView: ImageView): AsyncTask<String, Void, Bitma
 ```
 
 ## Weekly Kotlin
+- LoginActivityViewModelを使ってCake PatternによるDIを実装してみた
+    - 無理やりやってみただけなので、ここでDIするのが有用かどうかは考えない
+- CakePatternはScalaコンパイラの中で出てくるDIの実装パターン
+    - http://eed3si9n.com/ja/real-world-scala-dependency-injection-di
+- ただ、本家のCakePatternは複雑すぎるので、簡素化したMinimal Cake Patternをkotlinで実装する
+    - http://qiita.com/pab_tech/items/1c0bdbc8a61949891f1f
+
+- LoginViewModelのインタフェースとViewModelを保持するHasLoginActivityViewModelを定義
+
+```
+interface HasLoginActivityViewModel {
+    val loginActivityViewModel: LoginActivityViewModel
+}
+
+interface LoginActivityViewModel {
+    var mail: String?
+    var password: String?
+    fun set(mail: String, password: String)
+    fun login()
+}
+```
+
+- 上記のインタフェースの実装
+
+```
+object MixInLoginActivityViewModel: HasLoginActivityViewModel {
+    override val loginActivityViewModel: LoginActivityViewModel
+        get() = LoginActivityViewModelImpl
+}
+
+object LoginActivityViewModelImpl : LoginActivityViewModel {
+    final val TAG = "LoginActivityViewModel"
+
+    override var mail: String? = null
+    override var password: String? = null
+
+    override fun set(mail: String, password: String) {
+        this.mail = mail
+        this.password = password
+    }
+
+    override fun login() {
+        Log.i(TAG, "login, mail=$mail, pass=${password?.length}")
+    }
+}
+```
+
+- 利用側はClass Delegationを使って、HasLoginActivityViewModelの実装をMixInLoginActivityViewModelに移譲する
+
+```
+class LoginActivity : AppCompatActivity(), HasLoginActivityViewModel by MixInLoginActivityViewModel { 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+        
+        loginActivityViewModel.set(mail ?: "", password ?: "") // 実装を注入されたview modelを利用
+        
+        ...
+    }
+}
+```
