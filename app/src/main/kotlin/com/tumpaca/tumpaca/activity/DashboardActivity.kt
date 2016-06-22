@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
+import com.tumpaca.tumpaca.MainApplication
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.adapter.DashboardPagerAdapter
 import com.tumpaca.tumpaca.util.AsyncTaskHelper
@@ -18,17 +19,15 @@ import java.util.*
 class DashboardActivity: AppCompatActivity() {
 
     val tag = "DashboardActivity"
-    var viewPager: ViewPager? = null
-
     var client: JumblrClient? = null
+
+    var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val credentials = intent.getParcelableExtra<Credentials>("credentials")
-        client = JumblrClient(credentials.consumerKey, credentials.consumerSecret,
-                credentials.authToken, credentials.authTokenSecret)
+        client = getMainApplication().tumblerService?.getJumblrClient()
 
         setContentView(R.layout.activity_dashboard)
         viewPager = findViewById(R.id.view_pager) as? ViewPager
@@ -46,5 +45,10 @@ class DashboardActivity: AppCompatActivity() {
             dashboardAdapter?.addAll(ArrayList(result))
             viewPager?.adapter = dashboardAdapter
         }.go()
+    }
+
+    // Base クラスなどに移動
+    private fun getMainApplication(): MainApplication {
+        return application as MainApplication
     }
 }

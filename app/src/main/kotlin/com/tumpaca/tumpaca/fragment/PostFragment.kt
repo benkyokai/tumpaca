@@ -1,57 +1,32 @@
 package com.tumpaca.tumpaca.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
-import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Blog
+import com.tumpaca.tumpaca.MainApplication
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.AsyncTaskHelper
-import com.tumpaca.tumpaca.util.Credentials
 import com.tumpaca.tumpaca.util.DownloadImageTask
-import java.util.*
 
 /**
  * 色情報を表示する Fragment.
  */
 class PostFragment : Fragment() {
-    private val credentials = Credentials()
-
-    private val AuthSharedPreferenceName = "activity.AuthActivity"
-    private val consumerKeyProp = "tumblr.consumer.key"
-    private val consumerSecretProp = "tumblr.consumer.secret"
-    private val authTokenProp = "auth.token"
-    private val authTokenSecretProp = "auth.token.secret"
-
     companion object {
         fun getInstance() : PostFragment {
             return PostFragment()
         }
     }
 
-    fun loadCredentials() {
-        val authProps = Properties()
-
-        context.resources.openRawResource(R.raw.auth).use { authProps.load(it) }
-        credentials.consumerKey = String(Base64.decode(authProps.get(consumerKeyProp) as String, Base64.DEFAULT))
-        credentials.consumerSecret = String(Base64.decode(authProps.get(consumerSecretProp) as String, Base64.DEFAULT))
-
-        val prefs = context.getSharedPreferences(AuthSharedPreferenceName, Context.MODE_PRIVATE)
-        prefs.getString(authTokenProp, null)?.let { credentials.authToken = String(Base64.decode(it, Base64.DEFAULT)) }
-        prefs.getString(authTokenSecretProp, null)?.let { credentials.authTokenSecret = String(Base64.decode(it, Base64.DEFAULT)) }
-    }
-
-    fun getClient(): JumblrClient {
-        loadCredentials()
-        return JumblrClient(credentials.consumerKey, credentials.consumerSecret,
-                credentials.authToken, credentials.authTokenSecret)
+    // Base クラスなどに移動
+    private fun getMainApplication(): MainApplication {
+        return activity.application as MainApplication
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -76,7 +51,7 @@ class PostFragment : Fragment() {
 
         val mimeType = "text/html; charset=utf-8"
 
-        val client = getClient()
+        val client = getMainApplication().tumblerService!!.getJumblrClient()!!
 
         AsyncTaskHelper.first<Void, Void, Blog?> {
             client.blogInfo(blogName)
