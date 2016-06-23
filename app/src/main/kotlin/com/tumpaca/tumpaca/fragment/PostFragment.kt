@@ -1,7 +1,6 @@
 package com.tumpaca.tumpaca.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
 import com.tumblr.jumblr.types.Blog
-import com.tumpaca.tumpaca.MainApplication
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.DownloadImageTask
@@ -17,16 +15,11 @@ import com.tumpaca.tumpaca.util.DownloadImageTask
 /**
  * 色情報を表示する Fragment.
  */
-class PostFragment : Fragment() {
+class PostFragment : FragmentBase() {
     companion object {
         fun getInstance() : PostFragment {
             return PostFragment()
         }
-    }
-
-    // Base クラスなどに移動
-    private fun getMainApplication(): MainApplication {
-        return activity.application as MainApplication
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -51,7 +44,7 @@ class PostFragment : Fragment() {
 
         val mimeType = "text/html; charset=utf-8"
 
-        val client = getMainApplication().tumblerService!!.getJumblrClient()!!
+        val client = getMainApplication().tumblerService!!.jumblerClient!!
 
         AsyncTaskHelper.first<Void, Void, Blog?> {
             client.blogInfo(blogName)

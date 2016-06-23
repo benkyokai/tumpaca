@@ -1,20 +1,21 @@
 package com.tumpaca.tumpaca.util
 
-import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.support.v4.app.FragmentActivity
 import android.util.Base64
 import android.util.Log
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.loglr.LoginResult
 import com.tumblr.loglr.Loglr
 import com.tumpaca.tumpaca.R
+import com.tumpaca.tumpaca.activity.MainActivity
 import java.util.*
 
 /**
  * 認証などの Tumbler に関するサービスを提供します。
  */
-class TumblerService(context: Context) {
+class TumblerService(val context: Context) {
     companion object {
         const val TAG = "TumblerService"
         const val URL_CALLBACK = "tumpaca://tumblr/auth/ok"
@@ -25,57 +26,70 @@ class TumblerService(context: Context) {
         const val AUTH_TOKEN_SECRET_PROP = "auth.token.secret"
     }
 
-    val context: Context = context
+    /**
+     * Tumbler の API アクセスするための情報を保持します。
+     */
+    class ConsumerInfo(val key: String, val secret: String)
+
+    /**
+     * 特定のユーザーとして Tumbler の API にアクセスするための情報を保持します。
+     */
+    class AuthInfo(val token: String, val secret: String)
+
     val consumerInfo: ConsumerInfo
     var authInfo: AuthInfo? = null
-    var client: JumblrClient? = null
+
+    // ログインしているかどうかは authInfo でチェックする。
+    // しかし、本当に有効なトークンかどうかは未検証なので注意する。
+    val isLogin: Boolean
+        get() = authInfo != null
+
+    var jumblerClient: JumblrClient? = null
+        get() {
+            if (field == null) {
+                field = JumblrClient(consumerInfo.key, consumerInfo.secret, authInfo!!.token, authInfo!!.secret)
+            }
+            return field
+        }
+        private set
 
     init {
-        consumerInfo = loadConsumer()
+        consumerInfo = loadConsumerInfo()
         authInfo = loadAuthToken()
     }
 
-    fun isLogin(): Boolean {
-        // ログインしているかどうかを authInfo でチェック。
-        // しかし、本当に有効なトークンかどうかは未検証なので注意する。
-        return authInfo != null
-    }
-
-    fun getJumblrClient(): JumblrClient? {
-        return client ?: createClient()
-    }
-
-    fun auth(activity: Activity, success: () -> Unit) {
+    fun auth(activity: FragmentActivity) {
         Loglr.getInstance()
                 .setConsumerKey(consumerInfo.key)
                 .setConsumerSecretKey(consumerInfo.secret)
-                .setLoginListener { onLogin(it); success() }
-                .setExceptionHandler { onException(it) }
+                .setLoginListener {
+                    onLogin(it)
+                }
+                .setExceptionHandler {
+                    onException(it)
+                }
                 .setUrlCallBack(URL_CALLBACK)
                 .initiateInActivity(activity)
     }
 
     fun logout() {
-        client = null
+        jumblerClient = null
         authInfo = null
     }
 
-    private fun createClient(): JumblrClient? {
-        // それっぽい書き方がありあそう
-        if (authInfo != null) {
-            client = JumblrClient(consumerInfo.key, consumerInfo.secret, authInfo!!.token, authInfo!!.secret)
-        }
-        return client
-    }
-
-    private fun loadConsumer(): ConsumerInfo {
+    // バンドルされたファイルから ConsumerInfo を読み取ります。
+    private fun loadConsumerInfo(): ConsumerInfo {
         val authProps = Properties()
         context.resources.openRawResource(R.raw.auth).use { authProps.load(it) }
         val key = String(Base64.decode(authProps[CONSUMER_KEY_PROP] as String, Base64.DEFAULT))
         val secret = String(Base64.decode(authProps[CONSUMER_SECRET_PROP] as String, Base64.DEFAULT))
+        Log.d(TAG, "Loaded ConsumerInfo: key=$key, secret=$secret")
+        // バンドルされたファイルは通常必ず存在するので null チェックなどはしない。
         return ConsumerInfo(key, secret)
     }
 
+    // ローカルに保存されている AuthInfo を読み取ります。
+    // AuthInfo がローカルに保存されていない場合には null を返します
     private fun loadAuthToken(): AuthInfo? {
         val prefs = getAuthSharedPreference()
         val token = prefs.getString(AUTH_TOKEN_PROP, null)?.let { String(Base64.decode(it, Base64.DEFAULT)) }
@@ -84,6 +98,7 @@ class TumblerService(context: Context) {
         return if (token != null && secret != null) AuthInfo(token, secret) else null
     }
 
+    // ローカルに AuthInfo を保存します。
     private fun saveAuthToken(authInfo: AuthInfo) {
         Log.d(TAG, "Saved AuthToken: token=" + authInfo.token + ", secret=" + authInfo.secret)
         context.editSharedPreferences(AUTH_SHARED_PREFERENCE_NAME) {
@@ -97,7 +112,6 @@ class TumblerService(context: Context) {
     }
 
     private fun onLogin(result: LoginResult) {
-        // TODO null チェックとかしたほうがいい
         authInfo = AuthInfo(result.oAuthToken, result.oAuthTokenSecret)
         saveAuthToken(authInfo!!)
     }
@@ -105,11 +119,4 @@ class TumblerService(context: Context) {
     private fun onException(e: RuntimeException) {
         Log.e(TAG, "Exception occurred on login", e)
     }
-
-
 }
-
-class ConsumerInfo(val key: String, val secret: String)
-
-class AuthInfo(val token: String, val secret: String)
-
