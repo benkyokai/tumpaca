@@ -9,7 +9,6 @@ import com.tumblr.jumblr.JumblrClient
 import com.tumblr.loglr.LoginResult
 import com.tumblr.loglr.Loglr
 import com.tumpaca.tumpaca.R
-import com.tumpaca.tumpaca.activity.MainActivity
 import java.util.*
 
 /**

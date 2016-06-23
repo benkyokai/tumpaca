@@ -2,8 +2,7 @@ package com.tumpaca.tumpaca.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-import android.view.Menu
+import android.util.Log
 import com.tumpaca.tumpaca.MainApplication
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.AuthFragment
@@ -21,6 +20,7 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.d(TAG, "onCreate()")
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
