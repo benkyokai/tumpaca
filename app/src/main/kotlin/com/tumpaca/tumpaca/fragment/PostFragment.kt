@@ -26,7 +26,6 @@ class PostFragment : FragmentBase() {
 
         // データを取得
         val bundle = getArguments()
-        val page = bundle.getInt("page")
         val title = bundle.getString("title")
         val blogName = bundle.getString("blogName")
         val subText = bundle.getString("subText")

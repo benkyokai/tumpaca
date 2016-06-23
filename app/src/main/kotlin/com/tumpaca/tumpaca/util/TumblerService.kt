@@ -75,6 +75,7 @@ class TumblerService(val context: Context) {
     fun logout() {
         jumblerClient = null
         authInfo = null
+        removeAuthToken()
     }
 
     // バンドルされたファイルから ConsumerInfo を読み取ります。
@@ -104,6 +105,13 @@ class TumblerService(val context: Context) {
         context.editSharedPreferences(AUTH_SHARED_PREFERENCE_NAME) {
             it.putString(AUTH_TOKEN_PROP, Base64.encodeToString(authInfo.token.toByteArray(Charsets.UTF_8), Base64.DEFAULT))
             it.putString(AUTH_TOKEN_SECRET_PROP, Base64.encodeToString(authInfo.secret.toByteArray(Charsets.UTF_8), Base64.DEFAULT))
+        }
+    }
+
+    private fun removeAuthToken() {
+        context.editSharedPreferences(AUTH_SHARED_PREFERENCE_NAME) {
+            it.remove(AUTH_TOKEN_PROP)
+            it.remove(AUTH_TOKEN_SECRET_PROP)
         }
     }
 

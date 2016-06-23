@@ -5,15 +5,15 @@ import android.support.annotation.Nullable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.TextView
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.TumblerService
 
 class AuthFragment: FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fr_auth, container, false)
-        val authButton = view?.findViewById(R.id.authorize) as Button
-        authButton.setOnClickListener {
+        val auth = view?.findViewById(R.id.authorize) as TextView
+        auth.setOnClickListener {
             getMainApplication().tumblerService!!.auth(activity);
         }
         return view
@@ -22,7 +22,9 @@ class AuthFragment: FragmentBase() {
     override fun onResume() {
         super.onResume()
 
-        // Tumbler へのログインを別 Activity で行ったあと、その Activity は閉じられる。
+        getActionBar()?.hide();
+
+        // Tumbler へのログインは別 Activity で行うが、ログインが終わるとその Activity は閉じられる。
         // ログインに成功したら、自動的に次の画面に遷移したいので onResume() でログイン状態をチェックする必要がある。
         val service: TumblerService = getMainApplication().tumblerService!!
         if (service.isLogin) {
