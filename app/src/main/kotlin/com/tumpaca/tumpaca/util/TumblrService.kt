@@ -12,26 +12,26 @@ import com.tumpaca.tumpaca.R
 import java.util.*
 
 /**
- * 認証などの Tumbler に関するサービスを提供します。
+ * 認証などの Tumblr に関するサービスを提供します。
  */
-class TumblerService(val context: Context) {
+class TumblrService(val context: Context) {
     companion object {
-        const val TAG = "TumblerService"
-        const val URL_CALLBACK = "tumpaca://tumblr/auth/ok"
-        const val AUTH_SHARED_PREFERENCE_NAME = "TumpacaPreference"
-        const val CONSUMER_KEY_PROP = "tumblr.consumer.key"
-        const val CONSUMER_SECRET_PROP = "tumblr.consumer.secret"
-        const val AUTH_TOKEN_PROP = "auth.token"
-        const val AUTH_TOKEN_SECRET_PROP = "auth.token.secret"
+        private const val TAG = "TumblrService"
+        private const val URL_CALLBACK = "tumpaca://tumblr/auth/ok"
+        private const val AUTH_SHARED_PREFERENCE_NAME = "TumpacaPreference"
+        private const val CONSUMER_KEY_PROP = "tumblr.consumer.key"
+        private const val CONSUMER_SECRET_PROP = "tumblr.consumer.secret"
+        private const val AUTH_TOKEN_PROP = "auth.token"
+        private const val AUTH_TOKEN_SECRET_PROP = "auth.token.secret"
     }
 
     /**
-     * Tumbler の API アクセスするための情報を保持します。
+     * Tumblr の API アクセスするための情報を保持します。
      */
     class ConsumerInfo(val key: String, val secret: String)
 
     /**
-     * 特定のユーザーとして Tumbler の API にアクセスするための情報を保持します。
+     * 特定のユーザーとして Tumblr の API にアクセスするための情報を保持します。
      */
     class AuthInfo(val token: String, val secret: String)
 

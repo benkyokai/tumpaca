@@ -6,7 +6,7 @@
   - Context とは何か
   - Fragment とは何か
 - 実装説明
-  - TumblerService
+  - TumblrService
   - Fragment 導入
 - 今週の Kotlin
   - Compile-Time Constants
@@ -70,8 +70,8 @@
 
 
 ## 実装説明
-#### TumblerService
-- Tumbler 系の操作をまとめたもの
+#### TumblrService
+- Tumblr 系の操作をまとめたもの
 - 作成動機
   - JumblerClient を一度だけ生成し、それを保存して提供したい
   - ログイン状態の保持・破棄をしたい
@@ -91,7 +91,7 @@
 - 現状の構成
   - Activity
      - MainActivity: Tumpaca の唯一の Activity
-     - (LoglrActivity: Tumbler 認証 WebView が乗っかる Activity) => Loglr の一部です
+     - (LoglrActivity: Tumblr 認証 WebView が乗っかる Activity) => Loglr の一部です
   - Fragment
      - AuthFragment: 認証画面
      - DashboardFragment: ダッシュボード画面
@@ -105,12 +105,12 @@
     - 未ログインなら画面を表示
     - ボタンが押されたら、LoglrActivity **を起動**
   - LoglrActivity
-    - WebView が開いて Tumbler 認証
+    - WebView が開いて Tumblr 認証
     - 認証が終わると Activity 終了 => AuthFragment に戻る
   - DashboardFragment
     - Dashboard を表示
     - ログアウトが押されたら
-       - TumblerService.logout()
+       - TumblrService.logout()
        - AuthFragment に置換
 
 ## 今週の Kotlin
@@ -136,12 +136,12 @@ class MainActivity: AppCompatActivity() {
 ```
 package com.tumpaca.tumpaca;
 
-@Metadata(mv={1, 1, 1}, bv={1, 0, 0}, k=1, d1={""}, d2={"Lcom/tumpaca/tumpaca/MainApplication;", "Landroid/app/Application;", "()V", "<set-?>", "Lcom/tumpaca/tumpaca/util/TumblerService;", "tumblerService", "getTumblerService", "()Lcom/tumpaca/tumpaca/util/TumblerService;", "setTumblerService", "(Lcom/tumpaca/tumpaca/util/TumblerService;)V", "onCreate", "", "Companion", "app-compileEnvDevDebugKotlin"})
+@Metadata(mv={1, 1, 1}, bv={1, 0, 0}, k=1, d1={""}, d2={"Lcom/tumpaca/tumpaca/MainApplication;", "Landroid/app/Application;", "()V", "<set-?>", "Lcom/tumpaca/tumpaca/util/TumblrService;", "tumblrService", "getTumblrService", "()Lcom/tumpaca/tumpaca/util/TumblrService;", "setTumblrService", "(Lcom/tumpaca/tumpaca/util/TumblrService;)V", "onCreate", "", "Companion", "app-compileEnvDevDebugKotlin"})
 public final class MainApplication extends Application
 {
 
   @Nullable
-  private TumblerService tumblerService;
+  private TumblrService tumblrService;
 
   @NotNull
   // => private にならない…
@@ -149,16 +149,16 @@ public final class MainApplication extends Application
   public static final Companion Companion = new Companion(null);
 
   @Nullable
-  public final TumblerService getTumblerService()
+  public final TumblrService getTumblrService()
   {
-    return this.tumblerService; }
-  private final void setTumblerService(TumblerService <set-?>) { this.tumblerService = <set-?>; }
+    return this.tumblrService; }
+  private final void setTumblrService(TumblrService <set-?>) { this.tumblrService = <set-?>; }
 
   public void onCreate()
   {
     super.onCreate();
     Log.d(TAG, "MainApplication:onCreate()");
-    this.tumblerService = new TumblerService((Context)this);
+    this.tumblrService = new TumblrService((Context)this);
 
     getContentResolver();
   }

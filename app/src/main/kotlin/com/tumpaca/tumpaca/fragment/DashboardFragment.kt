@@ -31,7 +31,7 @@ class DashboardFragment: FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fr_dashboard, container, false)
 
-        client = getMainApplication().tumblerService?.jumblerClient
+        client = getMainApplication().tumblrService?.jumblerClient
         viewPager = view?.findViewById(R.id.view_pager) as? ViewPager
         val fm = fragmentManager
         dashboardAdapter = DashboardPagerAdapter(fm)
@@ -71,7 +71,7 @@ class DashboardFragment: FragmentBase() {
 
     private fun logout() {
         // TODO 本当にログインしたのかダイアログで確認した方がいい
-        getMainApplication().tumblerService!!.logout()
+        getMainApplication().tumblrService!!.logout()
         replaceFragment(AuthFragment(), false)
     }
 }

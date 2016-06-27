@@ -43,7 +43,7 @@ class PostFragment : FragmentBase() {
 
         val mimeType = "text/html; charset=utf-8"
 
-        val client = getMainApplication().tumblerService!!.jumblerClient!!
+        val client = getMainApplication().tumblrService!!.jumblerClient!!
 
         AsyncTaskHelper.first<Void, Void, Blog?> {
             client.blogInfo(blogName)
