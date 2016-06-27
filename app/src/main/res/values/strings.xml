@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">Tumpaca</string>
 
-    <!-- Main Activity -->
-    <string name="login_activity_mail">E メール</string>
-    <string name="login_activity_password">パスワード</string>
-    <string name="login_activity_login">ログイン</string>
-    <string name="auth_activity_authorize_button">認証</string>
+    <!-- AuthFragment -->
+    <string name="auth_start">Tumpaca をはじめる</string>
+
+    <!-- DashboardFragment -->
+    <string name="dashboard">ダッシュボード</string>
+    <string name="dashboard_logout">ログアウト</string>
+
+
 </resources>
