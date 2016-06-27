@@ -35,6 +35,7 @@ class TumblrService(val context: Context) {
      */
     class AuthInfo(val token: String, val secret: String)
 
+    val loglr = Loglr.getInstance()
     val consumerInfo: ConsumerInfo
     var authInfo: AuthInfo? = null
 
@@ -55,11 +56,12 @@ class TumblrService(val context: Context) {
     init {
         consumerInfo = loadConsumerInfo()
         authInfo = loadAuthToken()
-    }
-
-    fun auth(activity: FragmentActivity) {
-        Loglr.getInstance()
-                .setConsumerKey(consumerInfo.key)
+        // loglr に consumerKey と consumerSecret をセットしておく
+        // 理由：
+        //   Loglr のログイン認証中（LoglrActivity起動中）にバックグラウンドに移動し、
+        //   OS によってプロセスが落とされた場合、再度フォアグラウンドに戻って復元するときに、
+        //   key と secret がセットしておかないといけないため。
+        loglr.setConsumerKey(consumerInfo.key)
                 .setConsumerSecretKey(consumerInfo.secret)
                 .setLoginListener {
                     onLogin(it)
@@ -68,7 +70,10 @@ class TumblrService(val context: Context) {
                     onException(it)
                 }
                 .setUrlCallBack(URL_CALLBACK)
-                .initiateInActivity(activity)
+    }
+
+    fun auth(activity: FragmentActivity) {
+        loglr.initiateInActivity(activity)
     }
 
     fun logout() {
