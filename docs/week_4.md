@@ -17,7 +17,7 @@
 - ログイン・ログアウト機能を実装しました
   - アプリを落としてもログイン状態が保持されます
   - ログアウトできます
-- ログインしている場合にはダッシュボードから表示されるようにしました
+- ログインしている場合にはダッシュボードから起動します
 
 ## お勉強
 #### Application とは何か
@@ -31,7 +31,7 @@
   - AndroidManifest.xml に宣言する
 - ライフサイクル階層構造
   - アプリ => Application（=プロセス） => Activity => Fragment
-  - 実例
+  - 実例: droidkaig2016, Scene
 
 #### Context とは何か
 - Android OS 全体でアプリの実行環境をやりとりするための情報を持ったクラス
@@ -45,12 +45,12 @@
    - 他に50個ちかくある…
 - Application extends Context と Activity extends Context の違い
    - ライフサイクルが違う
-     - それぞれの生成時に実体が attach されて、破棄時に detach される
      - http://yuki312.blogspot.jp/2012/03/androidcontext.html
-   - ケースバイケース？
+   - どちらを渡す？
+     - ケースバイケース
      - 渡す先がアプリでグローバルに利用するなら Application extends Context
      - UI などでは Activity extends Context
-- たぶん、よくないと API だと思う…分かりづらいし…
+- 感想：たぶん、よくない API だと思う…分かりづらいし…
 
 
 #### Fragment とは何か
@@ -75,11 +75,12 @@
 - 作成動機
   - JumblerClient を一度だけ生成し、それを保存して提供したい
   - ログイン状態の保持・破棄をしたい
-  - 各種実装を隠蔽したい（本当は JumblerClient のラッパークラスを作りたい）
+  - 各種実装を隠蔽したい
   - UI 側のコードをすっきりさせたい
 - 実装
-  - Context に依存：getSharedPreference と getRaw を使うため。
-  - MainApplication で初期化し、プロパティとして保持
+  - Context に依存：getSharedPreference と getRaw を使うので。
+  - MainApplication で初期化し、プロパティとして保持。
+     - Activity や Fragment は Application を直接取得できる。
   - ログイン・ログアウトの管理
      - ログイン時に AuthToken と AuthTokenSecret を SharedPreference に保存
      - 保存されていればログイン済と判断
@@ -117,7 +118,7 @@
 - spec: https://kotlinlang.org/docs/reference/properties.html#compile-time-constants
 - コンパイル時に値が決まる定数
 - Java でいう static final
-- 条件
+- Compile-Time Constants になる条件
   - トップレベル変数 or object 内
   - primitive か String で初期化されている
   - カスタム getter がない
@@ -243,3 +244,5 @@ adb-shell > run-as com.tumpaca.tumpaca
 - Jumbler ソースをサブプロジェクトへと分割
 - PostFragment が落ちる
   - ログイン ⇒ ログアウト ⇒ アプリをバックグラウンドに => アプリを再度フォアグラウンドに
+
+## 今後の予定など
