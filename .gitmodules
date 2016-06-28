@@ -1,0 +1,3 @@
+[submodule "jumblr"]
+	path = jumblr
+	url = https://github.com/benkyokai/jumblr.git
