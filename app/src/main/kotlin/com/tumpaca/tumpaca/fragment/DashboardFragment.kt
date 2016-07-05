@@ -29,10 +29,10 @@ class DashboardFragment: FragmentBase() {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.fr_dashboard, container, false)
+        val view = inflater!!.inflate(R.layout.fr_dashboard, container, false)
 
-        client = getMainApplication().tumblrService?.jumblerClient
-        viewPager = view?.findViewById(R.id.view_pager) as? ViewPager
+        client = getMainApplication().tumblrService!!.jumblerClient
+        viewPager = view.findViewById(R.id.view_pager) as ViewPager
         val fm = fragmentManager
         dashboardAdapter = DashboardPagerAdapter(fm)
         return view
