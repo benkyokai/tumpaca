@@ -17,7 +17,7 @@ class DashboardPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
 
-        val post = mList.get(position)
+        val post = mList[position]
 
         val bundle = Bundle()
         bundle.putInt("page", position)
