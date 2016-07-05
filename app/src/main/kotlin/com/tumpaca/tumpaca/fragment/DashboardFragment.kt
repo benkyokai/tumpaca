@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.ImageButton
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
+import com.tumblr.jumblr.types.User
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.adapter.DashboardPagerAdapter
 import com.tumpaca.tumpaca.util.AsyncTaskHelper
@@ -22,6 +23,7 @@ class DashboardFragment: FragmentBase() {
 
     val TAG = "DashboardFragment"
     var client: JumblrClient? = null
+    var user: User? = null
 
     var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPagerAdapter? = null
@@ -78,6 +80,13 @@ class DashboardFragment: FragmentBase() {
             dashboardAdapter?.addAll(result)
             viewPager?.adapter = dashboardAdapter
         }.go()
+
+        AsyncTaskHelper.first<Void, Void, User> {
+            client!!.user()
+        }.then { result ->
+            Log.v(tag, "Loaded user info for ${result.name}")
+            user = result
+        }.go()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -119,10 +128,12 @@ class DashboardFragment: FragmentBase() {
     }
 
     private fun doReblog(post: Post) {
-        AsyncTaskHelper.first<Unit, Unit, Unit> {
-            Log.v(tag, "Reblogged ${post.slug}")
-            post.reblog(post.blogName)
-        }.go()
+        user!!.blogs.first().name.let { blogName ->
+            AsyncTaskHelper.first<Unit, Unit, Unit> {
+                Log.v(tag, "Reblogged ${post.slug}")
+                post.reblog(blogName)
+            }.go()
+        }
     }
 
     private fun logout() {
