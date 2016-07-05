@@ -14,14 +14,14 @@ class AuthFragment: FragmentBase() {
         val view = inflater?.inflate(R.layout.fr_auth, container, false)
         val auth = view?.findViewById(R.id.authorize) as TextView
         auth.setOnClickListener {
-            getMainApplication().tumblrService!!.auth(activity);
+            getMainApplication().tumblrService!!.auth(activity)
         }
         return view
     }
 
     override fun onResume() {
         super.onResume()
-        getActionBar()?.hide();
+        getActionBar()?.hide()
 
         // Tumblr へのログインは別 Activity で行うが、ログインが終わるとその Activity は閉じられる。
         // ログインに成功したら、自動的に次の画面に遷移したいので onResume() でログイン状態をチェックする必要がある。

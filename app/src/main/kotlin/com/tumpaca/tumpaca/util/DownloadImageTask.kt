@@ -19,7 +19,7 @@ class DownloadImageTask(val imageView: ImageView): AsyncTask<String, Void, Bitma
 
     private fun loadBitmap(url: String): Bitmap? {
         try {
-            val stream = URL(url).openStream();
+            val stream = URL(url).openStream()
             return BitmapFactory.decodeStream(stream)
         } catch(e: Exception) {
             Log.e("Error", e.message)

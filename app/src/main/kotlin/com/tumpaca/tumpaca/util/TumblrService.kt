@@ -120,7 +120,7 @@ class TumblrService(val context: Context) {
     }
 
     private fun getAuthSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(AUTH_SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(AUTH_SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
     }
 
     private fun onLogin(result: LoginResult) {

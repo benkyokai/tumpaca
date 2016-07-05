@@ -41,8 +41,8 @@ class DashboardFragment: FragmentBase() {
     override fun onResume() {
         super.onResume()
 
-        getActionBar()?.title = resources.getString(R.string.dashboard);
-        getActionBar()?.show();
+        getActionBar()?.title = resources.getString(R.string.dashboard)
+        getActionBar()?.show()
 
         AsyncTaskHelper.first<Void, Void, List<Post>?> {
             client!!.userDashboard()
