@@ -50,11 +50,11 @@ class DashboardFragment: FragmentBase() {
         getActionBar()?.title = resources.getString(R.string.dashboard)
         getActionBar()?.show()
 
-        AsyncTaskHelper.first<Void, Void, List<Post>?> {
+        AsyncTaskHelper.first<Void, Void, List<Post>> {
             client!!.userDashboard()
         }.then { result ->
-            Log.v(tag, "Loaded ${result?.size} dashboard posts")
-            dashboardAdapter?.addAll(ArrayList(result))
+            Log.v(tag, "Loaded ${result.size} dashboard posts")
+            dashboardAdapter?.addAll(result)
             viewPager?.adapter = dashboardAdapter
         }.go()
     }

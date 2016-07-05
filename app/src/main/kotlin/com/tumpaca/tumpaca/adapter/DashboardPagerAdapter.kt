@@ -62,7 +62,7 @@ class DashboardPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
         mList.add(item)
     }
 
-    fun addAll(list: ArrayList<Post>) {
+    fun addAll(list: List<Post>) {
         mList.addAll(list)
     }
 
