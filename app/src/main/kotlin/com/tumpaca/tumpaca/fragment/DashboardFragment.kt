@@ -35,6 +35,12 @@ class DashboardFragment: FragmentBase() {
         viewPager = view.findViewById(R.id.view_pager) as ViewPager
         val fm = fragmentManager
         dashboardAdapter = DashboardPagerAdapter(fm)
+
+        val likeButton = view.findViewById(R.id.like_button)
+        likeButton.setOnClickListener { doLike() }
+        val reblogButton = view.findViewById(R.id.reblog_button)
+        reblogButton.setOnClickListener { doReblog() }
+
         return view
     }
 
@@ -67,6 +73,14 @@ class DashboardFragment: FragmentBase() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun doLike() {
+        Log.v(tag, "Like!")
+    }
+
+    private fun doReblog() {
+        Log.v(tag, "Reblog!")
     }
 
     private fun logout() {
