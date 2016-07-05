@@ -1,12 +1,12 @@
 package com.tumpaca.tumpaca.fragment
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.annotation.Nullable
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.ImageButton
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
@@ -14,7 +14,6 @@ import com.tumblr.jumblr.types.User
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.adapter.DashboardPagerAdapter
 import com.tumpaca.tumpaca.util.AsyncTaskHelper
-import java.util.*
 
 /**
  * Created by amake on 6/1/16.
@@ -128,12 +127,21 @@ class DashboardFragment: FragmentBase() {
     }
 
     private fun doReblog(post: Post) {
-        user!!.blogs.first().name.let { blogName ->
-            AsyncTaskHelper.first<Unit, Unit, Unit> {
-                Log.v(tag, "Reblogged ${post.slug}")
-                post.reblog(blogName)
-            }.go()
-        }
+        val input = EditText(context)
+        input.setHint(R.string.comment_input_hint)
+        AlertDialog.Builder(context)
+                .setTitle(R.string.reblog_dialog_header)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok) { dialog, which ->
+                    val comment = input.text
+                    val blogName = user!!.blogs.first().name
+                    AsyncTaskHelper.first<Unit, Unit, Unit> {
+                        Log.v(tag, "Reblogged ${post.slug}")
+                        post.reblog(blogName, mapOf(Pair("comment", comment)))
+                    }.go()
+                }
+                .setNegativeButton(android.R.string.cancel) { d, w -> }
+                .show()
     }
 
     private fun logout() {

@@ -7,6 +7,6 @@
     <!-- DashboardFragment -->
     <string name="dashboard">ダッシュボード</string>
     <string name="dashboard_logout">ログアウト</string>
-
-
+    <string name="reblog_dialog_header">Reblog</string>
+    <string name="comment_input_hint">コメント</string>
 </resources>
