@@ -57,6 +57,9 @@ class DashboardPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
         return mList.size
     }
 
+    fun getPost(index: Int): Post {
+        return mList[index]
+    }
 
     fun add(item: Post) {
         mList.add(item)

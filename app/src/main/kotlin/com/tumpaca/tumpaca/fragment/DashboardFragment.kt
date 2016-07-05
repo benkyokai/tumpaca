@@ -1,10 +1,13 @@
 package com.tumpaca.tumpaca.fragment
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.annotation.Nullable
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.*
+import android.widget.ImageButton
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
@@ -22,6 +25,7 @@ class DashboardFragment: FragmentBase() {
 
     var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPagerAdapter? = null
+    var likeButton: ImageButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,14 +36,31 @@ class DashboardFragment: FragmentBase() {
         val view = inflater!!.inflate(R.layout.fr_dashboard, container, false)
 
         client = getMainApplication().tumblrService!!.jumblerClient
-        viewPager = view.findViewById(R.id.view_pager) as ViewPager
-        val fm = fragmentManager
-        dashboardAdapter = DashboardPagerAdapter(fm)
 
-        val likeButton = view.findViewById(R.id.like_button)
-        likeButton.setOnClickListener { doLike() }
+        (view.findViewById(R.id.view_pager) as ViewPager).let {
+            viewPager = it
+            it.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    dashboardAdapter?.getPost(position)?.let { toggleLikeButton(it) }
+                }
+            })
+        }
+
+        dashboardAdapter = DashboardPagerAdapter(fragmentManager)
+
+        (view.findViewById(R.id.like_button) as ImageButton).let {
+            likeButton = it
+            it.setOnClickListener { currentPost?.let { doLike(it) } }
+        }
+
         val reblogButton = view.findViewById(R.id.reblog_button)
-        reblogButton.setOnClickListener { doReblog() }
+        reblogButton.setOnClickListener { currentPost?.let { doReblog(it) } }
 
         return view
     }
@@ -75,12 +96,33 @@ class DashboardFragment: FragmentBase() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun doLike() {
-        Log.v(tag, "Like!")
+    val currentPost: Post?
+        get() = viewPager?.let { dashboardAdapter?.getPost(it.currentItem) }
+
+    private fun doLike(post: Post) {
+        AsyncTaskHelper.first<Unit, Unit, Unit> {
+            if (post.isLiked) {
+                Log.v(tag, "Unliked ${post.slug}")
+                post.unlike()
+            } else {
+                Log.v(tag, "Liked ${post.slug}")
+                post.like()
+            }
+        }.then {
+            toggleLikeButton(post)
+        }.go()
     }
 
-    private fun doReblog() {
-        Log.v(tag, "Reblog!")
+    private fun toggleLikeButton(post: Post) {
+        val state = android.R.attr.state_checked * if (post.isLiked) 1 else -1
+        likeButton?.setImageState(intArrayOf(state), false)
+    }
+
+    private fun doReblog(post: Post) {
+        AsyncTaskHelper.first<Unit, Unit, Unit> {
+            Log.v(tag, "Reblogged ${post.slug}")
+            post.reblog(post.blogName)
+        }.go()
     }
 
     private fun logout() {
