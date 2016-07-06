@@ -17,12 +17,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/reblog_button"
         android:src="@drawable/ic_repeat_black_24dp"
-        app:layout_anchor="@+id/spacer"/>
+        app:layout_anchor="@+id/spacer"
+        app:layout_anchorGravity="center_horizontal"/>
 
     <View
         android:id="@+id/spacer"
-        android:layout_width="1dp"
-        android:layout_height="56dp"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         app:layout_anchor="@+id/like_button"
         app:layout_anchorGravity="top|center_horizontal"/>
 
