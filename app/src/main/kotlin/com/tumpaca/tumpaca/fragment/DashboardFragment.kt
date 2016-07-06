@@ -138,6 +138,7 @@ class DashboardFragment: FragmentBase() {
                 .setView(input)
                 .setPositiveButton(android.R.string.ok) { dialog, which ->
                     val comment = input.text
+                    // TODO: 複数のブログに投稿できる場合の対応
                     val blogName = user!!.blogs.first().name
                     AsyncTaskHelper.first<Unit, Unit, Unit> {
                         Log.v(tag, "Reblogged ${post.slug}")
