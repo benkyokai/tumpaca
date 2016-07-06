@@ -2,6 +2,7 @@ package com.tumpaca.tumpaca.fragment
 
 import android.os.Bundle
 import android.support.annotation.Nullable
+import android.support.design.widget.Snackbar
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.util.Log
@@ -119,6 +120,8 @@ class DashboardFragment: FragmentBase() {
             }
         }.then {
             toggleLikeButton(post)
+            val msg = if (post.isLiked) R.string.liked_result else R.string.unliked_result
+            Snackbar.make(view!!, msg, Snackbar.LENGTH_SHORT).show()
         }.go()
     }
 
@@ -139,6 +142,8 @@ class DashboardFragment: FragmentBase() {
                     AsyncTaskHelper.first<Unit, Unit, Unit> {
                         Log.v(tag, "Reblogged ${post.slug}")
                         post.reblog(blogName, mapOf(Pair("comment", comment)))
+                    }.then {
+                        Snackbar.make(view!!, R.string.reblogged_result, Snackbar.LENGTH_SHORT).show()
                     }.go()
                 }
                 .setNegativeButton(android.R.string.cancel) { d, w -> }

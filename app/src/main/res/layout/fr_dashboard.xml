@@ -11,26 +11,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <LinearLayout
+    <android.support.design.widget.FloatingActionButton
+        app:fabSize="mini"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/reblog_button"
+        android:src="@drawable/ic_repeat_black_24dp"
+        app:layout_anchor="@+id/spacer"/>
+
+    <View
+        android:id="@+id/spacer"
+        android:layout_width="1dp"
+        android:layout_height="56dp"
+        app:layout_anchor="@+id/like_button"
+        app:layout_anchorGravity="top|center_horizontal"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/like_button"
+        android:src="@drawable/like_icon"
         android:layout_gravity="bottom|end"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:clipToPadding="false">
-        <android.support.design.widget.FloatingActionButton
-            app:fabSize="mini"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/reblog_button"
-            android:src="@drawable/ic_repeat_black_24dp"/>
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/like_button"
-            android:src="@drawable/like_icon"
-            android:layout_margin="@dimen/fab_margin"/>
-    </LinearLayout>
-
-
+        android:layout_margin="@dimen/fab_margin"/>
 </android.support.design.widget.CoordinatorLayout>

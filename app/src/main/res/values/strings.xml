@@ -9,4 +9,7 @@
     <string name="dashboard_logout">ログアウト</string>
     <string name="reblog_dialog_header">Reblog</string>
     <string name="comment_input_hint">コメント</string>
+    <string name="liked_result">Likeしました</string>
+    <string name="unliked_result">Like解除しました</string>
+    <string name="reblogged_result">Reblogしました</string>
 </resources>
