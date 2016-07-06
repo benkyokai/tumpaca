@@ -34,8 +34,8 @@ class DashboardFragment: FragmentBase() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fr_dashboard, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fr_dashboard, container, false)
 
         client = getMainApplication().tumblrService!!.jumblerClient
 
