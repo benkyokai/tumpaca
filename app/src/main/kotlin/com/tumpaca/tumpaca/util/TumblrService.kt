@@ -41,7 +41,7 @@ class TumblrService(val context: Context) {
 
     // ログインしているかどうかは authInfo でチェックする。
     // しかし、本当に有効なトークンかどうかは未検証なので注意する。
-    val isLogin: Boolean
+    val isLoggedIn: Boolean
         get() = authInfo != null
 
     var jumblerClient: JumblrClient? = null
@@ -120,7 +120,7 @@ class TumblrService(val context: Context) {
     }
 
     private fun getAuthSharedPreference(): SharedPreferences {
-        return context.getSharedPreferences(AUTH_SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(AUTH_SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
     }
 
     private fun onLogin(result: LoginResult) {

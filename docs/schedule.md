@@ -28,8 +28,9 @@
 - 今週のKotlin
 
 ## 4週目
-- 担当: 未定
-- LIKE + Reblog
+- 担当: aaron
+- 実装：Like + Reblog
+- 今週のKotlin
 
 
 ## 5週目

@@ -22,24 +22,24 @@ class PostFragment : FragmentBase() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         // データを取得
-        val bundle = getArguments()
+        val bundle = arguments
         val title = bundle.getString("title")
         val blogName = bundle.getString("blogName")
         val subText = bundle.getString("subText")
         val urls = bundle.getStringArrayList("urls")
 
         // View をつくる
-        val view:View? = inflater?.inflate(R.layout.dashboard_post_card, container, false)
+        val view = inflater.inflate(R.layout.dashboard_post_card, container, false)
 
-        val titleView = view?.findViewById(R.id.title) as? TextView
-        val subTextView = view?.findViewById(R.id.sub) as WebView
-        val imageView = view?.findViewById(R.id.photo) as ImageView
-        val iconView = view?.findViewById(R.id.icon) as ImageView
+        val titleView = view.findViewById(R.id.title) as TextView
+        val subTextView = view.findViewById(R.id.sub) as WebView
+        val imageView = view.findViewById(R.id.photo) as ImageView
+        val iconView = view.findViewById(R.id.icon) as ImageView
 
-        titleView?.setText(title)
+        titleView.text = title
 
         val mimeType = "text/html; charset=utf-8"
 
@@ -61,7 +61,7 @@ class PostFragment : FragmentBase() {
             DownloadImageTask(imageView).execute(urls[0])
         }
 
-        return view as View
+        return view
     }
 
 }
