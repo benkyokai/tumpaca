@@ -78,6 +78,7 @@ class DashboardFragment: FragmentBase() {
             Log.v(tag, "Loaded ${result.size} dashboard posts")
             dashboardAdapter?.addAll(result)
             viewPager?.adapter = dashboardAdapter
+            toggleLikeButton(result.first())
         }.go()
 
         AsyncTaskHelper.first<Void, Void, User> {
