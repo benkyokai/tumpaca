@@ -1,7 +1,6 @@
 package com.tumpaca.tumpaca.fragment
 
 import android.os.Bundle
-import android.support.annotation.Nullable
 import android.support.design.widget.Snackbar
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
@@ -11,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
+import com.tumblr.jumblr.types.Post.PostType.*
 import com.tumblr.jumblr.types.User
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.adapter.DashboardPagerAdapter
@@ -77,9 +77,11 @@ class DashboardFragment: FragmentBase() {
             client!!.userDashboard()
         }.then { result ->
             Log.v(tag, "Loaded ${result.size} dashboard posts")
-            dashboardAdapter?.addAll(result)
+            // CHAT, ANSWER, POSTCARDは対応していないので、postから除く
+            val filteredResult = result.filter{ setOf(AUDIO, LINK, PHOTO, QUOTE, TEXT, VIDEO).contains(it.type) }
+            dashboardAdapter?.addAll(filteredResult)
             viewPager?.adapter = dashboardAdapter
-            toggleLikeButton(result.first())
+            toggleLikeButton(filteredResult.first())
         }.go()
 
         AsyncTaskHelper.first<Void, Void, User> {
