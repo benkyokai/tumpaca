@@ -27,7 +27,6 @@ class LinkPostFragment : PostFragment() {
 
         // データを取得
         val bundle = arguments
-        val title = bundle.getString("title")
         val blogName = bundle.getString("blogName")
         val subText = bundle.getString("subText")
 
@@ -38,7 +37,7 @@ class LinkPostFragment : PostFragment() {
         val subTextView = view.findViewById(R.id.sub) as WebView
         val iconView = view.findViewById(R.id.icon) as ImageView
 
-        titleView.text = title
+        titleView.text = blogName
 
         val mimeType = "text/html; charset=utf-8"
 

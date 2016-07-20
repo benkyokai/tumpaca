@@ -22,7 +22,6 @@ class PhotoPostFragment : PostFragment() {
 
         // データを取得
         val bundle = arguments
-        val title = bundle.getString("title")
         val blogName = bundle.getString("blogName")
         val subText = bundle.getString("subText")
         val urls = bundle.getStringArrayList("urls")
@@ -35,7 +34,7 @@ class PhotoPostFragment : PostFragment() {
         val imageView = view.findViewById(R.id.photo) as ImageView
         val iconView = view.findViewById(R.id.icon) as ImageView
 
-        titleView.text = title
+        titleView.text = blogName
 
         val mimeType = "text/html; charset=utf-8"
 

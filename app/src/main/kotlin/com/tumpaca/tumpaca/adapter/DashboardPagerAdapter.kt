@@ -21,7 +21,6 @@ class DashboardPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
 
         val bundle = Bundle()
         bundle.putInt("page", position)
-        bundle.putString("title", post.type.value)
         bundle.putString("blogName", post.blogName)
 
         when (post.type) {

@@ -10,25 +10,29 @@
         android:background="#ffffff"
         android:padding="8dip">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/icon"/>
         <WebView
             android:id="@+id/sub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="21dp"
             android:textColor="#999999"
             android:textSize="12sp"
-            android:layout_below="@+id/icon"
             android:layout_alignParentEnd="true" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sub"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:paddingTop="2dp"
+            android:gravity="right"
+            android:layout_toStartOf="@id/icon"/>
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="48dip"
-            android:layout_height="48dip"
-            android:background="#ffffff"
+            android:layout_width="24dip"
+            android:layout_height="24dip"
+            android:layout_marginTop="8dp"
+            android:layout_below="@+id/sub"
             android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
