@@ -6,8 +6,6 @@ import android.util.Log
 import com.tumpaca.tumpaca.MainApplication
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.AuthFragment
-import com.tumpaca.tumpaca.fragment.DashboardFragment
-import com.tumpaca.tumpaca.util.TumblrService
 
 /**
  * Tumpaca クラスのメインアクティビティ。

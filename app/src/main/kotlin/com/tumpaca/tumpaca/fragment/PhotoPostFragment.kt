@@ -17,11 +17,6 @@ import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.DownloadImageTask
 
 class PhotoPostFragment : PostFragment() {
-    companion object {
-        fun getInstance() : TextPostFragment {
-            return TextPostFragment()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -52,14 +47,14 @@ class PhotoPostFragment : PostFragment() {
             AsyncTaskHelper.first<Void, Void, String?> {
                 blog?.avatar()
             }.then { avatarUrl ->
-                DownloadImageTask(iconView).execute(avatarUrl)
+                DownloadImageTask(iconView, getMainApplication().bitMapCache!!).execute(avatarUrl)
             }.go()
         }.go()
 
         subTextView.loadData(subText, mimeType, null)
 
         if (urls != null && urls.size > 0) {
-            DownloadImageTask(imageView).execute(urls[0])
+            DownloadImageTask(imageView, getMainApplication().bitMapCache!!).execute(urls[0])
         }
 
         return view

@@ -53,7 +53,7 @@ class TextPostFragment : PostFragment() {
             AsyncTaskHelper.first<Void, Void, String?> {
                 blog?.avatar()
             }.then { avatarUrl ->
-                DownloadImageTask(iconView).execute(avatarUrl)
+                DownloadImageTask(iconView, getMainApplication().bitMapCache!!).execute(avatarUrl)
             }.go()
         }.go()
 

@@ -1,19 +1,18 @@
 package com.tumpaca.tumpaca.util
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.ImageView
+import com.tumpaca.tumpaca.util.cache.Cache
 import java.net.URL
 
 /**
  * Created by yabu on 2016/06/13.
  */
-class DownloadImageTask(val imageView: ImageView): AsyncTask<String, Void, Bitmap>() {
+class DownloadImageTask(val imageView: ImageView, val cache: Cache<Bitmap>) : AsyncTask<String, Void, Bitmap>() {
 
     val TAG = "DownloadImageTask"
 
@@ -23,9 +22,16 @@ class DownloadImageTask(val imageView: ImageView): AsyncTask<String, Void, Bitma
     }
 
     private fun loadBitmap(url: String): Bitmap? {
+        cache.get(url)?.let{
+            Log.d(TAG, "return cached bitmap")
+            return it
+        }
+
         try {
             val stream = URL(url).openStream()
-            return BitmapFactory.decodeStream(stream)
+            val bitmap = BitmapFactory.decodeStream(stream)
+            cache.set(url, bitmap)
+            return bitmap
         } catch(e: Exception) {
             Log.e("Error", e.message)
             e.printStackTrace()
@@ -34,7 +40,7 @@ class DownloadImageTask(val imageView: ImageView): AsyncTask<String, Void, Bitma
     }
 
     override fun onPostExecute(result: Bitmap) {
-        Log.d(TAG, "density ${result.density}, medium ${DisplayMetrics.DENSITY_MEDIUM}")
+        // densityが画面のdpiに応じて勝手に設定されるので、倍率1に戻す
         result.density = DisplayMetrics.DENSITY_MEDIUM
         this.imageView.setImageBitmap(result)
     }
