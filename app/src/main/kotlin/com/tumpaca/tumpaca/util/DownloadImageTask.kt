@@ -22,16 +22,11 @@ class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitm
     }
 
     private fun loadBitmap(url: String): Bitmap? {
-        TPRuntime.bitMapCache.get(url)?.let{
-            Log.d(TAG, "return cached bitmap")
-            return it
-        }
-
         try {
-            val stream = URL(url).openStream()
-            val bitmap = BitmapFactory.decodeStream(stream)
-            TPRuntime.bitMapCache.set(url, bitmap)
-            return bitmap
+            return TPRuntime.bitMapCache.getIfNoneAndSet(url, {
+                val stream = URL(url).openStream()
+                BitmapFactory.decodeStream(stream)
+            })
         } catch(e: Exception) {
             Log.e("Error", e.message)
             e.printStackTrace()
