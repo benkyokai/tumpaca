@@ -46,14 +46,14 @@ class PhotoPostFragment : PostFragment() {
             AsyncTaskHelper.first<Void, Void, String?> {
                 blog?.avatar()
             }.then { avatarUrl ->
-                DownloadImageTask(iconView, getMainApplication().bitMapCache!!).execute(avatarUrl)
+                DownloadImageTask(iconView).execute(avatarUrl)
             }.go()
         }.go()
 
         subTextView.loadData(subText, mimeType, null)
 
         if (urls != null && urls.size > 0) {
-            DownloadImageTask(imageView, getMainApplication().bitMapCache!!).execute(urls[0])
+            DownloadImageTask(imageView).execute(urls[0])
         }
 
         return view

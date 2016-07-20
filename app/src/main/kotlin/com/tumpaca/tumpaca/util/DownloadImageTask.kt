@@ -6,13 +6,13 @@ import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.ImageView
-import com.tumpaca.tumpaca.util.cache.Cache
+import com.tumpaca.tumpaca.TPRuntime
 import java.net.URL
 
 /**
  * Created by yabu on 2016/06/13.
  */
-class DownloadImageTask(val imageView: ImageView, val cache: Cache<Bitmap>) : AsyncTask<String, Void, Bitmap>() {
+class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitmap>() {
 
     val TAG = "DownloadImageTask"
 
@@ -22,7 +22,7 @@ class DownloadImageTask(val imageView: ImageView, val cache: Cache<Bitmap>) : As
     }
 
     private fun loadBitmap(url: String): Bitmap? {
-        cache.get(url)?.let{
+        TPRuntime.bitMapCache.get(url)?.let{
             Log.d(TAG, "return cached bitmap")
             return it
         }
@@ -30,7 +30,7 @@ class DownloadImageTask(val imageView: ImageView, val cache: Cache<Bitmap>) : As
         try {
             val stream = URL(url).openStream()
             val bitmap = BitmapFactory.decodeStream(stream)
-            cache.set(url, bitmap)
+            TPRuntime.bitMapCache.set(url, bitmap)
             return bitmap
         } catch(e: Exception) {
             Log.e("Error", e.message)
