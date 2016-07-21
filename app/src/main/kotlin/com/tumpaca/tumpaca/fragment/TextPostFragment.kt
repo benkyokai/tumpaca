@@ -20,11 +20,6 @@ import com.tumpaca.tumpaca.util.DownloadImageTask
  * 色情報を表示する Fragment.
  */
 class TextPostFragment : PostFragment() {
-    companion object {
-        fun getInstance() : TextPostFragment {
-            return TextPostFragment()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 

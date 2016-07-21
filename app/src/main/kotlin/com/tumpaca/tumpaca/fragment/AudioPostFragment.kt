@@ -17,11 +17,6 @@ import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.DownloadImageTask
 
 class AudioPostFragment : PostFragment() {
-    companion object {
-        fun getInstance() : TextPostFragment {
-            return TextPostFragment()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 

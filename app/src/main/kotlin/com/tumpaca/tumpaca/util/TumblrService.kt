@@ -35,7 +35,7 @@ class TumblrService(val context: Context) {
      */
     class AuthInfo(val token: String, val secret: String)
 
-    val loglr = Loglr.getInstance()
+    val loglr: Loglr = Loglr.getInstance()
     val consumerInfo: ConsumerInfo
     var authInfo: AuthInfo? = null
 

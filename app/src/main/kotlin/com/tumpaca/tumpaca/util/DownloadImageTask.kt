@@ -14,8 +14,6 @@ import java.net.URL
  */
 class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitmap>() {
 
-    val TAG = "DownloadImageTask"
-
     override fun doInBackground(vararg urls: String): Bitmap? {
         val url = urls[0]
         return loadBitmap(url)
