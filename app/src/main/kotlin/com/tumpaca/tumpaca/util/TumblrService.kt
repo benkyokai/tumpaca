@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity
 import android.util.Base64
 import android.util.Log
 import com.tumblr.jumblr.JumblrClient
+import com.tumblr.jumblr.types.Post
 import com.tumblr.loglr.LoginResult
 import com.tumblr.loglr.Loglr
 import com.tumpaca.tumpaca.R

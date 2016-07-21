@@ -3,6 +3,7 @@
 - レイアウトファイル修正
 - 簡易的なキャッシュを実装
 - MainApplicationとTPRuntime
+- ポストの動的ダウンロード
 - 今週のkotlin
 
 ### レイアウト修正
@@ -35,6 +36,12 @@
 - ただ、DownloadImageTaskを呼ぶたびに DownloadImageTask(imageView, cache)とやるのもめんどくさい
 - シングルトンのTPRuntimeを作りcacheをそこの持たせ、DownloadImageTask内でTPRuntime.cacheとすることで、キャッシュを利用できるようにした
 - アプリケーション全体で使いたいインスタンスは、MainApplicationに持たせたほうがいいのか、TPRuntimeのようなシングルトンに持たせたほうがいいのかよくわからない
+
+### ポストの動的ダウンロード
+- やっつけで作った (リファクタリングの余地がかなりありそう)
+- ViewPagerの[onPageScrollStateChanged()](http://outcesticide.hatenablog.com/entry/ViewPager_SimpleOnPageChangeListener)で最後から5ページ以内に進んだら、20件ポストをダウンロードして追加
+- ページ追加時にpositionが先頭に戻ってしまうので、そのとき見ていたページに戻す処理が必要
+    - このとき画面がちらつくのをどうにかしたい
 
 ### 今週のkotlin
 - Android StudioのInspect Codeを使ってみた
