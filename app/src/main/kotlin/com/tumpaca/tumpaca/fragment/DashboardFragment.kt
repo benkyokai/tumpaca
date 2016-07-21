@@ -62,8 +62,6 @@ class DashboardFragment: FragmentBase() {
                                     val filteredResult = result.filter { setOf(AUDIO, LINK, PHOTO, QUOTE, TEXT, VIDEO).contains(it.type) }
                                     adapter.addAll(filteredResult)
                                     adapter.notifyDataSetChanged()
-                                    viewPager!!.adapter = adapter
-                                    viewPager!!.currentItem = currentPosition
                                     getActionBar()?.title = (currentPosition + 1).toString() + "/" + adapter.count
                                     downloading = false
                                 }.go()
