@@ -23,7 +23,7 @@ data class Credentials(var consumerKey: String? = null,
             }
 
             override fun newArray(size: Int): Array<Credentials?> {
-                return arrayOfNulls<Credentials>(size)
+                return arrayOfNulls(size)
             }
         }
     }

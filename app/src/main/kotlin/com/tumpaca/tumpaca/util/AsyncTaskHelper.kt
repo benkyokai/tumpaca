@@ -1,7 +1,6 @@
 package com.tumpaca.tumpaca.util
 
 import android.os.AsyncTask
-import com.tumpaca.tumpaca.MainApplication
 
 /**
  * Created by amake on 6/3/16.

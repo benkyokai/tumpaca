@@ -1,7 +1,6 @@
 package com.tumpaca.tumpaca.fragment
 
 import android.os.Bundle
-import android.support.annotation.Nullable
 import android.support.design.widget.Snackbar
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
@@ -11,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
+import com.tumblr.jumblr.types.Post.PostType.*
 import com.tumblr.jumblr.types.User
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.adapter.DashboardPagerAdapter
@@ -28,6 +28,7 @@ class DashboardFragment: FragmentBase() {
     var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPagerAdapter? = null
     var likeButton: ImageButton? = null
+    var downloading: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +44,31 @@ class DashboardFragment: FragmentBase() {
             viewPager = it
             it.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {
+                    Log.d(TAG, "onPageScrollStateChanged")
+                    if (state == ViewPager.SCROLL_STATE_IDLE) {
+                        val position = viewPager!!.currentItem
+                        (viewPager?.adapter as DashboardPagerAdapter).let {
+                            val adapter = it
+                            val postCount = adapter.count
+                            Log.d(TAG, "position: $position, postCount: $postCount")
+                            if (position + 1 > postCount - 5 && !downloading) {
+                                downloading = true
+                                AsyncTaskHelper.first<Void, Void, List<Post>> {
+                                    client!!.userDashboard(hashMapOf("offset" to postCount))
+                                }.then { result ->
+                                    val currentPosition = viewPager!!.currentItem
+                                    Log.v(tag, "Loaded ${result.size} dashboard posts")
+                                    // CHAT, ANSWER, POSTCARDは対応していないので、postから除く
+                                    val filteredResult = result.filter { setOf(AUDIO, LINK, PHOTO, QUOTE, TEXT, VIDEO).contains(it.type) }
+                                    adapter.addAll(filteredResult)
+                                    adapter.notifyDataSetChanged()
+                                    getActionBar()?.title = (currentPosition + 1).toString() + "/" + adapter.count
+                                    downloading = false
+                                }.go()
+                            }
+                            getActionBar()?.title = (position + 1).toString() + "/" + adapter.count
+                        }
+                    }
                 }
 
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -70,16 +96,19 @@ class DashboardFragment: FragmentBase() {
     override fun onResume() {
         super.onResume()
 
-        getActionBar()?.title = resources.getString(R.string.dashboard)
+        getActionBar()?.title = "0/0"
         getActionBar()?.show()
 
         AsyncTaskHelper.first<Void, Void, List<Post>> {
             client!!.userDashboard()
         }.then { result ->
             Log.v(tag, "Loaded ${result.size} dashboard posts")
-            dashboardAdapter?.addAll(result)
+            // CHAT, ANSWER, POSTCARDは対応していないので、postから除く
+            val filteredResult = result.filter{ setOf(AUDIO, LINK, PHOTO, QUOTE, TEXT, VIDEO).contains(it.type) }
+            dashboardAdapter?.addAll(filteredResult)
             viewPager?.adapter = dashboardAdapter
-            toggleLikeButton(result.first())
+            toggleLikeButton(filteredResult.first())
+            getActionBar()?.title = "1/" + filteredResult.size
         }.go()
 
         AsyncTaskHelper.first<Void, Void, User> {

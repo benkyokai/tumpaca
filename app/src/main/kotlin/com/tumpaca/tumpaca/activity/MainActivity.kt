@@ -3,11 +3,8 @@ package com.tumpaca.tumpaca.activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.tumpaca.tumpaca.MainApplication
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.AuthFragment
-import com.tumpaca.tumpaca.fragment.DashboardFragment
-import com.tumpaca.tumpaca.util.TumblrService
 
 /**
  * Tumpaca クラスのメインアクティビティ。
@@ -30,9 +27,5 @@ class MainActivity: AppCompatActivity() {
             ft.replace(R.id.fragment_container, start)
             ft.commit()
         }
-    }
-
-    private fun getMainApplication(): MainApplication {
-        return application as MainApplication
     }
 }
