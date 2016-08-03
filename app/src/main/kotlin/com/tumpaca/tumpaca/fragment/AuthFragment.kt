@@ -27,7 +27,7 @@ class AuthFragment: FragmentBase() {
         // ログインに成功したら、自動的に次の画面に遷移したいので onResume() でログイン状態をチェックする必要がある。
         val service: TumblrService = getMainApplication().tumblrService!!
         if (service.isLoggedIn) {
-            replaceFragment(DashboardFragment(), false)
+            replaceFragment(NewDashboardFragment(), false)
         }
     }
 }

@@ -54,6 +54,8 @@ class TumblrService(val context: Context) {
         }
         private set
 
+    val postList: PostList?;
+
     init {
         consumerInfo = loadConsumerInfo()
         authInfo = loadAuthToken()
@@ -71,6 +73,7 @@ class TumblrService(val context: Context) {
                     onException(it)
                 }
                 .setUrlCallBack(URL_CALLBACK)
+        postList = PostList(jumblerClient!!)
     }
 
     fun auth(activity: FragmentActivity) {
