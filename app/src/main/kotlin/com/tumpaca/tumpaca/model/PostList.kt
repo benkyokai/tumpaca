@@ -1,10 +1,11 @@
-package com.tumpaca.tumpaca.util
+package com.tumpaca.tumpaca.model
 
 import android.text.Editable
 import android.util.Log
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
 import com.tumblr.jumblr.types.User
+import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import java.util.concurrent.CopyOnWriteArrayList
 
 class PostList(private val client: JumblrClient) {

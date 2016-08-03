@@ -7,7 +7,7 @@ import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.ImageView
-import com.tumpaca.tumpaca.TPRuntime
+import com.tumpaca.tumpaca.model.TPRuntime
 import java.net.URL
 
 /**
@@ -39,7 +39,6 @@ class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitm
     }
 
     override fun onPostExecute(result: Bitmap) {
-        Log.d(TAG, "setImageBitmap")
         this.imageView.setImageBitmap(result)
     }
 

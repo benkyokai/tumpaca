@@ -1,4 +1,4 @@
-package com.tumpaca.tumpaca.util
+package com.tumpaca.tumpaca.model
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -10,6 +10,8 @@ import com.tumblr.jumblr.types.Post
 import com.tumblr.loglr.LoginResult
 import com.tumblr.loglr.Loglr
 import com.tumpaca.tumpaca.R
+import com.tumpaca.tumpaca.model.PostList
+import com.tumpaca.tumpaca.util.editSharedPreferences
 import java.util.*
 
 /**

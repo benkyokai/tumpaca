@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tumblr.jumblr.types.Blog
 import com.tumpaca.tumpaca.R
+import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.DownloadImageTask
 
@@ -36,7 +37,7 @@ class VideoPostFragment : PostFragment() {
 
         val mimeType = "text/html; charset=utf-8"
 
-        val client = getMainApplication().tumblrService!!.jumblerClient!!
+        val client = TPRuntime.tumblrService!!.jumblerClient!!
 
         AsyncTaskHelper.first<Void, Void, Blog?> {
             client.blogInfo(blogName)
