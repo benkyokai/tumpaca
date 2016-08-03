@@ -1,20 +1,44 @@
-package com.tumpaca.tumpaca.adapter
+package com.tumpaca.tumpaca.fragment.adapter
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.util.Log
 import com.tumblr.jumblr.types.*
 import com.tumpaca.tumpaca.fragment.*
+import com.tumpaca.tumpaca.model.PostList
 import java.util.*
 
-class DashboardPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
+class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList): FragmentStatePagerAdapter(fm) {
+    companion object {
+        private const val TAG = "DashboardPageAdapter"
+    }
 
-    private val mList: ArrayList<Post> = arrayListOf()
+    private val listener = object: PostList.ChangedListener {
+        override fun onChanged() {
+            Log.d(TAG, "call notifyDataSetChanged()")
+            notifyDataSetChanged()
+        }
+    }
+
+    // View に接続された
+    fun onBind() {
+        postList.listener = listener
+    }
+
+    // View と切り離された
+    fun onUnbind() {
+        postList.listener = null
+    }
 
     override fun getItem(position: Int): Fragment {
-        val post = mList[position]
-        return genFragment(position, post)
+        val post = postList.get(position)
+        return genFragment(position, post!!)
+    }
+
+    override fun getCount(): Int {
+        return postList.size
     }
 
     fun genFragment(position: Int, post: Post): PostFragment {
@@ -72,18 +96,6 @@ class DashboardPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
                 throw RuntimeException("post type is invalid: " + post.type.value)
             }
         }
-    }
-
-    override fun getCount(): Int {
-        return mList.size
-    }
-
-    fun getPost(index: Int): Post {
-        return mList[index]
-    }
-
-    fun addAll(list: List<Post>) {
-        mList.addAll(list)
     }
 
 }
