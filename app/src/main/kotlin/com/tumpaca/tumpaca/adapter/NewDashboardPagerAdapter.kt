@@ -3,14 +3,14 @@ package com.tumpaca.tumpaca.adapter
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.Log
 import com.tumblr.jumblr.types.*
 import com.tumpaca.tumpaca.fragment.*
 import com.tumpaca.tumpaca.util.PostList
 import java.util.*
 
-class NewDashboardPagerAdapter(fm: FragmentManager, private val postList: PostList): FragmentPagerAdapter(fm) {
+class NewDashboardPagerAdapter(fm: FragmentManager, private val postList: PostList): FragmentStatePagerAdapter(fm) {
     companion object {
         private const val TAG = "NewDashboardPagerAdapter"
     }

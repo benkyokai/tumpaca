@@ -9,6 +9,7 @@ import com.tumpaca.tumpaca.adapter.NewDashboardPagerAdapter
 class NewDashboardFragment : FragmentBase() {
     companion object {
         private const val TAG = "NewDashboardFragment"
+        private const val OFFSCREEN_PAGE_LIMIT = 4
     }
 
     var viewPager: ViewPager? = null
@@ -24,12 +25,15 @@ class NewDashboardFragment : FragmentBase() {
 
         (view.findViewById(R.id.view_pager) as ViewPager).let {
             viewPager = it
+            it.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT
         }
 
+        // PostList と ViewPage のバインド
         val postList = getMainApplication().tumblrService!!.postList
         dashboardAdapter = NewDashboardPagerAdapter(fragmentManager, postList!!)
         viewPager?.adapter = dashboardAdapter
         dashboardAdapter?.onBind()
+
         return view
     }
 
