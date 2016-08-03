@@ -1,8 +1,10 @@
 package com.tumpaca.tumpaca.util
 
+import android.text.Editable
 import android.util.Log
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
+import com.tumblr.jumblr.types.User
 import java.util.concurrent.CopyOnWriteArrayList
 
 class PostList(private val client: JumblrClient) {
@@ -38,7 +40,11 @@ class PostList(private val client: JumblrClient) {
     // fetch はいまのところ UI スレッドからのみアクセスするので volatile いらない
     private var fetching: Boolean = false
 
+    // user はいまのところ別スレッドでさわらないので volatile いらない
+    private var user: User? = null
+
     init {
+        refreshUser()
         fetch(FETCH_UNIT)
     }
 
@@ -53,6 +59,37 @@ class PostList(private val client: JumblrClient) {
         } else {
             return null
         }
+    }
+
+    fun like(i: Int, callback: (Post) -> Unit) {
+        AsyncTaskHelper.first<Unit, Unit, Unit> {
+            get(i)?.let {
+                if (it.isLiked) {
+                    Log.v(TAG, "Unliked ${it.slug}")
+                    it.unlike()
+                } else {
+                    Log.v(TAG, "Liked ${it.slug}")
+                    it.like()
+                }
+            }
+        }.then {
+            val post = get(i)!!
+            callback(post)
+        }.go()
+    }
+
+    fun reblog(i: Int, comment: Editable, callback: (Post) -> Unit) {
+        // TODO: 複数のブログに投稿できる場合の対応
+        val blogName = user?.blogs?.first()?.name
+        AsyncTaskHelper.first<Unit, Unit, Unit> {
+            get(i)?.let {
+                Log.v(TAG, "Reblogged ${it.slug}")
+                it.reblog(blogName, mapOf(Pair("comment", comment)))
+            }
+        }.then {
+            val post = get(i)!!
+            callback(post)
+        }.go()
     }
 
     // fetch が必要な条件かどうかを判定します。
@@ -92,6 +129,15 @@ class PostList(private val client: JumblrClient) {
             Log.v(TAG, "Loaded ${result.size} posts, size=$size")
             listener?.onChanged()
             fetching = false
+        }.go()
+    }
+
+    private fun refreshUser() {
+        AsyncTaskHelper.first<Void, Void, User> {
+            client.user()
+        }.then { result ->
+            Log.v(TAG, "Refresh User ${result.name}")
+            user = result
         }.go()
     }
 }

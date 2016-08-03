@@ -1,10 +1,19 @@
 package com.tumpaca.tumpaca.fragment;
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.*
+import android.widget.EditText
+import android.widget.ImageButton
+import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
+import com.tumpaca.tumpaca.adapter.DashboardPagerAdapter
 import com.tumpaca.tumpaca.adapter.NewDashboardPagerAdapter
+import com.tumpaca.tumpaca.util.AsyncTaskHelper
+import com.tumpaca.tumpaca.util.PostList
 
 class NewDashboardFragment : FragmentBase() {
     companion object {
@@ -12,6 +21,8 @@ class NewDashboardFragment : FragmentBase() {
         private const val OFFSCREEN_PAGE_LIMIT = 4
     }
 
+    var postList: PostList? = null
+    var likeButton: ImageButton? = null
     var viewPager: ViewPager? = null
     var dashboardAdapter: NewDashboardPagerAdapter? = null
 
@@ -26,13 +37,39 @@ class NewDashboardFragment : FragmentBase() {
         (view.findViewById(R.id.view_pager) as ViewPager).let {
             viewPager = it
             it.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT
+            it.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    toggleLikeButton(postList?.get(position)!!)
+                }
+            })
         }
 
         // PostList と ViewPage のバインド
-        val postList = getMainApplication().tumblrService!!.postList
+        postList = getMainApplication().tumblrService!!.postList
         dashboardAdapter = NewDashboardPagerAdapter(fragmentManager, postList!!)
         viewPager?.adapter = dashboardAdapter
+
         dashboardAdapter?.onBind()
+
+        // Like
+        (view.findViewById(R.id.like_button) as ImageButton).let {
+            likeButton = it
+            it.setOnClickListener {
+                doLike()
+            }
+        }
+
+        // reblog
+        val reblogButton = view.findViewById(R.id.reblog_button)
+        reblogButton.setOnClickListener {
+            doReblog()
+        }
 
         return view
     }
@@ -57,16 +94,47 @@ class NewDashboardFragment : FragmentBase() {
         val id = item.itemId
 
         if (id == R.id.logout) {
-            logout()
+            doLogout()
             return true
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun logout() {
+    private fun doLike() {
+        val current = viewPager!!.currentItem
+        postList?.like(current, { post ->
+            toggleLikeButton(post)
+            val msg = if (post.isLiked) R.string.liked_result else R.string.unliked_result
+            Snackbar.make(view!!, msg, Snackbar.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun doReblog() {
+        val current = viewPager!!.currentItem
+        val input = EditText(context)
+        input.setHint(R.string.comment_input_hint)
+        AlertDialog.Builder(context)
+                .setTitle(R.string.reblog_dialog_header)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok) { dialog, which ->
+                    val comment = input.text
+                    postList?.reblog(current, comment, { post ->
+                        Snackbar.make(view!!, R.string.reblogged_result, Snackbar.LENGTH_SHORT).show()
+                    })
+                }
+                .setNegativeButton(android.R.string.cancel) { d, w -> }
+                .show()
+    }
+
+    private fun doLogout() {
         // TODO 本当にログインしたのかダイアログで確認した方がいい
         getMainApplication().tumblrService!!.logout()
         replaceFragment(AuthFragment(), false)
+    }
+
+    private fun toggleLikeButton(post: Post) {
+        val state = android.R.attr.state_checked * if (post.isLiked) 1 else -1
+        likeButton?.setImageState(intArrayOf(state), false)
     }
 }
