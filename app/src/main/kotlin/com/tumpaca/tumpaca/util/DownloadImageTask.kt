@@ -1,19 +1,17 @@
 package com.tumpaca.tumpaca.util
 
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.util.Log
-import android.widget.ImageView
 import com.tumpaca.tumpaca.model.TPRuntime
 import java.net.URL
 
 /**
  * Created by yabu on 2016/06/13.
  */
-class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitmap>() {
+class DownloadImageTask(val callback: (Bitmap) -> Unit) : AsyncTask<String, Void, Bitmap>() {
     companion object {
         private const val TAG = "DownloadImageTask"
     }
@@ -39,7 +37,7 @@ class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitm
     }
 
     override fun onPostExecute(result: Bitmap) {
-        this.imageView.setImageBitmap(result)
+        callback(result)
     }
 
 }

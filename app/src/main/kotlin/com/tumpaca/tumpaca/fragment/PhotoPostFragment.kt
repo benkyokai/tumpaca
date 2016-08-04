@@ -11,15 +11,15 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
-import com.tumblr.jumblr.types.Blog
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
-import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.DownloadImageTask
+import com.tumpaca.tumpaca.util.blogAvatarAsync
 
 class PhotoPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val post = TPRuntime.tumblrService!!.postList?.get(postIndex)
 
         // データを取得
         val bundle = arguments
@@ -31,30 +31,22 @@ class PhotoPostFragment : PostFragment() {
         val view = inflater.inflate(R.layout.post_photo, container, false)
 
         val titleView = view.findViewById(R.id.title) as TextView
-        val subTextView = view.findViewById(R.id.sub) as WebView
-        val imageView = view.findViewById(R.id.photo) as ImageView
-        val iconView = view.findViewById(R.id.icon) as ImageView
-
         titleView.text = blogName
 
+        val subTextView = view.findViewById(R.id.sub) as WebView
         val mimeType = "text/html; charset=utf-8"
-
-        val client = TPRuntime.tumblrService!!.jumblerClient!!
-
-        AsyncTaskHelper.first<Void, Void, Blog?> {
-            client.blogInfo(blogName)
-        }.then {blog ->
-            AsyncTaskHelper.first<Void, Void, String?> {
-                blog?.avatar()
-            }.then { avatarUrl ->
-                DownloadImageTask(iconView).execute(avatarUrl)
-            }.go()
-        }.go()
-
         subTextView.loadData(subText, mimeType, null)
 
+        val iconView = view.findViewById(R.id.icon) as ImageView
+        post?.blogAvatarAsync { bitmap ->
+            iconView.setImageBitmap(bitmap)
+        }
+
+        val imageView = view.findViewById(R.id.photo) as ImageView
         if (urls != null && urls.size > 0) {
-            DownloadImageTask(imageView).execute(urls[0])
+            DownloadImageTask({ bitmap ->
+                imageView.setImageBitmap(bitmap)
+            }).execute(urls[0])
         }
 
         return view
