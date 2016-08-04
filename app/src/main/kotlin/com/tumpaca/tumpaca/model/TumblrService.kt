@@ -6,11 +6,11 @@ import android.support.v4.app.FragmentActivity
 import android.util.Base64
 import android.util.Log
 import com.tumblr.jumblr.JumblrClient
-import com.tumblr.jumblr.types.Post
+import com.tumblr.jumblr.types.User
 import com.tumblr.loglr.LoginResult
 import com.tumblr.loglr.Loglr
 import com.tumpaca.tumpaca.R
-import com.tumpaca.tumpaca.model.PostList
+import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.editSharedPreferences
 import java.util.*
 
@@ -41,6 +41,7 @@ class TumblrService(val context: Context) {
     val loglr: Loglr = Loglr.getInstance()
     val consumerInfo: ConsumerInfo
     var authInfo: AuthInfo? = null
+    var user: User? = null
 
     // ログインしているかどうかは authInfo でチェックする。
     // しかし、本当に有効なトークンかどうかは未検証なので注意する。
@@ -56,7 +57,16 @@ class TumblrService(val context: Context) {
         }
         private set
 
-    val postList: PostList?;
+    val postList: PostList? = null
+        get() {
+            if (!isLoggedIn) {
+                return null
+            }
+            if (field == null) {
+                field = PostList(jumblerClient!!)
+            }
+            return field
+        }
 
     init {
         consumerInfo = loadConsumerInfo()
@@ -75,7 +85,9 @@ class TumblrService(val context: Context) {
                     onException(it)
                 }
                 .setUrlCallBack(URL_CALLBACK)
-        postList = PostList(jumblerClient!!)
+        if (authInfo != null) {
+            refreshUser()
+        }
     }
 
     fun auth(activity: FragmentActivity) {
@@ -86,6 +98,14 @@ class TumblrService(val context: Context) {
         jumblerClient = null
         authInfo = null
         removeAuthToken()
+    }
+
+    private fun refreshUser() {
+        AsyncTaskHelper.first<Void, Void, User> {
+            jumblerClient?.user()!!
+        }.then { result ->
+            user = result
+        }.go()
     }
 
     // バンドルされたファイルから ConsumerInfo を読み取ります。
@@ -132,6 +152,7 @@ class TumblrService(val context: Context) {
     private fun onLogin(result: LoginResult) {
         authInfo = AuthInfo(result.oAuthToken, result.oAuthTokenSecret)
         saveAuthToken(authInfo!!)
+        refreshUser()
     }
 
     private fun onException(e: RuntimeException) {

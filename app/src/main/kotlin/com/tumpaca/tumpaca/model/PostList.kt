@@ -62,37 +62,6 @@ class PostList(private val client: JumblrClient) {
         }
     }
 
-    fun like(i: Int, callback: (Post) -> Unit) {
-        AsyncTaskHelper.first<Unit, Unit, Unit> {
-            get(i)?.let {
-                if (it.isLiked) {
-                    Log.v(TAG, "Unliked ${it.slug}")
-                    it.unlike()
-                } else {
-                    Log.v(TAG, "Liked ${it.slug}")
-                    it.like()
-                }
-            }
-        }.then {
-            val post = get(i)!!
-            callback(post)
-        }.go()
-    }
-
-    fun reblog(i: Int, comment: Editable, callback: (Post) -> Unit) {
-        // TODO: 複数のブログに投稿できる場合の対応
-        val blogName = user?.blogs?.first()?.name
-        AsyncTaskHelper.first<Unit, Unit, Unit> {
-            get(i)?.let {
-                Log.v(TAG, "Reblogged ${it.slug}")
-                it.reblog(blogName, mapOf(Pair("comment", comment)))
-            }
-        }.then {
-            val post = get(i)!!
-            callback(post)
-        }.go()
-    }
-
     // fetch が必要な条件かどうかを判定します。
     private fun needFetch(i: Int): Boolean {
         if (fetching) {

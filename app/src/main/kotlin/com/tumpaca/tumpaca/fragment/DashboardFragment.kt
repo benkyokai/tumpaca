@@ -12,6 +12,8 @@ import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.fragment.adapter.DashboardPageAdapter
 import com.tumpaca.tumpaca.model.PostList
+import com.tumpaca.tumpaca.util.likeAsync
+import com.tumpaca.tumpaca.util.reblogAsync
 
 class DashboardFragment : FragmentBase() {
     companion object {
@@ -100,8 +102,8 @@ class DashboardFragment : FragmentBase() {
     }
 
     private fun doLike() {
-        val current = viewPager!!.currentItem
-        postList?.like(current, { post ->
+        val currentPost = postList?.get(viewPager!!.currentItem)
+        currentPost?.likeAsync({ post ->
             toggleLikeButton(post)
             val msg = if (post.isLiked) R.string.liked_result else R.string.unliked_result
             Snackbar.make(view!!, msg, Snackbar.LENGTH_SHORT).show()
@@ -109,15 +111,16 @@ class DashboardFragment : FragmentBase() {
     }
 
     private fun doReblog() {
-        val current = viewPager!!.currentItem
+        val currentPost = postList?.get(viewPager!!.currentItem)
         val input = EditText(context)
         input.setHint(R.string.comment_input_hint)
         AlertDialog.Builder(context)
                 .setTitle(R.string.reblog_dialog_header)
                 .setView(input)
                 .setPositiveButton(android.R.string.ok) { dialog, which ->
-                    val comment = input.text
-                    postList?.reblog(current, comment, { post ->
+                    val comment = input.text.toString()
+                    val blogName = TPRuntime.tumblrService!!.user?.blogs?.first()?.name!!
+                    currentPost?.reblogAsync(blogName, comment, { post ->
                         Snackbar.make(view!!, R.string.reblogged_result, Snackbar.LENGTH_SHORT).show()
                     })
                 }
