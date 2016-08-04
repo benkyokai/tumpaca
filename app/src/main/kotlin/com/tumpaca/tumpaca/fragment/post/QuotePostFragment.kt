@@ -1,4 +1,4 @@
-package com.tumpaca.tumpaca.fragment
+package com.tumpaca.tumpaca.fragment.post
 
 /**
  * Created by yabu on 7/11/16.

@@ -1,4 +1,4 @@
-package com.tumpaca.tumpaca.fragment.adapter
+package com.tumpaca.tumpaca.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.Log
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.fragment.*
+import com.tumpaca.tumpaca.fragment.post.*
 import com.tumpaca.tumpaca.model.PostList
 
 class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList): FragmentStatePagerAdapter(fm) {

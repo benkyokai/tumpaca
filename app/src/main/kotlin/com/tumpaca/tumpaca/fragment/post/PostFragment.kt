@@ -1,6 +1,7 @@
-package com.tumpaca.tumpaca.fragment
+package com.tumpaca.tumpaca.fragment.post
 
 import android.os.Bundle
+import com.tumpaca.tumpaca.fragment.FragmentBase
 
 abstract class PostFragment: FragmentBase() {
     // TODO

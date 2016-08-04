@@ -9,7 +9,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
-import com.tumpaca.tumpaca.fragment.adapter.DashboardPageAdapter
+import com.tumpaca.tumpaca.fragment.DashboardPageAdapter
 import com.tumpaca.tumpaca.model.PostList
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.likeAsync

@@ -1,4 +1,4 @@
-package com.tumpaca.tumpaca.fragment
+package com.tumpaca.tumpaca.fragment.post
 
 /**
  * Created by yabu on 7/11/16.
@@ -11,22 +11,22 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
-import com.tumblr.jumblr.types.LinkPost
+import com.tumblr.jumblr.types.TextPost
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
 
-class LinkPostFragment : PostFragment() {
+class TextPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = TPRuntime.tumblrService!!.postList?.get(page) as LinkPost
+        val post = TPRuntime.tumblrService!!.postList?.get(page) as TextPost
 
         // データを取得
         val blogName = post.blogName
-        val subText = post.linkUrl
+        val subText = post.body
 
         // View をつくる
-        val view = inflater.inflate(R.layout.post_link, container, false)
+        val view = inflater.inflate(R.layout.post_text, container, false)
 
         val titleView = view.findViewById(R.id.title) as TextView
         titleView.text = blogName
