@@ -5,10 +5,9 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.Log
-import com.tumblr.jumblr.types.*
+import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.fragment.*
 import com.tumpaca.tumpaca.model.PostList
-import java.util.*
 
 class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList): FragmentStatePagerAdapter(fm) {
     companion object {
@@ -33,67 +32,43 @@ class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList):
     }
 
     override fun getItem(position: Int): Fragment {
+        val bundle = Bundle()
+        bundle.putInt("pageNum", position)
+
         val post = postList.get(position)
-        return genFragment(position, post!!)
+        val fragment = createFragment(post!!.type)
+        fragment.arguments = bundle
+
+        return fragment
     }
 
     override fun getCount(): Int {
         return postList.size
     }
 
-    fun genFragment(position: Int, post: Post): PostFragment {
-
-        val bundle = Bundle()
-        bundle.putInt("page", position)
-        bundle.putString("blogName", post.blogName)
-
-        when (post.type) {
+    private fun createFragment(postType: Post.PostType): PostFragment {
+        when (postType) {
             Post.PostType.TEXT -> {
-                val textPost = post as TextPost
-                bundle.putString("subText", textPost.body)
-                val fragment = TextPostFragment()
-                fragment.arguments = bundle
-                return fragment
+                return TextPostFragment()
             }
             Post.PostType.PHOTO -> {
-                val photoPost = post as PhotoPost
-                bundle.putStringArrayList("urls", ArrayList(photoPost.photos.map{it.sizes[1].url}))
-                bundle.putString("subText", photoPost.caption)
-                val fragment = PhotoPostFragment()
-                fragment.arguments = bundle
-                return fragment
+                return PhotoPostFragment()
             }
             Post.PostType.QUOTE -> {
-                val quotePost = post as QuotePost
-                bundle.putString("subText", quotePost.text)
-                val fragment = QuotePostFragment()
-                fragment.arguments = bundle
-                return fragment
+                return QuotePostFragment()
             }
             Post.PostType.LINK -> {
-                val linkPost = post as LinkPost
-                bundle.putString("subText", linkPost.linkUrl)
-                val fragment = LinkPostFragment()
-                fragment.arguments = bundle
-                return fragment
+                return LinkPostFragment()
             }
             Post.PostType.AUDIO -> {
-                val audioPost = post as AudioPost
-                bundle.putString("subText", audioPost.embedCode)
-                val fragment = AudioPostFragment()
-                fragment.arguments = bundle
-                return fragment
+                return AudioPostFragment()
             }
             Post.PostType.VIDEO -> {
-                val videoPost = post as VideoPost
-                bundle.putString("subText", videoPost.videos[0].embedCode)
-                val fragment = VideoPostFragment()
-                fragment.arguments = bundle
-                return fragment
+                return VideoPostFragment()
             }
             else -> {
                 // CHAT, ANSWER, POSTCARDは来ないはず
-                throw RuntimeException("post type is invalid: " + post.type.value)
+                throw IllegalArgumentException("post type is invalid: " + postType.value)
             }
         }
     }

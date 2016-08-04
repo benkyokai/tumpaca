@@ -11,22 +11,19 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.TextView
+import com.tumblr.jumblr.types.TextPost
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
 
-/**
- * 色情報を表示する Fragment.
- */
 class TextPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = TPRuntime.tumblrService!!.postList?.get(postIndex)
+        val post = TPRuntime.tumblrService!!.postList?.get(page) as TextPost
 
         // データを取得
-        val bundle = arguments
-        val blogName = bundle.getString("blogName")
-        val subText = bundle.getString("subText")
+        val blogName = post.blogName
+        val subText = post.body
 
         // View をつくる
         val view = inflater.inflate(R.layout.post_text, container, false)
@@ -39,7 +36,7 @@ class TextPostFragment : PostFragment() {
         subTextView.loadData(subText, mimeType, null)
 
         val iconView = view.findViewById(R.id.icon) as ImageView
-        post?.blogAvatarAsync { bitmap ->
+        post.blogAvatarAsync { bitmap ->
             iconView.setImageBitmap(bitmap)
         }
 
