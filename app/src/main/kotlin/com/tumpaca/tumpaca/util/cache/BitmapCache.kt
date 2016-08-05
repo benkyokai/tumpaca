@@ -20,7 +20,7 @@ class BitmapCache<T : Bitmap>: Cache<T> {
 
     private val lruCache = object : LruCache<String, Bitmap>(MAX_SIZE) {
         override fun sizeOf(key: String, value: Bitmap): Int {
-            return value.rowBytes * value.height
+            return value.allocationByteCount
         }
     }
 
