@@ -3,15 +3,9 @@ package com.tumpaca.tumpaca.fragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
-import com.tumpaca.tumpaca.MainApplication
 import com.tumpaca.tumpaca.R
 
 abstract class FragmentBase : Fragment() {
-
-    protected fun getMainApplication(): MainApplication {
-        return (activity.application as MainApplication)
-    }
-
     protected fun replaceFragment(fragment:Fragment, addStack: Boolean) {
         val transaction = activity.supportFragmentManager.beginTransaction()
         if (addStack) {

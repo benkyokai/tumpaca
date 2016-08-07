@@ -2,18 +2,16 @@ package com.tumpaca.tumpaca
 
 import android.app.Application
 import android.util.Log
-import com.tumpaca.tumpaca.util.TumblrService
+import com.tumpaca.tumpaca.model.TPRuntime
 
 class MainApplication: Application() {
     companion object {
         private const val TAG = "MainApplication"
     }
-    var tumblrService: TumblrService? = null
-        private set
 
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "onCreate()")
-        tumblrService = TumblrService(this)
+        TPRuntime.initialize(this)
     }
 }

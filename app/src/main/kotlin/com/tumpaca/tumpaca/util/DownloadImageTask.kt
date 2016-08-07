@@ -5,14 +5,16 @@ import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.util.Log
-import android.widget.ImageView
-import com.tumpaca.tumpaca.TPRuntime
+import com.tumpaca.tumpaca.model.TPRuntime
 import java.net.URL
 
 /**
  * Created by yabu on 2016/06/13.
  */
-class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitmap>() {
+class DownloadImageTask(val callback: (Bitmap) -> Unit) : AsyncTask<String, Void, Bitmap>() {
+    companion object {
+        private const val TAG = "DownloadImageTask"
+    }
 
     override fun doInBackground(vararg urls: String): Bitmap? {
         val url = urls[0]
@@ -23,7 +25,9 @@ class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitm
         try {
             return TPRuntime.bitMapCache.getIfNoneAndSet(url, {
                 val stream = URL(url).openStream()
-                BitmapFactory.decodeStream(stream)
+                val options = BitmapFactory.Options()
+                options.inDensity = DisplayMetrics.DENSITY_MEDIUM
+                BitmapFactory.decodeStream(stream, null, options)
             })
         } catch(e: Exception) {
             Log.e("Error", e.message)
@@ -33,9 +37,7 @@ class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitm
     }
 
     override fun onPostExecute(result: Bitmap) {
-        // densityが画面のdpiに応じて勝手に設定されるので、倍率1に戻す
-        result.density = DisplayMetrics.DENSITY_MEDIUM
-        this.imageView.setImageBitmap(result)
+        callback(result)
     }
 
 }

@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"
-        android:padding="8dip">
+        android:padding="8dip"
+        android:descendantFocusability="blocksDescendants">
 
         <ImageView
             android:id="@+id/photo"
