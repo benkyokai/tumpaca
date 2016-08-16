@@ -11,13 +11,12 @@
         android:padding="8dip"
         android:descendantFocusability="blocksDescendants">
 
-        <ImageView
-            android:id="@+id/photo"
+        <LinearLayout
+            android:id="@+id/photo_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter" />
+            android:orientation="vertical">
+        </LinearLayout>
         <WebView
             android:id="@+id/sub"
             android:layout_width="match_parent"
@@ -25,7 +24,7 @@
             android:layout_marginTop="12dp"
             android:textColor="#999999"
             android:textSize="12sp"
-            android:layout_below="@+id/photo"
+            android:layout_below="@+id/photo_list"
             android:layout_alignParentEnd="true" />
         <TextView
             android:id="@+id/title"

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.tumblr.jumblr.types.PhotoPost
 import com.tumpaca.tumpaca.R
@@ -44,11 +45,30 @@ class PhotoPostFragment : PostFragment() {
             iconView.setImageBitmap(bitmap)
         }
 
-        val imageView = view.findViewById(R.id.photo) as ImageView
-        if (urls.size > 0) {
-            DownloadImageTask({ bitmap ->
-                imageView.setImageBitmap(bitmap)
-            }).execute(urls[0])
+        // ImageViewを挿入するPhotoListLayoutを取得
+        val imageLayout = view.findViewById(R.id.photo_list) as LinearLayout
+
+        /**
+         * urls.size個の画像があるので、個数分のImageViewを生成して、PhotoListLayoutに追加する
+         */
+        Array<Int>(urls.size, {i -> i}).map {
+            val iView = ImageView(context)
+            // レイアウト生成
+            val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            if (it != 0) { // 先頭以外はtopMarginを追加
+                val marginLayoutParams = ViewGroup.MarginLayoutParams(layoutParams)
+                marginLayoutParams.topMargin = 20
+                iView.layoutParams = marginLayoutParams
+            } else {
+                iView.layoutParams = layoutParams
+            }
+            iView.scaleType = ImageView.ScaleType.FIT_CENTER
+            iView.adjustViewBounds = true
+            imageLayout.addView(iView)
+
+            DownloadImageTask { bitmap ->
+                iView.setImageBitmap(bitmap)
+            }.execute(urls[it])
         }
 
         return view
