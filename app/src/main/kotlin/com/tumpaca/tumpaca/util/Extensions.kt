@@ -3,8 +3,8 @@ package com.tumpaca.tumpaca.util
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
-import com.tumblr.jumblr.types.Blog
 import com.tumblr.jumblr.types.Post
+import com.tumpaca.tumpaca.model.TPRuntime
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
     val editor = getSharedPreferences(name, mode).edit()
@@ -34,14 +34,11 @@ fun Post.reblogAsync(blogName: String, comment: String, callback: (Post) -> Unit
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
-    // TODO: blogName -> avatarUrl をキャッシュして、DownloadImageTask にすぐになげればはやくなる
-    AsyncTaskHelper.first<Void, Void, Blog?> {
-        client.blogInfo(blogName)
-    }.then { blog ->
-        AsyncTaskHelper.first<Void, Void, String?> {
-            blog?.avatar()
-        }.then { avatarUrl ->
-            DownloadImageTask(callback).execute(avatarUrl)
-        }.go()
+    AsyncTaskHelper.first<Void, Void, String?> {
+        TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
+            client.blogInfo(blogName).avatar()
+        })
+    }.then { avatarUrl ->
+        DownloadImageTask(callback).execute(avatarUrl)
     }.go()
 }

@@ -53,3 +53,43 @@ class BitmapCache<T : Bitmap>: Cache<T> {
         return null
     }
 }
+
+class AvatarUrlCache<T : String>: Cache<T> {
+    val TAG = "AvatarUrlCache"
+
+    private val MAX_SIZE = 2 * 1024 * 1024 // 2MB
+
+    private val lruCache = object : LruCache<String, String>(MAX_SIZE) {
+        override fun sizeOf(key: String, value: String): Int {
+            return value.count()
+        }
+    }
+
+    override fun set(key: String, value: T) {
+        val url: String = value
+        lruCache.put(key, url)
+    }
+
+    override fun get(key: String): T? {
+        @Suppress("UNCHECKED_CAST")
+        val url = lruCache.get(key) as T?
+        return url
+    }
+
+    override fun getIfNoneAndSet(key: String, f: () -> T?): T? {
+        // キャッシュにあればその値を返す
+        get(key)?.let {
+            Log.d(TAG, "avatar url cache hit")
+            return it
+        }
+
+        // キャッシュになければラムダを実行した結果をキャッシュにセットして、その値を返す
+        f()?.let {
+            Log.d(TAG, "avatar url cache not hit: $lruCache")
+            set(key, it)
+            return it
+        }
+
+        return null
+    }
+}
