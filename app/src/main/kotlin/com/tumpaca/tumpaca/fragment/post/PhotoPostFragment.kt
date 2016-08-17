@@ -12,12 +12,14 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.felipecsl.gifimageview.library.GifImageView
 import com.tumblr.jumblr.types.PhotoPost
 import com.tumpaca.tumpaca.R
-import com.tumpaca.tumpaca.fragment.post.PostFragment
 import com.tumpaca.tumpaca.model.TPRuntime
+import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.DownloadImageTask
 import com.tumpaca.tumpaca.util.blogAvatarAsync
+import java.net.URL
 import java.util.*
 
 class PhotoPostFragment : PostFragment() {
@@ -52,26 +54,55 @@ class PhotoPostFragment : PostFragment() {
          * urls.size個の画像があるので、個数分のImageViewを生成して、PhotoListLayoutに追加する
          */
         Array<Int>(urls.size, {i -> i}).map {
-            val iView = ImageView(context)
-            // レイアウト生成
-            val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            if (it != 0) { // 先頭以外はtopMarginを追加
-                val marginLayoutParams = ViewGroup.MarginLayoutParams(layoutParams)
-                marginLayoutParams.topMargin = 20
-                iView.layoutParams = marginLayoutParams
-            } else {
-                iView.layoutParams = layoutParams
-            }
-            iView.scaleType = ImageView.ScaleType.FIT_CENTER
-            iView.adjustViewBounds = true
-            imageLayout.addView(iView)
+            val url = urls[it]
+            // gifだった場合はGif用のcustom image viewを使う
+            if (url.endsWith(".gif")) {
+                val gifView = createGifImageView(it != 0)
+                imageLayout.addView(gifView)
 
-            DownloadImageTask { bitmap ->
-                iView.setImageBitmap(bitmap)
-            }.execute(urls[it])
+                AsyncTaskHelper.first<Void, Void, ByteArray> {
+                    URL(url).openStream().readBytes()
+                }.then {byteArray ->
+                    gifView.setBytes(byteArray)
+                    gifView.startAnimation()
+                }.go()
+            } else {
+                val iView = createImageView(it != 0)
+                imageLayout.addView(iView)
+
+                DownloadImageTask { bitmap ->
+                    iView.setImageBitmap(bitmap)
+                }.execute(urls[it])
+            }
         }
 
         return view
+    }
+
+    private fun createGifImageView(withTopMargin: Boolean): GifImageView {
+        val gifView = GifImageView(context)
+        setParameterToImageView(gifView, withTopMargin)
+        return gifView
+    }
+
+    private fun createImageView(withTopMargin: Boolean): ImageView {
+        val iView = ImageView(context)
+        setParameterToImageView(iView, withTopMargin)
+        return iView
+    }
+
+    private fun setParameterToImageView(iView: ImageView, withTopMargin: Boolean) {
+        // レイアウト生成
+        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        if (withTopMargin) {
+            val marginLayoutParams = ViewGroup.MarginLayoutParams(layoutParams)
+            marginLayoutParams.topMargin = 20
+            iView.layoutParams = marginLayoutParams
+        } else {
+            iView.layoutParams = layoutParams
+        }
+        iView.scaleType = ImageView.ScaleType.FIT_CENTER
+        iView.adjustViewBounds = true
     }
 
 }
