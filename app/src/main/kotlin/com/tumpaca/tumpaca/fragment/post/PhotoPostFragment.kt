@@ -4,10 +4,9 @@ package com.tumpaca.tumpaca.fragment.post
  * Created by yabu on 7/11/16.
  */
 
+import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -19,10 +18,12 @@ import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.DownloadImageTask
 import com.tumpaca.tumpaca.util.blogAvatarAsync
+import com.tumpaca.tumpaca.view.GifSquareImageView
 import java.net.URL
 import java.util.*
 
 class PhotoPostFragment : PostFragment() {
+    private val LOADING_VIEW_ID = 1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val post = TPRuntime.tumblrService!!.postList?.get(page) as PhotoPost
@@ -50,6 +51,15 @@ class PhotoPostFragment : PostFragment() {
         // ImageViewを挿入するPhotoListLayoutを取得
         val imageLayout = view.findViewById(R.id.photo_list) as LinearLayout
 
+        val LOADING_GIF_BYTES = resources.openRawResource(R.raw.tumpaca_run).readBytes()
+
+        val loadingGifView = createLoadingGifImageView()
+        loadingGifView.id = LOADING_VIEW_ID
+        loadingGifView.setBackgroundColor(Color.parseColor("#35465c"))
+        imageLayout.addView(loadingGifView)
+        loadingGifView.setBytes(LOADING_GIF_BYTES)
+        loadingGifView.startAnimation()
+
         /**
          * urls.size個の画像があるので、個数分のImageViewを生成して、PhotoListLayoutに追加する
          */
@@ -65,18 +75,27 @@ class PhotoPostFragment : PostFragment() {
                 }.then {byteArray ->
                     gifView.setBytes(byteArray)
                     gifView.startAnimation()
+                    imageLayout.removeView(loadingGifView)
                 }.go()
             } else {
                 val iView = createImageView(it != 0)
                 imageLayout.addView(iView)
-
                 DownloadImageTask { bitmap ->
                     iView.setImageBitmap(bitmap)
+                    imageLayout.removeView(loadingGifView)
                 }.execute(urls[it])
             }
         }
 
         return view
+    }
+
+    private fun createLoadingGifImageView(): GifSquareImageView {
+        val gifView = GifSquareImageView(context)
+        val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        gifView.layoutParams = layoutParams
+        gifView.scaleType = ImageView.ScaleType.CENTER
+        return gifView
     }
 
     private fun createGifImageView(withTopMargin: Boolean): GifImageView {
