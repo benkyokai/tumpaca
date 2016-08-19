@@ -1,6 +1,5 @@
 package com.tumpaca.tumpaca.model
 
-import android.text.Editable
 import android.util.Log
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
@@ -75,39 +74,58 @@ class PostList(private val client: JumblrClient) {
 
     private fun fetch(limit: Int) {
         fetching = true
-        AsyncTaskHelper.first<Void, Void, List<Post>> {
-            // ここはバックグラウンドスレッド
-            val offset = posts.size
-            val parameter = hashMapOf(
-                    "offset" to offset,
-                    "limit" to limit)
-            Log.v(TAG, "try to load $offset->${offset + limit - 1}")
-            client.userDashboard(parameter)
-        }.then { result ->
-            // ここは UI スレッド
-            val filteredResult = result.filter {
-                SUPPORTED_TYPES.contains(it.type)
+
+        object : AsyncTaskHelper<Void, Void, List<Post>>() {
+            override fun doTask(params: Array<out Void>): List<Post> {
+                // ここはバックグラウンドスレッド
+                val offset = posts.size
+                val parameter = hashMapOf(
+                        "offset" to offset,
+                        "limit" to limit)
+                Log.v(TAG, "try to load $offset->${offset + limit - 1}")
+                return client.userDashboard(parameter)
             }
 
-            if (result.size != filteredResult.size) {
-                // TODO fetch の結果 filter されると、現状の post サイズとインターネット上の post のインデックスが
-                // 合わなくなるのでフィルタリングは外側でやったほうがいい
-                Log.w(TAG, "Some posts are filtered: ${result.size}=>${filteredResult.size}");
+            override fun onError(e: Exception) {
+                // TODO エラー処理
+                Log.e(TAG, "PostList fetch error: ${e.message}")
             }
 
-            posts.addAll(filteredResult)
-            Log.v(TAG, "Loaded ${result.size} posts, size=$size")
-            listener?.onChanged()
-            fetching = false
+            override fun onSuccess(result: List<Post>) {
+                // ここは UI スレッド
+                val filteredResult = result.filter {
+                    SUPPORTED_TYPES.contains(it.type)
+                }
+
+                if (result.size != filteredResult.size) {
+                    // TODO fetch の結果 filter されると、現状の post サイズとインターネット上の post のインデックスが
+                    // 合わなくなるのでフィルタリングは外側でやったほうがいい
+                    Log.w(TAG, "Some posts are filtered: ${result.size}=>${filteredResult.size}");
+                }
+
+                posts.addAll(filteredResult)
+                Log.v(TAG, "Loaded ${result.size} posts, size=$size")
+                listener?.onChanged()
+                fetching = false
+            }
         }.go()
     }
 
     private fun refreshUser() {
-        AsyncTaskHelper.first<Void, Void, User> {
-            client.user()
-        }.then { result ->
-            Log.v(TAG, "Refresh User ${result.name}")
-            user = result
+        object: AsyncTaskHelper<Void, Void, User>() {
+            override fun doTask(params: Array<out Void>): User {
+                return client.user()
+            }
+
+            override fun onError(e: Exception) {
+                // TODO エラー処理
+                Log.e(TAG, "PostList refreshUser error: ${e.message}")
+            }
+
+            override fun onSuccess(result: User) {
+                Log.v(TAG, "Refresh User ${result.name}")
+                user = result
+            }
         }.go()
     }
 }

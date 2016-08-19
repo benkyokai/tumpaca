@@ -14,31 +14,57 @@ fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE
 }
 
 fun Post.likeAsync(callback: (Post) -> Unit) {
-    AsyncTaskHelper.first<Unit, Unit, Unit> {
-        if (isLiked) {
-            unlike()
-        } else {
-            like()
+    val self = this
+    object: AsyncTaskHelper<Unit, Unit, Unit>() {
+        override fun doTask(params: Array<out Unit>) {
+            if (isLiked) {
+                unlike()
+            } else {
+                like()
+            }
         }
-    }.then {
-        callback(this)
+
+        override fun onError(e: Exception) {
+            // TODO エラー処理
+        }
+
+        override fun onSuccess(result: Unit) {
+            callback(self)
+        }
     }.go()
 }
 
 fun Post.reblogAsync(blogName: String, comment: String, callback: (Post) -> Unit) {
-    AsyncTaskHelper.first<Unit, Unit, Unit> {
-        reblog(blogName, mapOf(Pair("comment", comment)))
-    }.then {
-        callback(this)
+    val self = this
+    object: AsyncTaskHelper<Unit, Unit, Unit>() {
+        override fun doTask(params: Array<out Unit>) {
+            reblog(blogName, mapOf(Pair("comment", comment)))
+        }
+
+        override fun onError(e: Exception) {
+            // TODO エラー処理
+        }
+
+        override fun onSuccess(result: Unit) {
+            callback(self)
+        }
     }.go()
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
-    AsyncTaskHelper.first<Void, Void, String?> {
-        TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
-            client.blogInfo(blogName).avatar()
-        })
-    }.then { avatarUrl ->
-        DownloadImageTask(callback).execute(avatarUrl)
+    object: AsyncTaskHelper<Void, Void, String?>() {
+        override fun doTask(params: Array<out Void>): String? {
+            return TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
+                client.blogInfo(blogName).avatar()
+            })
+        }
+
+        override fun onError(e: Exception) {
+            // TODO エラー処理
+        }
+
+        override fun onSuccess(avatarUrl: String?) {
+            DownloadImageTask(callback).execute(avatarUrl)
+        }
     }.go()
 }

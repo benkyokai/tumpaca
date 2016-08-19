@@ -70,12 +70,20 @@ class PhotoPostFragment : PostFragment() {
                 val gifView = createGifImageView(it != 0)
                 imageLayout.addView(gifView)
 
-                AsyncTaskHelper.first<Void, Void, ByteArray> {
-                    URL(url).openStream().readBytes()
-                }.then {byteArray ->
-                    gifView.setBytes(byteArray)
-                    gifView.startAnimation()
-                    imageLayout.removeView(loadingGifView)
+                object: AsyncTaskHelper<Void, Void, ByteArray>() {
+                    override fun doTask(params: Array<out Void>): ByteArray {
+                        return URL(url).openStream().readBytes()
+                    }
+
+                    override fun onError(e: Exception) {
+                        // TODO エラー処理
+                    }
+
+                    override fun onSuccess(result: ByteArray) {
+                        gifView.setBytes(result)
+                        gifView.startAnimation()
+                        imageLayout.removeView(loadingGifView)
+                    }
                 }.go()
             } else {
                 val iView = createImageView(it != 0)
