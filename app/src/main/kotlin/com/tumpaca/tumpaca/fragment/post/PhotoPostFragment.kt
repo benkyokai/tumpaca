@@ -31,6 +31,8 @@ class PhotoPostFragment : PostFragment() {
         // データを取得
         val blogName = post.blogName
         val subText = post.caption
+        val reblogged = post.rebloggedFromName
+        val noteCount = post.noteCount
         val urls = ArrayList(post.photos.map{it.sizes[1].url})
 
         // View をつくる
@@ -46,6 +48,21 @@ class PhotoPostFragment : PostFragment() {
         val iconView = view.findViewById(R.id.icon) as ImageView
         post.blogAvatarAsync { bitmap ->
             iconView.setImageBitmap(bitmap)
+        }
+
+        val rebloggedView = view.findViewById(R.id.reblogged) as TextView
+        if (reblogged != null) {
+            rebloggedView.text = reblogged
+        } else { // reblogじゃない場合はリブログアイコンを非表示にする
+            val reblogInfoLayout = view.findViewById(R.id.post_info) as LinearLayout
+            reblogInfoLayout.removeViewAt(R.id.reblog_icon)
+        }
+
+        val noteCountView = view.findViewById(R.id.notes) as TextView
+        if (noteCount != null && noteCount!! == 1L ) {
+            noteCountView.text = "${noteCount!!} note"
+        } else {
+            noteCountView.text = "${noteCount!!} notes"
         }
 
         // ImageViewを挿入するPhotoListLayoutを取得

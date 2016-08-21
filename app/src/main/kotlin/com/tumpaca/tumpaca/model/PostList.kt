@@ -81,7 +81,9 @@ class PostList(private val client: JumblrClient) {
                 val offset = posts.size
                 val parameter = hashMapOf(
                         "offset" to offset,
-                        "limit" to limit)
+                        "limit" to limit,
+                        "reblog_info" to true,
+                        "notes_info" to true)
                 Log.v(TAG, "try to load $offset->${offset + limit - 1}")
                 return client.userDashboard(parameter)
             }
