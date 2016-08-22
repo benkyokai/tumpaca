@@ -55,7 +55,7 @@ class QuotePostFragment : PostFragment() {
         }
 
         val noteCountView = view.findViewById(R.id.notes) as TextView
-        if (noteCount != null && noteCount!! == 1L ) {
+        if (noteCount != null && noteCount!! == 1L) {
             noteCountView.text = "${noteCount!!} note"
         } else {
             noteCountView.text = "${noteCount!!} notes"

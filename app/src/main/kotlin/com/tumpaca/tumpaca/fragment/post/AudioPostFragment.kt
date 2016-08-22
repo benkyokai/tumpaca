@@ -14,7 +14,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.tumblr.jumblr.types.AudioPost
 import com.tumpaca.tumpaca.R
-import com.tumpaca.tumpaca.fragment.post.PostFragment
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
 
@@ -55,7 +54,7 @@ class AudioPostFragment : PostFragment() {
         }
 
         val noteCountView = view.findViewById(R.id.notes) as TextView
-        if (noteCount != null && noteCount!! == 1L ) {
+        if (noteCount != null && noteCount!! == 1L) {
             noteCountView.text = "${noteCount!!} note"
         } else {
             noteCountView.text = "${noteCount!!} notes"

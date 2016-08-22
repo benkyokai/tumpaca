@@ -5,7 +5,7 @@ import android.os.AsyncTask
 /**
  * Created by amake on 6/3/16.
  */
-abstract class AsyncTaskHelper<Params, Progress, Result> () {
+abstract class AsyncTaskHelper<Params, Progress, Result>() {
 
     companion object {
         private const val TAG = "AsyncTaskHelper"
@@ -13,11 +13,11 @@ abstract class AsyncTaskHelper<Params, Progress, Result> () {
 
     abstract fun doTask(params: (Array<out Params>)): Result
 
-    abstract fun onError(e:Exception)
+    abstract fun onError(e: Exception)
 
     abstract fun onSuccess(result: Result)
 
-    private var task = object: AsyncTask<Params, Progress, AsyncTaskResult<Result>>() {
+    private var task = object : AsyncTask<Params, Progress, AsyncTaskResult<Result>>() {
         override fun doInBackground(vararg params: Params): AsyncTaskResult<Result> {
             try {
                 val result = doTask(params)

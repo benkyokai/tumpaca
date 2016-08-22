@@ -15,7 +15,7 @@ fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE
 
 fun Post.likeAsync(callback: (Post) -> Unit) {
     val self = this
-    object: AsyncTaskHelper<Unit, Unit, Unit>() {
+    object : AsyncTaskHelper<Unit, Unit, Unit>() {
         override fun doTask(params: Array<out Unit>) {
             if (isLiked) {
                 unlike()
@@ -36,7 +36,7 @@ fun Post.likeAsync(callback: (Post) -> Unit) {
 
 fun Post.reblogAsync(blogName: String, comment: String, callback: (Post) -> Unit) {
     val self = this
-    object: AsyncTaskHelper<Unit, Unit, Unit>() {
+    object : AsyncTaskHelper<Unit, Unit, Unit>() {
         override fun doTask(params: Array<out Unit>) {
             reblog(blogName, mapOf(Pair("comment", comment)))
         }
@@ -52,7 +52,7 @@ fun Post.reblogAsync(blogName: String, comment: String, callback: (Post) -> Unit
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
-    object: AsyncTaskHelper<Void, Void, String?>() {
+    object : AsyncTaskHelper<Void, Void, String?>() {
         override fun doTask(params: Array<out Void>): String? {
             return TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
                 client.blogInfo(blogName).avatar()

@@ -114,7 +114,7 @@ class PostList(private val client: JumblrClient) {
     }
 
     private fun refreshUser() {
-        object: AsyncTaskHelper<Void, Void, User>() {
+        object : AsyncTaskHelper<Void, Void, User>() {
             override fun doTask(params: Array<out Void>): User {
                 return client.user()
             }

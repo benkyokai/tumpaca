@@ -5,5 +5,6 @@ package com.tumpaca.tumpaca.util
  * Created by yabu on 8/18/16.
  */
 class AsyncTaskResult<T>(val result: T?, val e: Exception? = null) {
-    constructor(e: Exception): this(null, e) {}
+    constructor(e: Exception) : this(null, e) {
+    }
 }

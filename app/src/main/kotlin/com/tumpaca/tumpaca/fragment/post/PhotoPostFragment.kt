@@ -6,7 +6,9 @@ package com.tumpaca.tumpaca.fragment.post
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -33,7 +35,7 @@ class PhotoPostFragment : PostFragment() {
         val subText = post.caption
         val reblogged = post.rebloggedFromName
         val noteCount = post.noteCount
-        val urls = ArrayList(post.photos.map{it.sizes[1].url})
+        val urls = ArrayList(post.photos.map { it.sizes[1].url })
 
         // View をつくる
         val view = inflater.inflate(R.layout.post_photo, container, false)
@@ -62,7 +64,7 @@ class PhotoPostFragment : PostFragment() {
         }
 
         val noteCountView = view.findViewById(R.id.notes) as TextView
-        if (noteCount != null && noteCount!! == 1L ) {
+        if (noteCount != null && noteCount!! == 1L) {
             noteCountView.text = "${noteCount!!} note"
         } else {
             noteCountView.text = "${noteCount!!} notes"
@@ -83,14 +85,14 @@ class PhotoPostFragment : PostFragment() {
         /**
          * urls.size個の画像があるので、個数分のImageViewを生成して、PhotoListLayoutに追加する
          */
-        Array<Int>(urls.size, {i -> i}).map {
+        Array<Int>(urls.size, { i -> i }).map {
             val url = urls[it]
             // gifだった場合はGif用のcustom image viewを使う
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(it != 0)
                 imageLayout.addView(gifView)
 
-                object: AsyncTaskHelper<Void, Void, ByteArray>() {
+                object : AsyncTaskHelper<Void, Void, ByteArray>() {
                     override fun doTask(params: Array<out Void>): ByteArray {
                         return URL(url).openStream().readBytes()
                     }

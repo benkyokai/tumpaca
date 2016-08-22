@@ -10,7 +10,7 @@ import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.model.TumblrService
 
-class AuthFragment: FragmentBase() {
+class AuthFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fr_auth, container, false)
         val auth = view?.findViewById(R.id.authorize) as TextView

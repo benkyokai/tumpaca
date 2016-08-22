@@ -7,7 +7,7 @@ import com.felipecsl.gifimageview.library.GifImageView
  * GifImageViewのカスタムビュー
  * Created by yabu on 8/17/16.
  */
-class GifSquareImageView(context: Context): GifImageView(context) {
+class GifSquareImageView(context: Context) : GifImageView(context) {
     /**
      * 表示時に横幅を縦幅にセットして正方形にする
      */

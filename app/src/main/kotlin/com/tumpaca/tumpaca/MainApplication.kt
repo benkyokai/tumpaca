@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.tumpaca.tumpaca.model.TPRuntime
 
-class MainApplication: Application() {
+class MainApplication : Application() {
     companion object {
         private const val TAG = "MainApplication"
     }

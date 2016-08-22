@@ -10,10 +10,10 @@ import android.util.LruCache
 interface Cache<T> {
     fun set(key: String, value: T)
     fun get(key: String): T?
-    fun getIfNoneAndSet(key: String, f:() -> T?): T?
+    fun getIfNoneAndSet(key: String, f: () -> T?): T?
 }
 
-class BitmapCache<T : Bitmap>: Cache<T> {
+class BitmapCache<T : Bitmap> : Cache<T> {
     val TAG = "BitmapCache"
 
     private val MAX_SIZE = 32 * 1024 * 1024
@@ -54,7 +54,7 @@ class BitmapCache<T : Bitmap>: Cache<T> {
     }
 }
 
-class AvatarUrlCache<T : String>: Cache<T> {
+class AvatarUrlCache<T : String> : Cache<T> {
     val TAG = "AvatarUrlCache"
 
     private val MAX_SIZE = 2 * 1024 * 1024 // 2MB

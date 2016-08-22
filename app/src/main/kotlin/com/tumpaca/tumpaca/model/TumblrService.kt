@@ -101,7 +101,7 @@ class TumblrService(val context: Context) {
     }
 
     private fun refreshUser() {
-        object: AsyncTaskHelper<Void, Void, User>() {
+        object : AsyncTaskHelper<Void, Void, User>() {
             override fun doTask(params: Array<out Void>): User {
                 return jumblerClient?.user()!!
             }
