@@ -48,7 +48,10 @@ class VideoPostFragment : PostFragment() {
             rebloggedView.text = reblogged
         } else { // reblogじゃない場合はリブログアイコンを非表示にする
             val reblogInfoLayout = view.findViewById(R.id.post_info) as LinearLayout
-            reblogInfoLayout.removeViewAt(R.id.reblog_icon)
+            val reblogIcon = view.findViewById(R.id.reblog_icon)
+            if (reblogIcon != null) {
+                reblogInfoLayout.removeView(reblogIcon)
+            }
         }
 
         val noteCountView = view.findViewById(R.id.notes) as TextView
