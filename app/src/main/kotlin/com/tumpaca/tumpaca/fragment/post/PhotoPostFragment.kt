@@ -144,9 +144,13 @@ class PhotoPostFragment : PostFragment() {
         // レイアウト生成
         val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         if (withTopMargin) {
+            /* なぜかmarginが効かない (多分何か間違ってる)
             val marginLayoutParams = ViewGroup.MarginLayoutParams(layoutParams)
             marginLayoutParams.topMargin = 20
             iView.layoutParams = marginLayoutParams
+            */
+            iView.layoutParams = layoutParams
+            iView.setPadding(0, 20, 0, 0)
         } else {
             iView.layoutParams = layoutParams
         }
