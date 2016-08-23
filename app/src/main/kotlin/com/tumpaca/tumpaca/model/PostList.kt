@@ -136,7 +136,9 @@ class PostList(private val client: JumblrClient) {
                 listener?.onChanged()
                 fetchedListener?.onFetched(size)
                 fetching = false
-                fetchImpl(fetchSize - result.size)
+                if (result.size > 0) {
+                    fetchImpl(fetchSize - result.size)
+                } // 取得したポストの数が0なら次回のロードはしない
             }
         }.go()
     }
