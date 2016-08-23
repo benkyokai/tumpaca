@@ -10,9 +10,11 @@ import java.util.concurrent.CopyOnWriteArrayList
 class PostList(private val client: JumblrClient) {
     companion object {
         private const val TAG = "PostList"
-        private const val FETCH_UNIT = 20
+        private const val FIRST_FETCH_UNIT = 300
+        private const val FETCH_UNIT = 100
+        private const val FETCH_LIMIT = 20
         // 残りのポストがこれ以下になったら fetch する
-        private const val FETCH_MIN_POST_NUM = 10
+        private const val FETCH_MIN_POST_NUM = 20
     }
 
     interface ChangedListener {
@@ -51,7 +53,7 @@ class PostList(private val client: JumblrClient) {
 
     init {
         refreshUser()
-        fetch(FETCH_UNIT)
+        fetch(FIRST_FETCH_UNIT)
     }
 
     fun get(i: Int): Post? {
@@ -78,8 +80,17 @@ class PostList(private val client: JumblrClient) {
         return remain < FETCH_MIN_POST_NUM // 最小よりも小さかったら fetch が必要
     }
 
-    private fun fetch(limit: Int) {
+    private fun fetch(count: Int) {
+        fetchImpl(count)
+    }
+
+    private fun fetchImpl(fetchSize: Int) {
         fetching = true
+
+        if (fetchSize <= 0) {
+            fetching = false
+            return
+        }
 
         object : AsyncTaskHelper<Void, Void, List<Post>>() {
             override fun doTask(params: Array<out Void>): List<Post> {
@@ -87,16 +98,17 @@ class PostList(private val client: JumblrClient) {
                 val offset = posts.size
                 val parameter = hashMapOf(
                         "offset" to offset,
-                        "limit" to limit,
+                        "limit" to FETCH_LIMIT,
                         "reblog_info" to true,
                         "notes_info" to true)
-                Log.v(TAG, "try to load $offset->${offset + limit - 1}")
+                Log.v(TAG, "try to load $offset->${offset + FETCH_LIMIT - 1}")
                 return client.userDashboard(parameter)
             }
 
             override fun onError(e: Exception) {
                 // TODO エラー処理
                 Log.e(TAG, "PostList fetch error: ${e.message}")
+                fetching = false
             }
 
             override fun onSuccess(result: List<Post>) {
@@ -116,6 +128,7 @@ class PostList(private val client: JumblrClient) {
                 listener?.onChanged()
                 fetchedListener?.onFetched(size)
                 fetching = false
+                fetchImpl(fetchSize - result.size)
             }
         }.go()
     }
