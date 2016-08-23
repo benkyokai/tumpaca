@@ -51,6 +51,13 @@ class PostList(private val client: JumblrClient) {
     // user はいまのところ別スレッドでさわらないので volatile いらない
     private var user: User? = null
 
+
+    /**
+     * ダッシュボード取得時のオフセット
+     * ダウンロードしたpostsはフィルターしてあるので、posts.sizeはオフセットに使えない
+     */
+    private var offset: Int = 0
+
     init {
         refreshUser()
         fetch(FIRST_FETCH_UNIT)
@@ -95,7 +102,6 @@ class PostList(private val client: JumblrClient) {
         object : AsyncTaskHelper<Void, Void, List<Post>>() {
             override fun doTask(params: Array<out Void>): List<Post> {
                 // ここはバックグラウンドスレッド
-                val offset = posts.size
                 val parameter = hashMapOf(
                         "offset" to offset,
                         "limit" to FETCH_LIMIT,
@@ -113,6 +119,8 @@ class PostList(private val client: JumblrClient) {
 
             override fun onSuccess(result: List<Post>) {
                 // ここは UI スレッド
+                offset += result.size
+
                 val filteredResult = result.filter {
                     SUPPORTED_TYPES.contains(it.type)
                 }
