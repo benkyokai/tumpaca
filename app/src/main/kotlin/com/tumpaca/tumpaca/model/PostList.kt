@@ -19,7 +19,13 @@ class PostList(private val client: JumblrClient) {
         fun onChanged()
     }
 
+    interface FetchedListener {
+        fun onFetched(size: Int)
+    }
+
     var listener: ChangedListener? = null
+
+    var fetchedListener: FetchedListener? = null
 
     val size: Int
         get() = posts.size
@@ -108,6 +114,7 @@ class PostList(private val client: JumblrClient) {
                 posts.addAll(filteredResult)
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
                 listener?.onChanged()
+                fetchedListener?.onFetched(size)
                 fetching = false
             }
         }.go()

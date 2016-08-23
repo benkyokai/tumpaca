@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog
 import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.PostList
@@ -39,6 +40,9 @@ class DashboardFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fr_dashboard, container, false)
 
+        val page = view.findViewById(R.id.page) as TextView
+        val postCount = view.findViewById(R.id.post_count) as TextView
+
         (view.findViewById(R.id.view_pager) as ViewPager).let {
             viewPager = it
             it.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT
@@ -47,6 +51,8 @@ class DashboardFragment : FragmentBase() {
                 }
 
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                    page.text = "${position + 1}"
+                    postCount.text = "${postList?.size}"
                 }
 
                 override fun onPageSelected(position: Int) {
@@ -57,6 +63,11 @@ class DashboardFragment : FragmentBase() {
 
         // PostList と ViewPage のバインド
         postList = TPRuntime.tumblrService!!.postList
+        postList?.fetchedListener = object : PostList.FetchedListener {
+            override fun onFetched(size: Int) {
+                postCount.text = "${size}"
+            }
+        }
         dashboardAdapter = DashboardPageAdapter(fragmentManager, postList!!)
         viewPager?.adapter = dashboardAdapter
 
