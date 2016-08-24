@@ -11,13 +11,12 @@
         android:padding="8dip"
         android:descendantFocusability="blocksDescendants">
 
-        <ImageView
-            android:id="@+id/photo"
+        <LinearLayout
+            android:id="@+id/photo_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter" />
+            android:orientation="vertical"></LinearLayout>
+
         <WebView
             android:id="@+id/sub"
             android:layout_width="match_parent"
@@ -25,24 +24,54 @@
             android:layout_marginTop="12dp"
             android:textColor="#999999"
             android:textSize="12sp"
-            android:layout_below="@+id/photo"
+            android:layout_below="@+id/photo_list"
             android:layout_alignParentEnd="true" />
-        <TextView
-            android:id="@+id/title"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sub"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="16dp"
-            android:paddingTop="2dp"
-            android:gravity="right"
-            android:layout_toStartOf="@id/icon"/>
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="24dip"
-            android:layout_height="24dip"
-            android:layout_marginTop="8dp"
-            android:layout_below="@+id/sub"
-            android:layout_alignParentEnd="true"/>
+            android:layout_below="@id/sub"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/notes"
+                android:text="100notes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/post_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="right">
+
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="24dip"
+                    android:layout_height="24dip"
+                    android:layout_marginRight="4dp" />
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp" />
+
+                <ImageView
+                    android:id="@+id/reblog_icon"
+                    android:src="@drawable/ic_repeat_black_24dp"
+                    android:layout_width="18dip"
+                    android:layout_height="18dip"
+                    android:paddingTop="5dp"
+                    android:layout_marginRight="4dp" />
+
+                <TextView
+                    android:id="@+id/reblogged"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
     </RelativeLayout>
 </ScrollView>

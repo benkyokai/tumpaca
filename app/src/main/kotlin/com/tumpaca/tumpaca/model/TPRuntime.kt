@@ -2,6 +2,7 @@ package com.tumpaca.tumpaca.model
 
 import android.graphics.Bitmap
 import com.tumpaca.tumpaca.MainApplication
+import com.tumpaca.tumpaca.util.cache.AvatarUrlCache
 import com.tumpaca.tumpaca.util.cache.BitmapCache
 
 /**
@@ -10,6 +11,7 @@ import com.tumpaca.tumpaca.util.cache.BitmapCache
 
 object TPRuntime {
     val bitMapCache = BitmapCache<Bitmap>()
+    val avatarUrlCache = AvatarUrlCache<String>()
     var initialized = false
     var mainApplication: MainApplication? = null
     var tumblrService: TumblrService? = null

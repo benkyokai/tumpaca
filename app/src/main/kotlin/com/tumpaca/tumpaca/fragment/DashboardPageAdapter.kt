@@ -6,16 +6,15 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.Log
 import com.tumblr.jumblr.types.Post
-import com.tumpaca.tumpaca.fragment.*
 import com.tumpaca.tumpaca.fragment.post.*
 import com.tumpaca.tumpaca.model.PostList
 
-class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList): FragmentStatePagerAdapter(fm) {
+class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList) : FragmentStatePagerAdapter(fm) {
     companion object {
         private const val TAG = "DashboardPageAdapter"
     }
 
-    private val listener = object: PostList.ChangedListener {
+    private val listener = object : PostList.ChangedListener {
         override fun onChanged() {
             Log.d(TAG, "call notifyDataSetChanged()")
             notifyDataSetChanged()

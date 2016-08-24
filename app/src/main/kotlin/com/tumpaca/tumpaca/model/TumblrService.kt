@@ -57,7 +57,7 @@ class TumblrService(val context: Context) {
         }
         private set
 
-    val postList: PostList? = null
+    var postList: PostList? = null
         get() {
             if (!isLoggedIn) {
                 return null
@@ -94,6 +94,10 @@ class TumblrService(val context: Context) {
         loglr.initiateInActivity(activity)
     }
 
+    fun resetPosts() {
+        postList = null
+    }
+
     fun logout() {
         jumblerClient = null
         authInfo = null
@@ -101,10 +105,18 @@ class TumblrService(val context: Context) {
     }
 
     private fun refreshUser() {
-        AsyncTaskHelper.first<Void, Void, User> {
-            jumblerClient?.user()!!
-        }.then { result ->
-            user = result
+        object : AsyncTaskHelper<Void, Void, User>() {
+            override fun doTask(params: Array<out Void>): User {
+                return jumblerClient?.user()!!
+            }
+
+            override fun onError(e: Exception) {
+                // エラー処理
+            }
+
+            override fun onSuccess(result: User) {
+                user = result
+            }
         }.go()
     }
 
