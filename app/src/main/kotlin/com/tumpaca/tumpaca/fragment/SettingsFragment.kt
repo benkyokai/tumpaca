@@ -19,6 +19,7 @@ class SettingsFragment : FragmentBase() {
 
     interface SettingsFragmentListener {
         fun hideSettings()
+        fun reload()
     }
 
     var listener: SettingsFragmentListener? = null
@@ -29,6 +30,11 @@ class SettingsFragment : FragmentBase() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fr_settings, container, false)
+
+        val reloadButton = view.findViewById(R.id.reload_button)
+        reloadButton.setOnClickListener {
+            doReload()
+        }
 
         val logoutButton = view.findViewById(R.id.logout_button)
         logoutButton.setOnClickListener {
@@ -51,6 +57,10 @@ class SettingsFragment : FragmentBase() {
         } else {
             listener = context
         }
+    }
+
+    private fun doReload() {
+        listener?.reload()
     }
 
     private fun doLogout() {

@@ -57,7 +57,7 @@ class TumblrService(val context: Context) {
         }
         private set
 
-    val postList: PostList? = null
+    var postList: PostList? = null
         get() {
             if (!isLoggedIn) {
                 return null
@@ -92,6 +92,10 @@ class TumblrService(val context: Context) {
 
     fun auth(activity: FragmentActivity) {
         loglr.initiateInActivity(activity)
+    }
+
+    fun resetPosts() {
+        postList = null
     }
 
     fun logout() {

@@ -18,7 +18,7 @@ import com.tumpaca.tumpaca.util.reblogAsync
 
 class DashboardFragment : FragmentBase() {
     companion object {
-        private const val TAG = "DashboardFragment"
+        const val TAG = "DashboardFragment"
         private const val OFFSCREEN_PAGE_LIMIT = 4
     }
 
@@ -62,7 +62,9 @@ class DashboardFragment : FragmentBase() {
         }
 
         // PostList と ViewPage のバインド
-        postList = TPRuntime.tumblrService!!.postList
+        val tumblrService = TPRuntime.tumblrService!!
+        tumblrService.resetPosts()
+        postList = tumblrService.postList
         postList?.fetchedListener = object : PostList.FetchedListener {
             override fun onFetched(size: Int) {
                 postCount.text = "${size}"

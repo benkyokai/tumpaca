@@ -44,6 +44,11 @@ class MainActivity : AppCompatActivity(),
         ft.commit()
     }
 
+    override fun reload() {
+        finish()
+        startActivity(intent)
+    }
+
     override fun hideSettings() {
         onBackPressed()
     }
