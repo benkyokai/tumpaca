@@ -20,6 +20,7 @@ import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.DownloadImageTask
 import com.tumpaca.tumpaca.util.blogAvatarAsync
+import com.tumpaca.tumpaca.util.getBestSizeForScreen
 import com.tumpaca.tumpaca.view.GifSquareImageView
 import java.net.URL
 import java.util.*
@@ -35,7 +36,7 @@ class PhotoPostFragment : PostFragment() {
         val subText = post.caption
         val reblogged = post.rebloggedFromName
         val noteCount = post.noteCount
-        val urls = ArrayList(post.photos.map { it.sizes[1].url })
+        val urls = ArrayList(post.photos.map { it.getBestSizeForScreen(resources.displayMetrics).url })
 
         // View をつくる
         val view = inflater.inflate(R.layout.post_photo, container, false)

@@ -4,6 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.AsyncTask
+import android.util.DisplayMetrics
+import android.util.Log
+import com.tumblr.jumblr.types.Photo
+import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.model.TPRuntime
 
@@ -59,4 +63,21 @@ fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
             DownloadImageTask(callback).execute(avatarUrl)
         }
     }.execute()
+}
+
+fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): PhotoSize {
+    val w = metrics.widthPixels
+    val biggest = sizes.first()
+    val optimal = sizes.lastOrNull { it.width >= w }
+
+    if (optimal != null && optimal != biggest) {
+        Log.d("Util", "画面の解像度：${metrics.widthPixels}x${metrics.heightPixels}　採択した解像度：")
+        sizes.forEach { Log.d("Util", (if (it == optimal) "=>" else "  ") + it.debugString()) }
+    }
+
+    return optimal ?: biggest
+}
+
+fun PhotoSize.debugString(): String {
+    return "${width}x${height}"
 }
