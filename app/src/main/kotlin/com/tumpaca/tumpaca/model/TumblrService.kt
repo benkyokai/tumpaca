@@ -2,6 +2,7 @@ package com.tumpaca.tumpaca.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.AsyncTask
 import android.support.v4.app.FragmentActivity
 import android.util.Base64
 import android.util.Log
@@ -10,7 +11,6 @@ import com.tumblr.jumblr.types.User
 import com.tumblr.loglr.LoginResult
 import com.tumblr.loglr.Loglr
 import com.tumpaca.tumpaca.R
-import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.editSharedPreferences
 import java.util.*
 
@@ -105,19 +105,15 @@ class TumblrService(val context: Context) {
     }
 
     private fun refreshUser() {
-        object : AsyncTaskHelper<Void, Void, User>() {
-            override fun doTask(params: Array<out Void>): User {
-                return jumblerClient?.user()!!
+        object : AsyncTask<Void, Void, User>() {
+            override fun doInBackground(vararg args: Void): User? {
+                return jumblerClient?.user()
             }
 
-            override fun onError(e: Exception) {
-                // エラー処理
+            override fun onPostExecute(result: User?) {
+                user = result!!
             }
-
-            override fun onSuccess(result: User) {
-                user = result
-            }
-        }.go()
+        }.execute()
     }
 
     // バンドルされたファイルから ConsumerInfo を読み取ります。

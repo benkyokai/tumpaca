@@ -5,6 +5,7 @@ package com.tumpaca.tumpaca.fragment.post
  */
 
 import android.graphics.Color
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,6 @@ import com.felipecsl.gifimageview.library.GifImageView
 import com.tumblr.jumblr.types.PhotoPost
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
-import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import com.tumpaca.tumpaca.util.DownloadImageTask
 import com.tumpaca.tumpaca.util.blogAvatarAsync
 import com.tumpaca.tumpaca.view.GifSquareImageView
@@ -91,22 +91,19 @@ class PhotoPostFragment : PostFragment() {
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(it != 0)
                 imageLayout.addView(gifView)
+                object: AsyncTask<Unit, Unit, ByteArray>() {
 
-                object : AsyncTaskHelper<Void, Void, ByteArray>() {
-                    override fun doTask(params: Array<out Void>): ByteArray {
-                        return URL(url).openStream().readBytes()
+                    override fun doInBackground(vararg args: Unit): ByteArray {
+                        // TODO: 失敗した場合のエラーハンドリング
+                        return URL(urls[it]).openStream().readBytes()
                     }
 
-                    override fun onError(e: Exception) {
-                        // TODO エラー処理
-                    }
-
-                    override fun onSuccess(result: ByteArray) {
+                    override fun onPostExecute(result: ByteArray) {
                         gifView.setBytes(result)
                         gifView.startAnimation()
                         imageLayout.removeView(loadingGifView)
                     }
-                }.go()
+                }.execute()
             } else {
                 val iView = createImageView(it != 0)
                 imageLayout.addView(iView)

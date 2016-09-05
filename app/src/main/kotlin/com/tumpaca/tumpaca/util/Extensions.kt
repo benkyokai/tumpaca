@@ -3,6 +3,7 @@ package com.tumpaca.tumpaca.util
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.os.AsyncTask
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.model.TPRuntime
 
@@ -15,56 +16,47 @@ fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE
 
 fun Post.likeAsync(callback: (Post) -> Unit) {
     val self = this
-    object : AsyncTaskHelper<Unit, Unit, Unit>() {
-        override fun doTask(params: Array<out Unit>) {
+    object : AsyncTask<Unit, Unit, Unit>() {
+        override fun doInBackground(vararg args: Unit) {
             if (isLiked) {
                 unlike()
             } else {
                 like()
             }
-        }
-
-        override fun onError(e: Exception) {
             // TODO エラー処理
         }
 
-        override fun onSuccess(result: Unit) {
+        override fun onPostExecute(result: Unit) {
             callback(self)
         }
-    }.go()
+    }.execute()
 }
 
 fun Post.reblogAsync(blogName: String, comment: String, callback: (Post) -> Unit) {
     val self = this
-    object : AsyncTaskHelper<Unit, Unit, Unit>() {
-        override fun doTask(params: Array<out Unit>) {
+    object : AsyncTask<Unit, Unit, Unit>() {
+        override fun doInBackground(vararg args: Unit) {
             reblog(blogName, mapOf(Pair("comment", comment)))
-        }
-
-        override fun onError(e: Exception) {
             // TODO エラー処理
         }
 
-        override fun onSuccess(result: Unit) {
+        override fun onPostExecute(result: Unit) {
             callback(self)
         }
-    }.go()
+    }.execute()
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
-    object : AsyncTaskHelper<Void, Void, String?>() {
-        override fun doTask(params: Array<out Void>): String? {
+    object : AsyncTask<Void, Void, String?>() {
+        override fun doInBackground(vararg args: Void): String? {
             return TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
                 client.blogInfo(blogName).avatar()
             })
-        }
-
-        override fun onError(e: Exception) {
             // TODO エラー処理
         }
 
-        override fun onSuccess(avatarUrl: String?) {
+        override fun onPostExecute(avatarUrl: String?) {
             DownloadImageTask(callback).execute(avatarUrl)
         }
-    }.go()
+    }.execute()
 }
