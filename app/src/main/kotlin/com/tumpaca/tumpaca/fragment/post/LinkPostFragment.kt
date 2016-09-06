@@ -8,10 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.tumblr.jumblr.types.LinkPost
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
@@ -31,35 +27,8 @@ class LinkPostFragment : PostFragment() {
         // View をつくる
         val view = inflater.inflate(R.layout.post_link, container, false)
 
-        val titleView = view.findViewById(R.id.title) as TextView
-        titleView.text = blogName
-
-        val subTextView = view.findViewById(R.id.sub) as WebView
-        val mimeType = "text/html; charset=utf-8"
-        subTextView.loadData(subText, mimeType, null)
-
-        val iconView = view.findViewById(R.id.icon) as ImageView
-        post.blogAvatarAsync { bitmap ->
-            iconView.setImageBitmap(bitmap)
-        }
-
-        val rebloggedView = view.findViewById(R.id.reblogged) as TextView
-        if (reblogged != null) {
-            rebloggedView.text = reblogged
-        } else { // reblogじゃない場合はリブログアイコンを非表示にする
-            val reblogInfoLayout = view.findViewById(R.id.post_info) as LinearLayout
-            val reblogIcon = view.findViewById(R.id.reblog_icon)
-            if (reblogIcon != null) {
-                reblogInfoLayout.removeView(reblogIcon)
-            }
-        }
-
-        val noteCountView = view.findViewById(R.id.notes) as TextView
-        if (noteCount != null && noteCount!! == 1L) {
-            noteCountView.text = "${noteCount!!} note"
-        } else {
-            noteCountView.text = "${noteCount!!} notes"
-        }
+        initStandardViews(view, post.blogName, post.linkUrl, post.rebloggedFromName, post.noteCount)
+        post.blogAvatarAsync { setIcon(view, it) }
 
         return view
     }
