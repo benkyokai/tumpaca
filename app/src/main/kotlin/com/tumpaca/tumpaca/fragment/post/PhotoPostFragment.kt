@@ -24,7 +24,11 @@ import java.net.URL
 import java.util.*
 
 class PhotoPostFragment : PostFragment() {
-    private val LOADING_VIEW_ID = 1
+
+    companion object {
+        private const val LOADING_VIEW_ID = 1
+        private var loadingGifBytes: ByteArray? = null
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val post = TPRuntime.tumblrService!!.postList?.get(page) as PhotoPost
@@ -41,13 +45,15 @@ class PhotoPostFragment : PostFragment() {
         // ImageViewを挿入するPhotoListLayoutを取得
         val imageLayout = view.findViewById(R.id.photo_list) as LinearLayout
 
-        val LOADING_GIF_BYTES = resources.openRawResource(R.raw.tumpaca_run).readBytes()
 
+        if (loadingGifBytes == null) {
+            loadingGifBytes = resources.openRawResource(R.raw.tumpaca_run).readBytes()
+        }
         val loadingGifView = createLoadingGifImageView()
         loadingGifView.id = LOADING_VIEW_ID
         loadingGifView.setBackgroundColor(Color.parseColor("#35465c"))
         imageLayout.addView(loadingGifView)
-        loadingGifView.setBytes(LOADING_GIF_BYTES)
+        loadingGifView.setBytes(loadingGifBytes)
         loadingGifView.startAnimation()
 
         /**
