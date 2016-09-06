@@ -1,3 +1,6 @@
 [submodule "jumblr"]
 	path = jumblr
 	url = https://github.com/benkyokai/jumblr.git
+[submodule "GifImageView"]
+	path = GifImageView
+	url = https://github.com/benkyokai/GifImageView.git
