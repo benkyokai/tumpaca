@@ -2,13 +2,13 @@ package com.tumpaca.tumpaca.fragment;
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.PostList
@@ -128,7 +128,7 @@ class DashboardFragment : FragmentBase() {
         currentPost?.likeAsync({ post ->
             toggleLikeButton(post)
             val msg = if (post.isLiked) R.string.liked_result else R.string.unliked_result
-            Snackbar.make(view!!, msg, Snackbar.LENGTH_SHORT).show()
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -143,7 +143,7 @@ class DashboardFragment : FragmentBase() {
                     val comment = input.text.toString()
                     val blogName = TPRuntime.tumblrService!!.user?.blogs?.first()?.name!!
                     currentPost?.reblogAsync(blogName, comment, { post ->
-                        Snackbar.make(view!!, R.string.reblogged_result, Snackbar.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.reblogged_result, Toast.LENGTH_SHORT).show()
                     })
                 }
                 .setNegativeButton(android.R.string.cancel) { d, w -> }
