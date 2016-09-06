@@ -1,10 +1,12 @@
 package com.tumpaca.tumpaca.fragment;
 
 import android.content.Context
+import android.media.Image
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -28,6 +30,7 @@ class DashboardFragment : FragmentBase() {
 
     var postList: PostList? = null
     var likeButton: ImageButton? = null
+    var isFabOpen = false
     var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPageAdapter? = null
     var listener: DashboardFragmentListener? = null
@@ -74,6 +77,31 @@ class DashboardFragment : FragmentBase() {
         viewPager?.adapter = dashboardAdapter
 
         dashboardAdapter?.onBind()
+
+        (view.findViewById(R.id.main_menu_button) as ImageButton).let { mainFab ->
+            val fabOpen = AnimationUtils.loadAnimation(context, R.anim.fab_open)
+            val fabClose = AnimationUtils.loadAnimation(context, R.anim.fab_close)
+            val rotateForward = AnimationUtils.loadAnimation(context, R.anim.rotate_forward)
+            val rotateBackward = AnimationUtils.loadAnimation(context, R.anim.rotate_backward)
+            val fabs = arrayOf(R.id.settings_button, R.id.reblog_button, R.id.like_button).map { view.findViewById(it) }
+            mainFab.setOnClickListener {
+                if (isFabOpen) {
+                    fabs.forEach {
+                        it.startAnimation(fabClose)
+                        it.isClickable = false
+                    }
+                    mainFab.startAnimation(rotateBackward)
+                    isFabOpen = false
+                } else {
+                    fabs.forEach {
+                        it.startAnimation(fabOpen)
+                        it.isClickable = true
+                    }
+                    mainFab.startAnimation(rotateForward)
+                    isFabOpen = true
+                }
+            }
+        }
 
         // Like
         (view.findViewById(R.id.like_button) as ImageButton).let {
