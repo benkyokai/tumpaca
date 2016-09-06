@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import com.tumblr.jumblr.types.Photo
 import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
@@ -80,4 +82,8 @@ fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): PhotoSize {
 
 fun PhotoSize.debugString(): String {
     return "${width}x${height}"
+}
+
+fun ViewGroup.children(): List<View> {
+    return 0.until(childCount).map { getChildAt(it) }
 }
