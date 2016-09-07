@@ -13,8 +13,8 @@ object TPRuntime {
     val bitMapCache = BitmapCache()
     val avatarUrlCache = AvatarUrlCache()
     var initialized = false
-    var mainApplication: MainApplication? = null
-    var tumblrService: TumblrService? = null
+    lateinit var mainApplication: MainApplication
+    lateinit var tumblrService: TumblrService
         private set
 
     fun initialize(application: MainApplication) {

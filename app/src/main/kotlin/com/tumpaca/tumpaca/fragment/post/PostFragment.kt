@@ -25,7 +25,7 @@ abstract class PostFragment : FragmentBase() {
     }
 
     fun getPost(): Post? {
-        return TPRuntime.tumblrService!!.postList?.get(page)
+        return TPRuntime.tumblrService.postList?.get(page)
     }
 
     fun initStandardViews(view: View, blogName: String, subText: String, reblogged: String?, noteCount: Long) {

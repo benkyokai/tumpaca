@@ -68,9 +68,8 @@ class DashboardFragment : FragmentBase() {
         }
 
         // PostList と ViewPage のバインド
-        val tumblrService = TPRuntime.tumblrService!!
-        tumblrService.resetPosts()
-        postList = tumblrService.postList
+        TPRuntime.tumblrService.resetPosts()
+        postList = TPRuntime.tumblrService.postList
         postList?.fetchedListener = object : PostList.FetchedListener {
             override fun onFetched(size: Int) {
                 postCount.text = "${size}"
