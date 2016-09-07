@@ -16,7 +16,7 @@ import com.tumpaca.tumpaca.util.blogAvatarAsync
 class TextPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = TPRuntime.tumblrService!!.postList?.get(page) as TextPost
+        val post = getPost() as TextPost
 
         // View をつくる
         val view = inflater.inflate(R.layout.post_text, container, false)

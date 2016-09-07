@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.FragmentBase
+import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
 
 abstract class PostFragment : FragmentBase() {
@@ -21,6 +22,10 @@ abstract class PostFragment : FragmentBase() {
         super.onCreate(savedInstanceState)
         val bundle = arguments
         page = bundle.getInt("pageNum")
+    }
+
+    fun getPost(): Post? {
+        return TPRuntime.tumblrService!!.postList?.get(page)
     }
 
     fun initStandardViews(view: View, blogName: String, subText: String, reblogged: String?, noteCount: Long) {

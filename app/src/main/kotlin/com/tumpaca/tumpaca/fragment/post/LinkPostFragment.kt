@@ -16,7 +16,7 @@ import com.tumpaca.tumpaca.util.blogAvatarAsync
 class LinkPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = TPRuntime.tumblrService!!.postList?.get(page) as LinkPost
+        val post = getPost() as LinkPost
 
         // データを取得
         val blogName = post.blogName

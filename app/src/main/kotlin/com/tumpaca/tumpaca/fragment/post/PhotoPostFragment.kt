@@ -47,7 +47,7 @@ class PhotoPostFragment : PostFragment() {
     val tmpRect = Rect()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = TPRuntime.tumblrService!!.postList?.get(page) as PhotoPost
+        val post = getPost() as PhotoPost
 
         // データを取得
         val urls = post.photos.map { it.getBestSizeForScreen(resources.displayMetrics).url }

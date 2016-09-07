@@ -16,7 +16,7 @@ import com.tumpaca.tumpaca.util.blogAvatarAsync
 class VideoPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = TPRuntime.tumblrService!!.postList?.get(page) as VideoPost
+        val post = getPost() as VideoPost
 
         // View をつくる
         val view = inflater.inflate(R.layout.post_video, container, false)

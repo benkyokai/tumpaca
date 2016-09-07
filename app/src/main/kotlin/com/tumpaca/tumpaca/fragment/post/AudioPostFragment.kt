@@ -16,7 +16,7 @@ import com.tumpaca.tumpaca.util.blogAvatarAsync
 class AudioPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = TPRuntime.tumblrService!!.postList?.get(page) as AudioPost
+        val post = getPost() as AudioPost
 
         // View をつくる
         val view = inflater.inflate(R.layout.post_audio, container, false)
