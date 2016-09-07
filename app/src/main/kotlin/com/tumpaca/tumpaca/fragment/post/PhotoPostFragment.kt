@@ -89,7 +89,7 @@ class PhotoPostFragment : PostFragment() {
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(it != 0)
                 imageLayout?.addView(gifView)
-                object: AsyncTask<Unit, Unit, ByteArray>() {
+                val task = object: AsyncTask<Unit, Unit, ByteArray>() {
 
                     override fun doInBackground(vararg args: Unit): ByteArray {
                         // TODO: 失敗した場合のエラーハンドリング
@@ -109,13 +109,15 @@ class PhotoPostFragment : PostFragment() {
                         imageLayout?.removeView(loadingGifView)
                     }
                 }.execute()
+                addAsyncTask(task)
             } else {
                 val iView = createImageView(it != 0)
                 imageLayout?.addView(iView)
-                DownloadImageTask { bitmap ->
+                val task = DownloadImageTask { bitmap ->
                     iView.setImageBitmap(bitmap)
                     imageLayout?.removeView(loadingGifView)
                 }.execute(urls[it])
+                addAsyncTask(task)
             }
         }
 

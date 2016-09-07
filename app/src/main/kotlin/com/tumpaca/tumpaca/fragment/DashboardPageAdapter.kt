@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.Log
+import android.view.ViewGroup
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.fragment.post.*
 import com.tumpaca.tumpaca.model.PostList
@@ -73,4 +74,8 @@ class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList) 
         }
     }
 
+    override fun destroyItem(container: ViewGroup?, position: Int, obj: Any?) {
+        super.destroyItem(container, position, obj)
+        (obj as? PostFragment)?.let { it.cancelTasks() }
+    }
 }

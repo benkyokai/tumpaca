@@ -1,6 +1,8 @@
 package com.tumpaca.tumpaca.fragment.post
 
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.widget.ImageView
@@ -11,11 +13,15 @@ import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.FragmentBase
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
+import java.lang.ref.WeakReference
+import java.util.*
 
 abstract class PostFragment : FragmentBase() {
     // TODO
     // PostList で対象のポストを管理していると、PostList の先頭に新しい Post がきた場合に対応できないので本当はよくない
     protected var page: Int = -1
+
+    protected var tasks = ArrayList<WeakReference<AsyncTask<*, *, *>>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +62,21 @@ abstract class PostFragment : FragmentBase() {
 
     fun setIcon(view: View, post: Post) {
         val iconView = view.findViewById(R.id.icon) as ImageView
-        post.blogAvatarAsync { iconView.setImageBitmap(it) }
+        val task = post.blogAvatarAsync { iconView.setImageBitmap(it) }
+        addAsyncTask(task)
+    }
+
+    fun addAsyncTask(task: AsyncTask<*,*,*>) {
+        tasks.add(WeakReference(task))
+    }
+
+    fun cancelTasks() {
+        Log.d("PostFragment", "Canceling tasks")
+        var toCancel: List<WeakReference<AsyncTask<*,*,*>>>? = null
+        synchronized(tasks) {
+            toCancel = tasks.toList()
+            tasks.clear()
+        }
+        toCancel?.forEach { it.get()?.cancel(true) }
     }
 }
