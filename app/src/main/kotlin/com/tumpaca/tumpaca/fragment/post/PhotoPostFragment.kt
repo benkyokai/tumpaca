@@ -35,7 +35,13 @@ class PhotoPostFragment : PostFragment() {
     }
 
 
-    var isPostOnScreen = false
+    // このViewが実際に画面に表示されているかどうか。
+    // ViewPagerでの使用を想定しているので、isVisible()は信用できない
+    // （ViewPagerのcurrentItemでなくても事前ロードされるときからtrueが返るため）
+    // この値はsetUserVisibleHint()で受け取って、onPause()やonResume()で
+    // 変更しない（アプリがバックグラウンドにいるときなど実際に画面に描画されて
+    // いなくてもこのステートはそのまま。
+    var isVisibleToUser = false
     var imageLayout: LinearLayout? = null
     // GIFの可視判定を行う呼び出しに渡す必要があるが、中身は使っていない
     val tmpRect = Rect()
@@ -95,7 +101,7 @@ class PhotoPostFragment : PostFragment() {
 
                     override fun onPostExecute(result: ByteArray) {
                         gifView.setBytes(result)
-                        if (isPostOnScreen) {
+                        if (isVisibleToUser) {
                             // すでに見えているので今すぐアニメーションを開始
                             gifView.startAnimation()
                         } else {
@@ -126,7 +132,7 @@ class PhotoPostFragment : PostFragment() {
     }
 
     private fun startStopByVisibility(view: GifImageView) {
-        if (isPostOnScreen && view.getLocalVisibleRect(tmpRect)) {
+        if (isVisibleToUser && view.getLocalVisibleRect(tmpRect)) {
             if (!view.isAnimating) {
                 view.startAnimation()
                 Log.d(TAG, "Page $page: アニメーション開始")
@@ -137,11 +143,23 @@ class PhotoPostFragment : PostFragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (isVisibleToUser) {
+            imageLayout?.children()?.forEach { (it as? GifImageView)?.stopAnimation() }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startStopAnimations()
+    }
+
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         // FragmentをViewPagerの中で使うとisVisible()はほぼ常にtrueになる。
         // 実際表示されているかどうかはこのメソッドでリスンする
         super.setUserVisibleHint(isVisibleToUser)
-        this.isPostOnScreen = isVisibleToUser
+        this.isVisibleToUser = isVisibleToUser
         startStopAnimations()
     }
 
