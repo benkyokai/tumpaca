@@ -86,7 +86,7 @@ class PhotoPostFragment : PostFragment() {
         /**
          * urls.size個の画像があるので、個数分のImageViewを生成して、PhotoListLayoutに追加する
          */
-        0.until(urls.size).forEach {
+        (0 until urls.size).forEach {
             val url = urls[it]
             // gifだった場合はGif用のcustom image viewを使う
             if (url.endsWith(".gif")) {
