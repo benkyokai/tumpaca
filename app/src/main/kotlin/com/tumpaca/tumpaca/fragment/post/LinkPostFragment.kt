@@ -28,7 +28,7 @@ class LinkPostFragment : PostFragment() {
         val view = inflater.inflate(R.layout.post_link, container, false)
 
         initStandardViews(view, post.blogName, post.linkUrl, post.rebloggedFromName, post.noteCount)
-        post.blogAvatarAsync { setIcon(view, it) }
+        setIcon(view, post)
 
         return view
     }

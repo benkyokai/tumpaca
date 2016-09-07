@@ -22,7 +22,7 @@ class VideoPostFragment : PostFragment() {
         val view = inflater.inflate(R.layout.post_video, container, false)
 
         initStandardViews(view, post.blogName, post.videos[0].embedCode, post.rebloggedFromName, post.noteCount)
-        post.blogAvatarAsync { setIcon(view, it) }
+        setIcon(view, post)
 
         return view
     }

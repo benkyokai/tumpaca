@@ -56,7 +56,7 @@ class PhotoPostFragment : PostFragment() {
         val view = inflater.inflate(R.layout.post_photo, container, false)
 
         initStandardViews(view, post.blogName, post.caption, post.rebloggedFromName, post.noteCount)
-        post.blogAvatarAsync { setIcon(view, it) }
+        setIcon(view, post)
 
         // ImageViewを挿入するPhotoListLayoutを取得
         imageLayout = view.findViewById(R.id.photo_list) as LinearLayout

@@ -22,7 +22,7 @@ class AudioPostFragment : PostFragment() {
         val view = inflater.inflate(R.layout.post_audio, container, false)
 
         initStandardViews(view, post.blogName, post.embedCode, post.rebloggedFromName, post.noteCount)
-        post.blogAvatarAsync { setIcon(view, it) }
+        setIcon(view, post)
 
         return view
     }

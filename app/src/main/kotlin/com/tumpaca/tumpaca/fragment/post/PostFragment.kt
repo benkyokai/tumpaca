@@ -7,8 +7,10 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.FragmentBase
+import com.tumpaca.tumpaca.util.blogAvatarAsync
 
 abstract class PostFragment : FragmentBase() {
     // TODO
@@ -48,8 +50,8 @@ abstract class PostFragment : FragmentBase() {
         }
     }
 
-    fun setIcon(view: View, bitmap: Bitmap) {
+    fun setIcon(view: View, post: Post) {
         val iconView = view.findViewById(R.id.icon) as ImageView
-        iconView.setImageBitmap(bitmap)
+        post.blogAvatarAsync { iconView.setImageBitmap(it) }
     }
 }

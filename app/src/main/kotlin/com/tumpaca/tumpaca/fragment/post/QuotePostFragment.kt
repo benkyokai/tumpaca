@@ -22,7 +22,7 @@ class QuotePostFragment : PostFragment() {
         val view = inflater.inflate(R.layout.post_quote, container, false)
 
         initStandardViews(view, post.blogName, post.text, post.rebloggedFromName, post.noteCount)
-        post.blogAvatarAsync { setIcon(view, it) }
+        setIcon(view, post)
 
         return view
     }
