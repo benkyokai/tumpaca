@@ -50,7 +50,7 @@ class PhotoPostFragment : PostFragment() {
         val post = TPRuntime.tumblrService!!.postList?.get(page) as PhotoPost
 
         // データを取得
-        val urls = ArrayList(post.photos.map { it.getBestSizeForScreen(resources.displayMetrics).url })
+        val urls = post.photos.map { it.getBestSizeForScreen(resources.displayMetrics).url }
 
         // View をつくる
         val view = inflater.inflate(R.layout.post_photo, container, false)
