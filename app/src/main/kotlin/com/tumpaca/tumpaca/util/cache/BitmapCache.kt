@@ -13,7 +13,7 @@ interface Cache<T> {
     fun getIfNoneAndSet(key: String, f: () -> T?): T?
 }
 
-class BitmapCache<T : Bitmap> : Cache<T> {
+class BitmapCache() : Cache<Bitmap> {
     val TAG = "BitmapCache"
 
     private val MAX_SIZE = 32 * 1024 * 1024
@@ -24,19 +24,18 @@ class BitmapCache<T : Bitmap> : Cache<T> {
         }
     }
 
-    override fun set(key: String, value: T) {
+    override fun set(key: String, value: Bitmap) {
         val bitmap: Bitmap = value
         lruCache.put(key, bitmap)
     }
 
-    override fun get(key: String): T? {
+    override fun get(key: String): Bitmap? {
         // put でかならず Bitmap をいれていて、T は Bitmap を extends しているので問題なし
-        @Suppress("UNCHECKED_CAST")
-        val bitmap = lruCache.get(key) as T?
+        val bitmap = lruCache.get(key)
         return bitmap
     }
 
-    override fun getIfNoneAndSet(key: String, f: () -> T?): T? {
+    override fun getIfNoneAndSet(key: String, f: () -> Bitmap?): Bitmap? {
         // キャッシュにあればその値を返す
         get(key)?.let {
             Log.d(TAG, "bitmap cache hit")
@@ -54,7 +53,7 @@ class BitmapCache<T : Bitmap> : Cache<T> {
     }
 }
 
-class AvatarUrlCache<T : String> : Cache<T> {
+class AvatarUrlCache() : Cache<String> {
     val TAG = "AvatarUrlCache"
 
     private val MAX_SIZE = 2 * 1024 * 1024 // 2MB
@@ -65,18 +64,17 @@ class AvatarUrlCache<T : String> : Cache<T> {
         }
     }
 
-    override fun set(key: String, value: T) {
+    override fun set(key: String, value: String) {
         val url: String = value
         lruCache.put(key, url)
     }
 
-    override fun get(key: String): T? {
-        @Suppress("UNCHECKED_CAST")
-        val url = lruCache.get(key) as T?
+    override fun get(key: String): String? {
+        val url = lruCache.get(key) as String?
         return url
     }
 
-    override fun getIfNoneAndSet(key: String, f: () -> T?): T? {
+    override fun getIfNoneAndSet(key: String, f: () -> String?): String? {
         // キャッシュにあればその値を返す
         get(key)?.let {
             Log.d(TAG, "avatar url cache hit")

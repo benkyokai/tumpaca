@@ -10,8 +10,8 @@ import com.tumpaca.tumpaca.util.cache.BitmapCache
  */
 
 object TPRuntime {
-    val bitMapCache = BitmapCache<Bitmap>()
-    val avatarUrlCache = AvatarUrlCache<String>()
+    val bitMapCache = BitmapCache()
+    val avatarUrlCache = AvatarUrlCache()
     var initialized = false
     var mainApplication: MainApplication? = null
     var tumblrService: TumblrService? = null
