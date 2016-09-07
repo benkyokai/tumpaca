@@ -1,7 +1,6 @@
 package com.tumpaca.tumpaca.fragment;
 
 import android.content.Context
-import android.media.Image
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog

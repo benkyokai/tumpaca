@@ -17,14 +17,11 @@ import android.widget.LinearLayout
 import com.felipecsl.gifimageview.library.GifImageView
 import com.tumblr.jumblr.types.PhotoPost
 import com.tumpaca.tumpaca.R
-import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.DownloadImageTask
-import com.tumpaca.tumpaca.util.blogAvatarAsync
 import com.tumpaca.tumpaca.util.children
 import com.tumpaca.tumpaca.util.getBestSizeForScreen
 import com.tumpaca.tumpaca.view.GifSquareImageView
 import java.net.URL
-import java.util.*
 
 class PhotoPostFragment : PostFragment() {
 

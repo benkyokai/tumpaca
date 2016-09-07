@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
-import com.tumpaca.tumpaca.model.TumblrService
 
 class AuthFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {

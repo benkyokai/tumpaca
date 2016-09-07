@@ -10,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tumblr.jumblr.types.TextPost
 import com.tumpaca.tumpaca.R
-import com.tumpaca.tumpaca.model.TPRuntime
-import com.tumpaca.tumpaca.util.blogAvatarAsync
 
 class TextPostFragment : PostFragment() {
 

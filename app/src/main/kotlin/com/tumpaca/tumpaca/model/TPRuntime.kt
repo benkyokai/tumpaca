@@ -1,6 +1,5 @@
 package com.tumpaca.tumpaca.model
 
-import android.graphics.Bitmap
 import com.tumpaca.tumpaca.MainApplication
 import com.tumpaca.tumpaca.util.cache.AvatarUrlCache
 import com.tumpaca.tumpaca.util.cache.BitmapCache
