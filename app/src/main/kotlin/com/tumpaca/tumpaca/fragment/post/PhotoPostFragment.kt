@@ -29,6 +29,7 @@ class PhotoPostFragment : PostFragment() {
         private const val LOADING_VIEW_ID = 1
         private var loadingGifBytes: ByteArray? = null
         private const val TAG = "PhotoPost"
+        private val tmpRect = Rect()
     }
 
 
@@ -41,7 +42,6 @@ class PhotoPostFragment : PostFragment() {
     var isVisibleToUser = false
     var imageLayout: LinearLayout? = null
     // GIFの可視判定を行う呼び出しに渡す必要があるが、中身は使っていない
-    val tmpRect = Rect()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val post = getPost() as PhotoPost
