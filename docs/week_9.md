@@ -45,7 +45,7 @@
     - 実際の表示／非表示のときに `Fragment.setUserVisibleHint()` が呼ばれるのでこれで状態がとれる
   - アプリがフォアグラウンドに戻ったとき (`onResume()`)
 - 以下のタイミングで可視判定を行い、見えない GIF を停止する
-  - `PhotoPostFragment` が `ViewPager`
+  - `PhotoPostFragment` が `ViewPager` の `currentItem` でなくなるとき
   - `PhotoPostFragment` のルート `ScrollView` のスクロール位置が変わったとき (`OnScrollChangeListener`)
   - GIF が格納される `LinearLayout` のレイアウトが変わったとき (`OnLayoutChangeListener`)
     - 最初のフレームが描画されるまでは各 `ImageView` のサイズは 0x0 なので描画によって見えていたものが見えなくなる可能性がある
