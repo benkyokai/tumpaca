@@ -19,6 +19,7 @@ import com.tumblr.jumblr.types.PhotoPost
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.DownloadImageTask
 import com.tumpaca.tumpaca.util.children
+import com.tumpaca.tumpaca.util.enumerate
 import com.tumpaca.tumpaca.util.getBestSizeForScreen
 import com.tumpaca.tumpaca.view.GifSquareImageView
 import java.net.URL
@@ -83,17 +84,16 @@ class PhotoPostFragment : PostFragment() {
         /**
          * urls.size個の画像があるので、個数分のImageViewを生成して、PhotoListLayoutに追加する
          */
-        (0 until urls.size).forEach {
-            val url = urls[it]
+        for ((i, url) in urls.enumerate()) {
             // gifだった場合はGif用のcustom image viewを使う
             if (url.endsWith(".gif")) {
-                val gifView = createGifImageView(it != 0)
+                val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
                 object: AsyncTask<Unit, Unit, ByteArray>() {
 
                     override fun doInBackground(vararg args: Unit): ByteArray {
                         // TODO: 失敗した場合のエラーハンドリング
-                        return URL(urls[it]).openStream().readBytes()
+                        return URL(url).openStream().readBytes()
                     }
 
                     override fun onPostExecute(result: ByteArray) {
@@ -110,12 +110,12 @@ class PhotoPostFragment : PostFragment() {
                     }
                 }.execute()
             } else {
-                val iView = createImageView(it != 0)
+                val iView = createImageView(i != 0)
                 imageLayout?.addView(iView)
                 DownloadImageTask { bitmap ->
                     iView.setImageBitmap(bitmap)
                     imageLayout?.removeView(loadingGifView)
-                }.execute(urls[it])
+                }.execute(url)
             }
         }
 
