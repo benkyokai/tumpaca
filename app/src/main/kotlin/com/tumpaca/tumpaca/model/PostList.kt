@@ -21,13 +21,16 @@ class PostList(private val client: JumblrClient) {
         fun onChanged()
     }
 
-    interface FetchedListener {
-        fun onFetched(size: Int)
+    // マルチスレッドでは使わないが、リスナーのイテレート中に自身を消したりするので CopyOnWriteArrayList を利用
+    val listeners: CopyOnWriteArrayList<ChangedListener> = CopyOnWriteArrayList()
+
+    fun addListeners(listener: ChangedListener) {
+        listeners.add(listener)
     }
 
-    var listener: ChangedListener? = null
-
-    var fetchedListener: FetchedListener? = null
+    fun removeListeners(listener: ChangedListener) {
+        listeners.remove(listener)
+    }
 
     val size: Int
         get() = posts.size
@@ -135,8 +138,7 @@ class PostList(private val client: JumblrClient) {
 
                 posts.addAll(filteredResult)
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
-                listener?.onChanged()
-                fetchedListener?.onFetched(size)
+                listeners.forEach { it.onChanged() }
                 fetching = false
                 if (result.size > 0) {
                     fetchImpl(fetchSize - result.size)

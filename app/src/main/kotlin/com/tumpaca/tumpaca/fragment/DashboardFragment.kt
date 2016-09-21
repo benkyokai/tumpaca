@@ -33,6 +33,7 @@ class DashboardFragment : FragmentBase() {
     var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPageAdapter? = null
     var listener: DashboardFragmentListener? = null
+    var changedListener: PostList.ChangedListener? = null
 
     var currentPost: Post? = null
         get() = postList?.get(viewPager!!.currentItem)
@@ -69,11 +70,14 @@ class DashboardFragment : FragmentBase() {
         // PostList と ViewPage のバインド
         TPRuntime.tumblrService.resetPosts()
         postList = TPRuntime.tumblrService.postList
-        postList?.fetchedListener = object : PostList.FetchedListener {
-            override fun onFetched(size: Int) {
-                postCount.text = "${size}"
+
+        changedListener = object : PostList.ChangedListener {
+            override fun onChanged() {
+                postCount.text = postList?.size.toString()
             }
         }
+        postList?.addListeners(changedListener!!)
+
         dashboardAdapter = DashboardPageAdapter(fragmentManager, postList!!)
         viewPager?.adapter = dashboardAdapter
 
@@ -135,6 +139,9 @@ class DashboardFragment : FragmentBase() {
     override fun onDestroyView() {
         super.onDestroyView()
         dashboardAdapter?.onUnbind()
+        if (changedListener != null) {
+            postList?.removeListeners(changedListener!!)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
