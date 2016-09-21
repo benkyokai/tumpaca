@@ -1,2 +1,2 @@
-include ':app', ':jumblr'
+include ':app', ':jumblr', ':GifImageView:library'
 rootProject.name = 'tumpaca'

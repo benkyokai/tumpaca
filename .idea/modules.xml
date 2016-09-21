@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/GifImageView/GifImageView.iml" filepath="$PROJECT_DIR$/GifImageView/GifImageView.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/jumblr/jumblr.iml" filepath="$PROJECT_DIR$/jumblr/jumblr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GifImageView/library/library.iml" filepath="$PROJECT_DIR$/GifImageView/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/tumpaca.iml" filepath="$PROJECT_DIR$/tumpaca.iml" />
     </modules>
   </component>

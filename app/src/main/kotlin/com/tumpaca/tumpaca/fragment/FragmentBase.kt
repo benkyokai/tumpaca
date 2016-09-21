@@ -16,11 +16,7 @@ abstract class FragmentBase : Fragment() {
     }
 
     protected fun getActionBar(): ActionBar? {
-        val activity = activity
-        if (activity is AppCompatActivity) {
-            return activity.supportActionBar
-        }
-        return null
+        return (activity as? AppCompatActivity)?.supportActionBar
     }
 
 }

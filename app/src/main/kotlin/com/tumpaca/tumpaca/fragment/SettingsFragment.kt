@@ -65,7 +65,7 @@ class SettingsFragment : FragmentBase() {
 
     private fun doLogout() {
         // TODO 本当にログインしたのかダイアログで確認した方がいい
-        TPRuntime.tumblrService!!.logout()
+        TPRuntime.tumblrService.logout()
         replaceFragment(AuthFragment(), false)
     }
 

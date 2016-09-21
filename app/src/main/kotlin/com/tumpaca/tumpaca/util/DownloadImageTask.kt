@@ -30,7 +30,7 @@ class DownloadImageTask(val callback: (Bitmap) -> Unit) : AsyncTask<String, Void
                 BitmapFactory.decodeStream(stream, null, options)
             })
         } catch(e: Exception) {
-            Log.e("Error", e.message)
+            Log.e(TAG, e.message)
             e.printStackTrace()
             return null
         }

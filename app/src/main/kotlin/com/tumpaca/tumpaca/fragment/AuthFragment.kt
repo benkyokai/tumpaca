@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
-import com.tumpaca.tumpaca.model.TumblrService
 
 class AuthFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
@@ -29,13 +28,12 @@ class AuthFragment : FragmentBase() {
 
         // Tumblr へのログインは別 Activity で行うが、ログインが終わるとその Activity は閉じられる。
         // ログインに成功したら、自動的に次の画面に遷移したいので onResume() でログイン状態をチェックする必要がある。
-        val service: TumblrService = TPRuntime.tumblrService!!
-        if (service.isLoggedIn) {
+        if (TPRuntime.tumblrService.isLoggedIn) {
             replaceFragment(DashboardFragment(), false, DashboardFragment.TAG)
         }
     }
 
     private fun auth() {
-        TPRuntime.tumblrService!!.auth(activity)
+        TPRuntime.tumblrService.auth(activity)
     }
 }

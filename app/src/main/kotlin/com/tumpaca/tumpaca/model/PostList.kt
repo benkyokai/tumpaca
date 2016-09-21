@@ -1,10 +1,10 @@
 package com.tumpaca.tumpaca.model
 
+import android.os.AsyncTask
 import android.util.Log
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
 import com.tumblr.jumblr.types.User
-import com.tumpaca.tumpaca.util.AsyncTaskHelper
 import java.util.concurrent.CopyOnWriteArrayList
 
 class PostList(private val client: JumblrClient) {
@@ -99,8 +99,9 @@ class PostList(private val client: JumblrClient) {
             return
         }
 
-        object : AsyncTaskHelper<Void, Void, List<Post>>() {
-            override fun doTask(params: Array<out Void>): List<Post> {
+        // TODO: PostListの参照が漏れないようにこのタスクを独立クラス化する
+        object : AsyncTask<Void, Void, List<Post>>() {
+            override fun doInBackground(vararg args: Void): List<Post> {
                 // ここはバックグラウンドスレッド
                 val parameter = hashMapOf(
                         "offset" to offset,
@@ -108,16 +109,17 @@ class PostList(private val client: JumblrClient) {
                         "reblog_info" to true,
                         "notes_info" to true)
                 Log.v(TAG, "try to load $offset->${offset + FETCH_LIMIT - 1}")
-                return client.userDashboard(parameter)
+                try {
+                    return client.userDashboard(parameter)
+                } catch (e: Throwable) {
+                    // TODO エラー処理
+                    Log.e(TAG, "PostList fetch error: ${e.message}")
+                    fetching = false
+                    return emptyList()
+                }
             }
 
-            override fun onError(e: Exception) {
-                // TODO エラー処理
-                Log.e(TAG, "PostList fetch error: ${e.message}")
-                fetching = false
-            }
-
-            override fun onSuccess(result: List<Post>) {
+            override fun onPostExecute(result: List<Post>) {
                 // ここは UI スレッド
                 offset += result.size
 
@@ -140,24 +142,28 @@ class PostList(private val client: JumblrClient) {
                     fetchImpl(fetchSize - result.size)
                 } // 取得したポストの数が0なら次回のロードはしない
             }
-        }.go()
+        }.execute()
     }
 
     private fun refreshUser() {
-        object : AsyncTaskHelper<Void, Void, User>() {
-            override fun doTask(params: Array<out Void>): User {
-                return client.user()
+        // TODO: PostListの参照が漏れないようにこのタスクを独立クラス化する
+        object : AsyncTask<Void, Void, User>() {
+            override fun doInBackground(vararg args: Void): User? {
+                try {
+                    return client.user()
+                } catch (e: Throwable) {
+                    // TODO エラー処理
+                    Log.e(TAG, "PostList refreshUser error: ${e.message}")
+                    return null
+                }
             }
 
-            override fun onError(e: Exception) {
-                // TODO エラー処理
-                Log.e(TAG, "PostList refreshUser error: ${e.message}")
+            override fun onPostExecute(result: User?) {
+                result?.let {
+                    Log.v(TAG, "Refresh User ${result.name}")
+                    user = result
+                }
             }
-
-            override fun onSuccess(result: User) {
-                Log.v(TAG, "Refresh User ${result.name}")
-                user = result
-            }
-        }.go()
+        }.execute()
     }
 }

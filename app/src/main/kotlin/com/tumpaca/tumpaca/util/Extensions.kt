@@ -3,6 +3,13 @@ package com.tumpaca.tumpaca.util
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.os.AsyncTask
+import android.util.DisplayMetrics
+import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import com.tumblr.jumblr.types.Photo
+import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.model.TPRuntime
 
@@ -15,56 +22,72 @@ fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE
 
 fun Post.likeAsync(callback: (Post) -> Unit) {
     val self = this
-    object : AsyncTaskHelper<Unit, Unit, Unit>() {
-        override fun doTask(params: Array<out Unit>) {
+    object : AsyncTask<Unit, Unit, Unit>() {
+        override fun doInBackground(vararg args: Unit) {
             if (isLiked) {
                 unlike()
             } else {
                 like()
             }
-        }
-
-        override fun onError(e: Exception) {
             // TODO エラー処理
         }
 
-        override fun onSuccess(result: Unit) {
+        override fun onPostExecute(result: Unit) {
             callback(self)
         }
-    }.go()
+    }.execute()
 }
 
 fun Post.reblogAsync(blogName: String, comment: String, callback: (Post) -> Unit) {
     val self = this
-    object : AsyncTaskHelper<Unit, Unit, Unit>() {
-        override fun doTask(params: Array<out Unit>) {
+    object : AsyncTask<Unit, Unit, Unit>() {
+        override fun doInBackground(vararg args: Unit) {
             reblog(blogName, mapOf(Pair("comment", comment)))
-        }
-
-        override fun onError(e: Exception) {
             // TODO エラー処理
         }
 
-        override fun onSuccess(result: Unit) {
+        override fun onPostExecute(result: Unit) {
             callback(self)
         }
-    }.go()
+    }.execute()
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
-    object : AsyncTaskHelper<Void, Void, String?>() {
-        override fun doTask(params: Array<out Void>): String? {
+    object : AsyncTask<Void, Void, String?>() {
+        override fun doInBackground(vararg args: Void): String? {
             return TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
                 client.blogInfo(blogName).avatar()
             })
-        }
-
-        override fun onError(e: Exception) {
             // TODO エラー処理
         }
 
-        override fun onSuccess(avatarUrl: String?) {
+        override fun onPostExecute(avatarUrl: String?) {
             DownloadImageTask(callback).execute(avatarUrl)
         }
-    }.go()
+    }.execute()
+}
+
+fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): PhotoSize {
+    val w = metrics.widthPixels
+    val biggest = sizes.first()
+    val optimal = sizes.lastOrNull { it.width >= w }
+
+    if (optimal != null && optimal != biggest) {
+        Log.d("Util", "画面の解像度：${metrics.widthPixels}x${metrics.heightPixels}　採択した解像度：")
+        sizes.forEach { Log.d("Util", (if (it == optimal) "=>" else "  ") + it.debugString()) }
+    }
+
+    return optimal ?: biggest
+}
+
+fun PhotoSize.debugString(): String {
+    return "${width}x${height}"
+}
+
+fun ViewGroup.children(): List<View> {
+    return 0.until(childCount).map { getChildAt(it) }
+}
+
+fun <T> List<T>.enumerate(): List<Pair<Int, T>> {
+    return (0 until size).map { it to get(it) }
 }
