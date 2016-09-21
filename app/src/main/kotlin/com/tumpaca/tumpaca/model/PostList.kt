@@ -69,7 +69,13 @@ class PostList(private val client: JumblrClient) {
     fun get(i: Int): Post? {
         if (needFetch(i)) {
             Log.v(TAG, "Need fetch $i/$size")
-            fetch(FETCH_UNIT)
+
+            // 渡されたインデックスの post が次回の fetch に確実に含まれるようにするために
+            // 渡されたインデックスと現在の offset の差を計算する。そして、その値と FETCH_UNIT
+            // を比較して大きい方を次回の fetch 単位とする
+            val remain = i - offset + 1
+            val unit = if (remain > FETCH_UNIT) remain else FETCH_UNIT
+            fetch(unit)
         }
 
         if (i < posts.size) {

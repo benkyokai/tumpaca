@@ -9,10 +9,15 @@ import android.widget.TextView
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.FragmentBase
+import com.tumpaca.tumpaca.model.PostList
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
 
 abstract class PostFragment : FragmentBase() {
+    companion object {
+        private const val TAG = "PostFragment"
+    }
+
     // TODO
     // PostList で対象のポストを管理していると、PostList の先頭に新しい Post がきた場合に対応できないので本当はよくない
     protected var page: Int = -1
@@ -23,8 +28,28 @@ abstract class PostFragment : FragmentBase() {
         page = bundle.getInt("pageNum")
     }
 
-    fun getPost(): Post? {
-        return TPRuntime.tumblrService.postList?.get(page)
+    fun getPostAsync(callback: (Post?) -> Unit) {
+        val post = TPRuntime.tumblrService.postList?.get(page)
+        if (post != null) {
+            return callback(post)
+        } else {
+            // もし fetch され終わってしまった後にリスナーをしかけることになったとしても、
+            // 全部 UI スレッドで実行されているから、リスナーをしかける下記のコードの方が
+            // onChanged() 呼び出しよりも先に呼ばれるので大丈夫
+            val listener = object : PostList.ChangedListener {
+                override fun onChanged() {
+                    val newPost = TPRuntime.tumblrService.postList?.get(page)
+                    if (newPost != null) {
+                        // 取得できたらリスナーを外して callback を呼ぶ
+                        TPRuntime.tumblrService.postList?.removeListeners(this)
+                        callback(newPost)
+                    } else {
+                        throw RuntimeException("取得できない範囲の Post を取得しようとしています")
+                    }
+                }
+            }
+            TPRuntime.tumblrService.postList?.addListeners(listener)
+        }
     }
 
     fun initStandardViews(view: View, blogName: String, subText: String, reblogged: String?, noteCount: Long) {

@@ -14,15 +14,20 @@ import com.tumpaca.tumpaca.R
 class AudioPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = getPost() as AudioPost
-
-        // View をつくる
         val view = inflater.inflate(R.layout.post_audio, container, false)
 
-        initStandardViews(view, post.blogName, post.embedCode, post.rebloggedFromName, post.noteCount)
-        setIcon(view, post)
+        getPostAsync({
+            if (it is AudioPost) {
+                update(view, it)
+            }
+        })
 
         return view
+    }
+
+    private fun update(view: View, post: AudioPost) {
+        initStandardViews(view, post.blogName, post.embedCode, post.rebloggedFromName, post.noteCount)
+        setIcon(view, post)
     }
 
 }
