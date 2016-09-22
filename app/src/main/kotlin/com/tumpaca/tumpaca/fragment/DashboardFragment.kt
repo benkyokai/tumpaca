@@ -120,11 +120,8 @@ class DashboardFragment : FragmentBase() {
         val settingsButton = view.findViewById(R.id.settings_button)
         settingsButton.setOnClickListener {
             val ft = fragmentManager.beginTransaction()
-            val settingsFragment = SettingsFragment()
-            ft.add(R.id.fragment_container, settingsFragment)
-            ft.show(settingsFragment)
             ft.addToBackStack(null)
-            ft.hide(this)
+            ft.replace(R.id.fragment_container, SettingsFragment())
             ft.commit()
         }
 

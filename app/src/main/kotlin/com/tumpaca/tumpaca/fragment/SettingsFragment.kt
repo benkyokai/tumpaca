@@ -20,22 +20,17 @@ class SettingsFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fr_settings, container, false)
 
-        val reloadButton = view.findViewById(R.id.reload_button)
+        val reloadButton = view.findViewById(R.id.reload)
         reloadButton.setOnClickListener {
             activity.finish()
             activity.startActivity(activity.intent)
         }
 
-        val logoutButton = view.findViewById(R.id.logout_button)
+        val logoutButton = view.findViewById(R.id.logout)
         logoutButton.setOnClickListener {
             // TODO 本当にログインしたのかダイアログで確認した方がいい
             TPRuntime.tumblrService.logout()
             replaceFragment(AuthFragment(), false)
-        }
-
-        val backButton = view.findViewById(R.id.back_button)
-        backButton.setOnClickListener {
-            fragmentManager.popBackStack()
         }
 
         return view
