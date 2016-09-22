@@ -23,16 +23,11 @@ class DashboardFragment : FragmentBase() {
         private const val OFFSCREEN_PAGE_LIMIT = 4
     }
 
-    interface DashboardFragmentListener {
-        fun showSettings(fr: DashboardFragment)
-    }
-
     var postList: PostList? = null
     var likeButton: ImageButton? = null
     var isFabOpen = false
     var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPageAdapter? = null
-    var listener: DashboardFragmentListener? = null
     var changedListener: PostList.ChangedListener? = null
 
     var currentPost: Post? = null
@@ -124,7 +119,13 @@ class DashboardFragment : FragmentBase() {
 
         val settingsButton = view.findViewById(R.id.settings_button)
         settingsButton.setOnClickListener {
-            listener?.showSettings(this)
+            val ft = fragmentManager.beginTransaction()
+            val settingsFragment = SettingsFragment()
+            ft.add(R.id.fragment_container, settingsFragment)
+            ft.show(settingsFragment)
+            ft.addToBackStack(null)
+            ft.hide(this)
+            ft.commit()
         }
 
         return view
@@ -147,16 +148,6 @@ class DashboardFragment : FragmentBase() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_dashboard, menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        if (context !is DashboardFragmentListener) {
-            throw UnsupportedOperationException("DashboardFragmentListener is not implementation.")
-        } else {
-            listener = context
-        }
     }
 
     private fun doLike() {

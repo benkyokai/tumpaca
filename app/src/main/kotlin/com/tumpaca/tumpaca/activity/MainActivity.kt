@@ -12,7 +12,6 @@ import com.tumpaca.tumpaca.fragment.SettingsFragment
  * Tumpaca クラスのメインアクティビティ。
  */
 class MainActivity : AppCompatActivity(),
-        DashboardFragment.DashboardFragmentListener,
         SettingsFragment.SettingsFragmentListener {
     companion object {
         private const val TAG = "MainActivity"
@@ -31,17 +30,6 @@ class MainActivity : AppCompatActivity(),
             ft.replace(R.id.fragment_container, start)
             ft.commit()
         }
-    }
-
-    override fun showSettings(fr: DashboardFragment) {
-        val fm = supportFragmentManager
-        val ft = fm.beginTransaction()
-        val settingsFragment = SettingsFragment()
-        ft.add(R.id.fragment_container, settingsFragment)
-        ft.show(settingsFragment)
-        ft.addToBackStack(null)
-        ft.hide(fr)
-        ft.commit()
     }
 
     override fun reload() {
