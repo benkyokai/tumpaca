@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tumblr.jumblr.types.TextPost
 import com.tumblr.jumblr.types.VideoPost
 import com.tumpaca.tumpaca.R
 
@@ -17,8 +16,8 @@ class VideoPostFragment : PostFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.post_video, container, false)
 
-        getPostAsync({
-            if (it is VideoPost) {
+        getPost({
+            if (isAdded && it is VideoPost) {
                 update(view, it)
             }
         })

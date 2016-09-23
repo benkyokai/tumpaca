@@ -48,8 +48,8 @@ class PhotoPostFragment : PostFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.post_photo, container, false)
 
-        getPostAsync {
-            if (it is PhotoPost) {
+        getPost {
+            if (isAdded && it is PhotoPost) {
                 update(view, it)
             }
         }
@@ -63,6 +63,7 @@ class PhotoPostFragment : PostFragment() {
 
         initStandardViews(view, post.blogName, post.caption, post.rebloggedFromName, post.noteCount)
         setIcon(view, post)
+
 
         // ImageViewを挿入するPhotoListLayoutを取得
         imageLayout = view.findViewById(R.id.photo_list) as LinearLayout

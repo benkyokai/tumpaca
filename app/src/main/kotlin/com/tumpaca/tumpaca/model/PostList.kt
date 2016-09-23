@@ -85,6 +85,26 @@ class PostList(private val client: JumblrClient) {
         }
     }
 
+    fun getAsync(i: Int, callback: (Post?) -> Unit) {
+        val post = get(i)
+        if (post != null) {
+            return callback(post)
+        } else {
+            // 全部 UI スレッドで実行されているため、リスナーをしかける下記のコードの方が
+            // onChanged() 呼び出しよりも先に呼ばれるので問題なし
+            val listener = object : PostList.ChangedListener {
+                override fun onChanged() {
+                    if (i < posts.size) {
+                        removeListeners(this)
+                        callback(posts[i])
+                    }
+                }
+            }
+            addListeners(listener)
+        }
+    }
+
+
     // fetch が必要な条件かどうかを判定します。
     private fun needFetch(i: Int): Boolean {
         if (fetching) {

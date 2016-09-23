@@ -17,8 +17,8 @@ class LinkPostFragment : PostFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.post_link, container, false)
 
-        getPostAsync({
-            if (it is LinkPost) {
+        getPost({
+            if (isAdded && it is LinkPost) {
                 update(view, it)
             }
         })

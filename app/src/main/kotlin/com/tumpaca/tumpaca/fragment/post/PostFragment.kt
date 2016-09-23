@@ -29,28 +29,10 @@ abstract class PostFragment : FragmentBase() {
         page = bundle.getInt("pageNum")
     }
 
-    fun getPostAsync(callback: (Post?) -> Unit) {
-        val post = TPRuntime.tumblrService.postList?.get(page)
-        if (post != null) {
-            return callback(post)
-        } else {
-            // もし fetch され終わってしまった後にリスナーをしかけることになったとしても、
-            // 全部 UI スレッドで実行されているから、リスナーをしかける下記のコードの方が
-            // onChanged() 呼び出しよりも先に呼ばれるので大丈夫
-            val listener = object : PostList.ChangedListener {
-                override fun onChanged() {
-                    val newPost = TPRuntime.tumblrService.postList?.get(page)
-                    if (newPost != null) {
-                        // 取得できたらリスナーを外して callback を呼ぶ
-                        TPRuntime.tumblrService.postList?.removeListeners(this)
-                        callback(newPost)
-                    } else {
-                        throw RuntimeException("取得できない範囲の Post を取得しようとしています")
-                    }
-                }
-            }
-            TPRuntime.tumblrService.postList?.addListeners(listener)
-        }
+    fun getPost(callback: (Post?) -> Unit) {
+        TPRuntime.tumblrService.postList?.getAsync(page, callback)
+        val ret = (null is String)
+        val x = 1
     }
 
     fun initStandardViews(view: View, blogName: String, subText: String, reblogged: String?, noteCount: Long) {
