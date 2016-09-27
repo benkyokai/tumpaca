@@ -1,5 +1,6 @@
 package com.tumpaca.tumpaca.fragment.post
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
@@ -9,10 +10,15 @@ import android.widget.TextView
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.FragmentBase
+import com.tumpaca.tumpaca.model.PostList
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
 
 abstract class PostFragment : FragmentBase() {
+    companion object {
+        private const val TAG = "PostFragment"
+    }
+
     // TODO
     // PostList で対象のポストを管理していると、PostList の先頭に新しい Post がきた場合に対応できないので本当はよくない
     protected var page: Int = -1
@@ -23,8 +29,8 @@ abstract class PostFragment : FragmentBase() {
         page = bundle.getInt("pageNum")
     }
 
-    fun getPost(): Post? {
-        return TPRuntime.tumblrService.postList?.get(page)
+    fun getPost(callback: (Post?) -> Unit) {
+        TPRuntime.tumblrService.postList?.getAsync(page, callback)
     }
 
     fun initStandardViews(view: View, blogName: String, subText: String, reblogged: String?, noteCount: Long) {
@@ -33,7 +39,10 @@ abstract class PostFragment : FragmentBase() {
 
         val subTextView = view.findViewById(R.id.sub) as WebView
         val mimeType = "text/html; charset=utf-8"
+        subTextView.setBackgroundColor(Color.TRANSPARENT)
         subTextView.loadData(subText, mimeType, null)
+        subTextView.clipToOutline = true
+
 
         val rebloggedView = view.findViewById(R.id.reblogged) as TextView
         if (reblogged != null) {

@@ -23,16 +23,12 @@ class DashboardFragment : FragmentBase() {
         private const val OFFSCREEN_PAGE_LIMIT = 4
     }
 
-    interface DashboardFragmentListener {
-        fun showSettings(fr: DashboardFragment)
-    }
-
     var postList: PostList? = null
     var likeButton: ImageButton? = null
     var isFabOpen = false
     var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPageAdapter? = null
-    var listener: DashboardFragmentListener? = null
+    var changedListener: PostList.ChangedListener? = null
 
     var currentPost: Post? = null
         get() = postList?.get(viewPager!!.currentItem)
@@ -69,11 +65,14 @@ class DashboardFragment : FragmentBase() {
         // PostList と ViewPage のバインド
         TPRuntime.tumblrService.resetPosts()
         postList = TPRuntime.tumblrService.postList
-        postList?.fetchedListener = object : PostList.FetchedListener {
-            override fun onFetched(size: Int) {
-                postCount.text = "${size}"
+
+        changedListener = object : PostList.ChangedListener {
+            override fun onChanged() {
+                postCount.text = postList?.size.toString()
             }
         }
+        postList?.addListeners(changedListener!!)
+
         dashboardAdapter = DashboardPageAdapter(fragmentManager, postList!!)
         viewPager?.adapter = dashboardAdapter
 
@@ -120,7 +119,10 @@ class DashboardFragment : FragmentBase() {
 
         val settingsButton = view.findViewById(R.id.settings_button)
         settingsButton.setOnClickListener {
-            listener?.showSettings(this)
+            val ft = fragmentManager.beginTransaction()
+            ft.addToBackStack(null)
+            ft.replace(R.id.fragment_container, SettingsFragment())
+            ft.commit()
         }
 
         return view
@@ -135,21 +137,14 @@ class DashboardFragment : FragmentBase() {
     override fun onDestroyView() {
         super.onDestroyView()
         dashboardAdapter?.onUnbind()
+        if (changedListener != null) {
+            postList?.removeListeners(changedListener!!)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_dashboard, menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        if (context !is DashboardFragmentListener) {
-            throw UnsupportedOperationException("DashboardFragmentListener is not implementation.")
-        } else {
-            listener = context
-        }
     }
 
     private fun doLike() {

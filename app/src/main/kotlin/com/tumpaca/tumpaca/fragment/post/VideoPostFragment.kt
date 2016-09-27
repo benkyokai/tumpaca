@@ -14,15 +14,21 @@ import com.tumpaca.tumpaca.R
 class VideoPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = getPost() as VideoPost
-
-        // View をつくる
         val view = inflater.inflate(R.layout.post_video, container, false)
 
-        initStandardViews(view, post.blogName, post.videos[0].embedCode, post.rebloggedFromName, post.noteCount)
-        setIcon(view, post)
+        getPost({
+            if (isAdded && it is VideoPost) {
+                update(view, it)
+            }
+        })
 
         return view
     }
+
+    private fun update(view: View, post: VideoPost) {
+        initStandardViews(view, post.blogName, post.videos[0].embedCode, post.rebloggedFromName, post.noteCount)
+        setIcon(view, post)
+    }
+
 
 }

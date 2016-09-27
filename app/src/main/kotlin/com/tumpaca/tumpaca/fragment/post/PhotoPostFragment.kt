@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.felipecsl.gifimageview.library.GifImageView
 import com.tumblr.jumblr.types.PhotoPost
+import com.tumblr.jumblr.types.QuotePost
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.DownloadImageTask
 import com.tumpaca.tumpaca.util.children
@@ -45,16 +46,24 @@ class PhotoPostFragment : PostFragment() {
     // GIFの可視判定を行う呼び出しに渡す必要があるが、中身は使っていない
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = getPost() as PhotoPost
+        val view = inflater.inflate(R.layout.post_photo, container, false)
 
+        getPost {
+            if (isAdded && it is PhotoPost) {
+                update(view, it)
+            }
+        }
+
+        return view
+    }
+
+    private fun update(view: View, post: PhotoPost) {
         // データを取得
         val urls = post.photos.map { it.getBestSizeForScreen(resources.displayMetrics).url }
 
-        // View をつくる
-        val view = inflater.inflate(R.layout.post_photo, container, false)
-
         initStandardViews(view, post.blogName, post.caption, post.rebloggedFromName, post.noteCount)
         setIcon(view, post)
+
 
         // ImageViewを挿入するPhotoListLayoutを取得
         imageLayout = view.findViewById(R.id.photo_list) as LinearLayout
@@ -118,9 +127,8 @@ class PhotoPostFragment : PostFragment() {
                 }.execute(url)
             }
         }
-
-        return view
     }
+
 
     private fun startStopAnimations() {
         imageLayout?.children()?.forEach {
@@ -146,6 +154,7 @@ class PhotoPostFragment : PostFragment() {
             imageLayout?.children()?.forEach { (it as? GifImageView)?.stopAnimation() }
         }
     }
+
 
     override fun onResume() {
         super.onResume()

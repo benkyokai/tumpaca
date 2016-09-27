@@ -17,56 +17,22 @@ class SettingsFragment : FragmentBase() {
         private const val TAG = "SettingsFragment"
     }
 
-    interface SettingsFragmentListener {
-        fun hideSettings()
-        fun reload()
-    }
-
-    var listener: SettingsFragmentListener? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fr_settings, container, false)
 
-        val reloadButton = view.findViewById(R.id.reload_button)
+        val reloadButton = view.findViewById(R.id.reload)
         reloadButton.setOnClickListener {
-            doReload()
+            activity.finish()
+            activity.startActivity(activity.intent)
         }
 
-        val logoutButton = view.findViewById(R.id.logout_button)
+        val logoutButton = view.findViewById(R.id.logout)
         logoutButton.setOnClickListener {
-            doLogout()
-        }
-
-        val backButton = view.findViewById(R.id.back_button)
-        backButton.setOnClickListener {
-            listener?.hideSettings()
+            // TODO 本当にログインしたのかダイアログで確認した方がいい
+            TPRuntime.tumblrService.logout()
+            replaceFragment(AuthFragment(), false)
         }
 
         return view
     }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        if (context !is SettingsFragmentListener) {
-            throw UnsupportedOperationException("SettingsFragmentListener is not implementation.")
-        } else {
-            listener = context
-        }
-    }
-
-    private fun doReload() {
-        listener?.reload()
-    }
-
-    private fun doLogout() {
-        // TODO 本当にログインしたのかダイアログで確認した方がいい
-        TPRuntime.tumblrService.logout()
-        replaceFragment(AuthFragment(), false)
-    }
-
 }

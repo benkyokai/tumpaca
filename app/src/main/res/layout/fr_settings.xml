@@ -2,27 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/reload_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:text="reload dashboard" />
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/tumpaca" />
 
-    <Button
-        android:id="@+id/logout_button"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="logout" />
+        android:layout_marginTop="10dp"
+        android:text="@string/tumpaca"
+        android:textColor="@color/text_button"
+        android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/back_button"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="back" />
+        android:layout_marginTop="2dp"
+        android:text="@string/copyright"
+        android:textColor="@color/text_button"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/reload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/reload"
+        android:textColor="@color/text_button"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/logout"
+        android:textColor="@color/text_button"
+        android:textSize="16sp" />
+
 </LinearLayout>

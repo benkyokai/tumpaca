@@ -14,15 +14,20 @@ import com.tumpaca.tumpaca.R
 class QuotePostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = getPost() as QuotePost
-
-        // View をつくる
         val view = inflater.inflate(R.layout.post_quote, container, false)
 
-        initStandardViews(view, post.blogName, post.text, post.rebloggedFromName, post.noteCount)
-        setIcon(view, post)
+        getPost({
+            if (isAdded && it is QuotePost) {
+                update(view, it)
+            }
+        })
 
         return view
+    }
+
+    private fun update(view: View, post: QuotePost) {
+        initStandardViews(view, post.blogName, post.text, post.rebloggedFromName, post.noteCount)
+        setIcon(view, post)
     }
 
 }

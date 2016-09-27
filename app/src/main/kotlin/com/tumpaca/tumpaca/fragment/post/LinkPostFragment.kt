@@ -8,27 +8,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tumblr.jumblr.types.AudioPost
 import com.tumblr.jumblr.types.LinkPost
 import com.tumpaca.tumpaca.R
 
 class LinkPostFragment : PostFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val post = getPost() as LinkPost
-
-        // データを取得
-        val blogName = post.blogName
-        val subText = post.linkUrl
-        val reblogged = post.rebloggedFromName
-        val noteCount = post.noteCount
-
-        // View をつくる
         val view = inflater.inflate(R.layout.post_link, container, false)
 
-        initStandardViews(view, post.blogName, post.linkUrl, post.rebloggedFromName, post.noteCount)
-        setIcon(view, post)
+        getPost({
+            if (isAdded && it is LinkPost) {
+                update(view, it)
+            }
+        })
 
         return view
+    }
+
+    private fun update(view: View, post: LinkPost) {
+        initStandardViews(view, post.blogName, post.linkUrl, post.rebloggedFromName, post.noteCount)
+        setIcon(view, post)
     }
 
 }

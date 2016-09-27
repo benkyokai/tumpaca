@@ -23,12 +23,12 @@ class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList) 
 
     // View に接続された
     fun onBind() {
-        postList.listener = listener
+        postList.addListeners(listener)
     }
 
     // View と切り離された
     fun onUnbind() {
-        postList.listener = null
+        postList.removeListeners(listener)
     }
 
     override fun getItem(position: Int): Fragment {

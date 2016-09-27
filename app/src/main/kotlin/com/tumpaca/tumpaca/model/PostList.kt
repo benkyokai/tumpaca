@@ -21,13 +21,16 @@ class PostList(private val client: JumblrClient) {
         fun onChanged()
     }
 
-    interface FetchedListener {
-        fun onFetched(size: Int)
+    // マルチスレッドでは使わないが、リスナーのイテレート中に自身を消したりするので CopyOnWriteArrayList を利用
+    val listeners: CopyOnWriteArrayList<ChangedListener> = CopyOnWriteArrayList()
+
+    fun addListeners(listener: ChangedListener) {
+        listeners.add(listener)
     }
 
-    var listener: ChangedListener? = null
-
-    var fetchedListener: FetchedListener? = null
+    fun removeListeners(listener: ChangedListener) {
+        listeners.remove(listener)
+    }
 
     val size: Int
         get() = posts.size
@@ -66,7 +69,13 @@ class PostList(private val client: JumblrClient) {
     fun get(i: Int): Post? {
         if (needFetch(i)) {
             Log.v(TAG, "Need fetch $i/$size")
-            fetch(FETCH_UNIT)
+
+            // 渡されたインデックスの post が次回の fetch に確実に含まれるようにするために
+            // 渡されたインデックスと現在の offset の差を計算する。そして、その値と FETCH_UNIT
+            // を比較して大きい方を次回の fetch 単位とする
+            val remain = i - offset + 1
+            val unit = if (remain > FETCH_UNIT) remain else FETCH_UNIT
+            fetch(unit)
         }
 
         if (i < posts.size) {
@@ -75,6 +84,26 @@ class PostList(private val client: JumblrClient) {
             return null
         }
     }
+
+    fun getAsync(i: Int, callback: (Post?) -> Unit) {
+        val post = get(i)
+        if (post != null) {
+            return callback(post)
+        } else {
+            // 全部 UI スレッドで実行されているため、リスナーをしかける下記のコードの方が
+            // onChanged() 呼び出しよりも先に呼ばれるので問題なし
+            val listener = object : PostList.ChangedListener {
+                override fun onChanged() {
+                    if (i < posts.size) {
+                        removeListeners(this)
+                        callback(posts[i])
+                    }
+                }
+            }
+            addListeners(listener)
+        }
+    }
+
 
     // fetch が必要な条件かどうかを判定します。
     private fun needFetch(i: Int): Boolean {
@@ -135,8 +164,7 @@ class PostList(private val client: JumblrClient) {
 
                 posts.addAll(filteredResult)
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
-                listener?.onChanged()
-                fetchedListener?.onFetched(size)
+                listeners.forEach { it.onChanged() }
                 fetching = false
                 if (result.size > 0) {
                     fetchImpl(fetchSize - result.size)
