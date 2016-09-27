@@ -31,8 +31,6 @@ abstract class PostFragment : FragmentBase() {
 
     fun getPost(callback: (Post?) -> Unit) {
         TPRuntime.tumblrService.postList?.getAsync(page, callback)
-        val ret = (null is String)
-        val x = 1
     }
 
     fun initStandardViews(view: View, blogName: String, subText: String, reblogged: String?, noteCount: Long) {

@@ -23,9 +23,9 @@
 ### Rounded Corner
 - View の角を丸くする方法
 - API Level 21（Android 5.0）から簡単にできる
--- shape を xml として定義
--- 対象の View の xml に `android:background="@drawable/round"` を定義
--- コード上で `view.clipToOutline = true` を設定
+  - shape を xml として定義
+  - 対象の View の xml に `android:background="@drawable/round"` を定義
+  - コード上で `view.clipToOutline = true` を設定
 
 ### Listener 系のリファクタ
 - Settings 画面のボタンイベントの処理実行を Listener で実行していた
@@ -37,28 +37,39 @@
 - クリーンインストール
 - ログインする
 - Dashboard を 50 件くらいみる
--- 動画は見られるか？
--- GIF は再生されるか？
--- 端末を回転しても問題ないか
+  - 動画は見られるか？
+  - GIF は再生されるか？
+  - 端末を回転しても問題ないか
 - Like する
 - Reblog する
-- Dashboad をリロードする
+- Dashboard をリロードする
+- Setting 画面を表示
 - ログアウトする
 - 再ログインする
 
+
 ## 今後
 - リリースまでの道のり
-  - Dashboard 取得制限問題
+  - Dashboard 取得制限問題 => やぶさん
 - 個人的にいれたいもの
-  - Code License
-  - バージョニング
-  - Fabric
+  - Play Store アカウント (Open Source のストアもあるよ) => あーろんさん
+  - Fabric (Crashlytics) => 塩澤
+    - いれる
+  - Code License => 塩澤
+    - Loglr が GPL ...
+  - ビルドツール => あとで
+    - 無料 TravisCI だと key と secret が見えちゃう？
+    - 『ビルドスクリプトとビルドログ』が公開されてしまう
+  - 会社に確認
 
+## 予定
+  - 次回の勉強会は 10/5。ここまでで上記の作業終わらせる。
+  - リリース予定日 10/7。
 
 ## 今週の Kotlin
 ### is 演算子
-- 実行時の方を調べる演算子
-- Java の instanceof
+- 実行時の型を調べる演算子
+  - Java の instanceof
 - !is もあるよ => `x !is String` と `!(x is String)` は同じ
 - null is String => false （Java と同じ）
 
@@ -83,7 +94,7 @@ if (post is QuotePost) {
 
 ```
 val post: Post = getPost()
-if (it !is QuotePost) {
+if (post !is QuotePost) {
   return
 }
 // post を明示的にキャストする必要なし
