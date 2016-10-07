@@ -116,8 +116,11 @@ class PostList(private val client: JumblrClient) {
         return remain < FETCH_MIN_POST_NUM // 最小よりも小さかったら fetch が必要
     }
 
-    private fun fetch(count: Int) {
-        fetchImpl(count)
+    /**
+     * fetchSizeは目安です。fetchSize以上の件数を取得することもあります。
+     */
+    private fun fetch(fetchSize: Int) {
+        fetchImpl(fetchSize)
     }
 
     private fun fetchImpl(fetchSize: Int) {
@@ -128,6 +131,16 @@ class PostList(private val client: JumblrClient) {
             return
         }
 
+        normalFetch(fetchSize)
+        /*
+        if (offset <= 250) {
+            normalFetch(fetchSize)
+        } else {
+            abnormalFetch(fetchSize)
+        }*/
+    }
+
+    private fun normalFetch(fetchSize: Int) {
         // TODO: PostListの参照が漏れないようにこのタスクを独立クラス化する
         object : AsyncTask<Void, Void, List<Post>>() {
             override fun doInBackground(vararg args: Void): List<Post> {
@@ -171,6 +184,90 @@ class PostList(private val client: JumblrClient) {
                 } // 取得したポストの数が0なら次回のロードはしない
             }
         }.execute()
+    }
+
+    private fun abnormalFetch(fetchSize: Int) {
+        val sinceId = nextId()
+
+        object : AsyncTask<Void, Void, List<Post>>() {
+            override fun doInBackground(vararg args: Void): List<Post> {
+                // ここはバックグラウンドスレッド
+                val parameter = hashMapOf(
+                        "since_id" to sinceId,
+                        "limit" to FETCH_LIMIT,
+                        "reblog_info" to true,
+                        "notes_info" to true)
+                Log.v(TAG, "try to load since_id -> $sinceId")
+                try {
+                    return client.userDashboard(parameter)
+                } catch (e: Throwable) {
+                    // TODO エラー処理
+                    Log.e(TAG, "PostList fetch error: ${e.message}")
+                    fetching = false
+                    return emptyList()
+                }
+            }
+
+            override fun onPostExecute(result: List<Post>) {
+                // ここは UI スレッド
+                offset += result.size
+
+                val filteredResult = result.filter {
+                    SUPPORTED_TYPES.contains(it.type)
+                }
+
+                if (result.size != filteredResult.size) {
+                    // TODO fetch の結果 filter されると、現状の post サイズとインターネット上の post のインデックスが
+                    // 合わなくなるのでフィルタリングは外側でやったほうがいい
+                    Log.w(TAG, "Some posts are filtered: ${result.size}=>${filteredResult.size}");
+                }
+
+                posts.addAll(filteredResult)
+                Log.v(TAG, "Loaded ${result.size} posts, size=$size")
+                listeners.forEach { it.onChanged() }
+                fetching = false
+                if (result.size > 0) {
+                    fetchImpl(fetchSize - result.size)
+                } // 取得したポストの数が0なら次回のロードはしない
+            }
+
+            private fun checkPosts(results: List<Post>) {
+                if (results.size > 0) {
+
+                } else {
+
+                }
+            }
+        }.execute()
+    }
+
+    private var rate = 1.0
+
+    private fun nextId(): Long {
+        if (posts.size <= 0) {
+            return 0
+        }
+
+        val diff = ((posts[0].id - posts.last().id) / posts.size) * FETCH_LIMIT
+
+        return posts.last().id - (diff * rate).toLong()
+    }
+
+    enum class Result {
+        GOOD, FAR_AWAY, EMPTY
+    }
+
+    private fun checkResult(result: List<Post>): Result {
+        if (result.isEmpty()) {
+            return Result.EMPTY
+        }
+
+        val firstPost = result[0]
+        if (posts.last().id > firstPost.id) {
+            return Result.FAR_AWAY
+        } else {
+            return Result.GOOD
+        }
     }
 
     private fun refreshUser() {

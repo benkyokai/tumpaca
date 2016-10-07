@@ -16,7 +16,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.felipecsl.gifimageview.library.GifImageView
 import com.tumblr.jumblr.types.PhotoPost
-import com.tumblr.jumblr.types.QuotePost
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.util.DownloadImageTask
 import com.tumpaca.tumpaca.util.children
@@ -98,7 +97,7 @@ class PhotoPostFragment : PostFragment() {
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
-                object: AsyncTask<Unit, Unit, ByteArray>() {
+                object : AsyncTask<Unit, Unit, ByteArray>() {
 
                     override fun doInBackground(vararg args: Unit): ByteArray {
                         // TODO: 失敗した場合のエラーハンドリング
