@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 class PostList(private val client: JumblrClient) {
     companion object {
         private const val TAG = "PostList"
-        private const val FIRST_FETCH_UNIT = 300
+        private const val FIRST_FETCH_UNIT = 250
         private const val FETCH_UNIT = 100
         private const val FETCH_LIMIT = 20
         // 残りのポストがこれ以下になったら fetch する
@@ -124,20 +124,25 @@ class PostList(private val client: JumblrClient) {
         fetchImpl(fetchSize)
     }
 
-    private fun fetchImpl(fetchSize: Int) {
+    private fun fetchImpl(fetchSize: Int, retryCount: Int = 20) {
         fetching = true
 
+        if (retryCount <= 0) {
+            Log.v(TAG, "retryCouns is 0")
+            return;
+        }
+
         if (fetchSize <= 0) {
+            Log.v(TAG, "fetchSize: ${fetchSize}")
             tmpPosts.removeAll(tmpPosts)
             fetching = false
             return
         }
 
-        //fetchByOffset(fetchSize)
-        if (offset <= 20) {
+        if (offset <= 200) {
             fetchByOffset(fetchSize)
         } else {
-            fetchBySinceId(fetchSize)
+            fetchBySinceId(fetchSize, retryCount)
         }
     }
 
@@ -181,7 +186,7 @@ class PostList(private val client: JumblrClient) {
         }.execute()
     }
 
-    private fun fetchBySinceId(fetchSize: Int) {
+    private fun fetchBySinceId(fetchSize: Int, retryCount: Int) {
         val sinceId = nextId()
         Log.v(TAG, "sinceId fetching")
 
@@ -232,37 +237,27 @@ class PostList(private val client: JumblrClient) {
                 }
 
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
-                //listeners.forEach { it.onChanged() }
                 fetching = false
                 if (r == Result.GOOD || (r == Result.DUPLICATE && tmpPosts.isNotEmpty()) || (r == Result.EMPTY && tmpPosts.isNotEmpty())) {
                     rate = 1.0
-                    posts.addAll(tmpPosts)
-                    val tmpPostsCount = tmpPosts.size
+                    val index = tmpPosts.map { it.id }.indexOf(posts.last().id)
+                    Log.v(TAG, "duplicate index: ${index}")
+                    val postsExcludeDuplicate = tmpPosts.drop(index + 1)
+                    posts.addAll(postsExcludeDuplicate)
+                    val tmpPostsCount = postsExcludeDuplicate.size
                     tmpPosts.removeAll(tmpPosts)
                     listeners.forEach { it.onChanged() }
                     fetchImpl(fetchSize - tmpPostsCount)
                 } else if (r == Result.DUPLICATE && tmpPosts.isEmpty()) {
-                    rate = rate + 1.0
+                    rate = rate * 2.0
                     Log.v(TAG, "DUPLICATE and tmpPosts is empty, rate = ${rate}")
-                    fetchImpl(fetchSize)
+                    fetchImpl(fetchSize, retryCount - 1)
                 } else if (r == Result.EMPTY && tmpPosts.isEmpty()) {
                     rate = 1.0
                     return
                 } else if (r == Result.FAR_AWAY) {
-                    if (fetchSize - tmpPosts.size < 0) {
-                        tmpPosts.removeAll(tmpPosts)
-
-                        if (rate > 1.0) {
-                            rate = rate - 0.7
-                        } else {
-                            rate = rate * 0.5
-                        }
-                        Log.v(TAG, "FAR_AWAY fetchSize < 0, rate = ${rate}")
-                        fetchImpl(fetchSize)
-                    } else {
-                        rate = 1.0
-                        fetchImpl(fetchSize - tmpPosts.size)
-                    }
+                    rate = 1.0
+                    fetchImpl(fetchSize, retryCount - 1)
                 } else {
                     Log.v(TAG, "ここには来ないはず")
                     throw RuntimeException("PostList: Result is invalid. ${r}, tmpPosts.size == ${tmpPosts.size}")
@@ -302,7 +297,7 @@ class PostList(private val client: JumblrClient) {
         val firstPost = result[0]
         if (posts.last().id > firstPost.id) {
             return Result.FAR_AWAY
-        } else if (posts.last().id >= result.last().id) {
+        } else if (result.last().id >= posts.last().id) {
             return Result.DUPLICATE
         } else {
             return Result.GOOD
