@@ -1,11 +1,9 @@
 package com.tumpaca.tumpaca.fragment;
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.view.*
-import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -78,6 +76,7 @@ class DashboardFragment : FragmentBase() {
 
         dashboardAdapter?.onBind()
 
+        /*
         (view.findViewById(R.id.main_menu_button) as ImageButton).let { mainFab ->
             val fabOpen = AnimationUtils.loadAnimation(context, R.anim.fab_open)
             val fabClose = AnimationUtils.loadAnimation(context, R.anim.fab_close)
@@ -101,7 +100,7 @@ class DashboardFragment : FragmentBase() {
                     isFabOpen = true
                 }
             }
-        }
+        }*/
 
         // Like
         (view.findViewById(R.id.like_button) as ImageButton).let {
