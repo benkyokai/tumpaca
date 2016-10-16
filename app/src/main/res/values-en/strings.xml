@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tumpaca</string>
+    <string name="auth_start">Get started</string>
+    <string name="comment_input_hint">Comment</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="dashboard_loading">Loading dashboard...</string>
+    <string name="dashboard_logout">Log out</string>
+    <string name="liked_result">Liked</string>
+    <string name="logout">Log out</string>
+    <string name="reblog_dialog_header">Reblog</string>
+    <string name="reblogged_result">Reblogged</string>
+    <string name="reload">Reload dashboard</string>
+    <string name="tumpaca">Tumpaca</string>
+    <string name="unliked_result">Unliked</string>
+    <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>
+</resources>
