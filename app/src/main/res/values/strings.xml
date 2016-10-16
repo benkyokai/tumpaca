@@ -5,6 +5,7 @@
     <string name="auth_start">Tumpaca をはじめる</string>
 
     <!-- DashboardFragment -->
+    <string name="dashboard_loading">ダッシュボードを取得中…</string>
     <string name="dashboard">ダッシュボード</string>
     <string name="dashboard_logout">ログアウト</string>
     <string name="reblog_dialog_header">Reblog</string>
