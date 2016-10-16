@@ -1,8 +1,8 @@
 package com.tumpaca.tumpaca.util
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.util.Log
@@ -92,4 +92,24 @@ fun ViewGroup.children(): List<View> {
 
 fun <T> List<T>.enumerate(): List<Pair<Int, T>> {
     return (0 until size).map { it to get(it) }
+}
+
+fun Context.isOnline(): Boolean {
+    val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkInfo = connMgr.activeNetworkInfo
+    return networkInfo != null && networkInfo.isConnected
+}
+
+fun Context.onNetworkRestored(callback: () -> Unit): BroadcastReceiver {
+    val receiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            context?.let {
+                if (it.isOnline()) {
+                    callback()
+                }
+            }
+        }
+    }
+    registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+    return receiver
 }
