@@ -186,6 +186,11 @@ class PostList(private val client: JumblrClient) {
         }.execute()
     }
 
+    /**
+     * SinceIdによるダッシュボード取得
+     * Offsetによるポストの取得は260件目までしか対応していないため、
+     * 260件以上遡るためにはSinceIdから取ってくるしかない
+     */
     private fun fetchBySinceId(fetchSize: Int, retryCount: Int) {
         val sinceId = nextId()
         Log.v(TAG, "sinceId fetching")
@@ -215,6 +220,7 @@ class PostList(private val client: JumblrClient) {
                     SUPPORTED_TYPES.contains(it.type)
                 }
 
+                // 取得結果の状態をチェック
                 val r = checkResult(filteredResult)
 
                 when (r) {
@@ -223,6 +229,7 @@ class PostList(private val client: JumblrClient) {
                         tmpPosts.removeAll(tmpPosts)
                     }
                     Result.FAR_AWAY -> {
+                        // すべてtmpPostsに追加
                         tmpPosts.addAll(0, filteredResult)
                         Log.v(TAG, "FAR_AWAY tmpPosts=${tmpPosts.size}")
                     }
@@ -230,6 +237,7 @@ class PostList(private val client: JumblrClient) {
                         Log.v(TAG, "DUPLICATE")
                     }
                     Result.GOOD -> {
+                        // 重なっている分を除外して、残りをtmpPostsに追加
                         val i = filteredResult.indexOf(posts.last())
                         tmpPosts.addAll(0, filteredResult.drop(i + 1))
                         Log.v(TAG, "GOOD tmpPosts=${tmpPosts.size}")
@@ -238,13 +246,23 @@ class PostList(private val client: JumblrClient) {
 
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
                 fetching = false
+
+                /**
+                 * 結果がGOOD, もしくはDUPLICATEかつtmpPostsが空ではない、ときは
+                 * postsに追加すべきポストがtmpPostsに入っているはずなので成功
+                 */
                 if (r == Result.GOOD || (r == Result.DUPLICATE && tmpPosts.isNotEmpty()) || (r == Result.EMPTY && tmpPosts.isNotEmpty())) {
                     rate = 1.0
+                    // tmpPostsからpostsの重複分を除く
                     val index = tmpPosts.map { it.id }.indexOf(posts.last().id)
-                    Log.v(TAG, "duplicate index: ${index}")
+                    Log.v(TAG, "duplicate index: $index")
                     val postsExcludeDuplicate = tmpPosts.drop(index + 1)
+
+                    // postsに追加
                     posts.addAll(postsExcludeDuplicate)
                     val tmpPostsCount = postsExcludeDuplicate.size
+
+                    // ここで一旦成功なので、tmpPostsを空にして、再度最初からフェッチする
                     tmpPosts.removeAll(tmpPosts)
                     listeners.forEach { it.onChanged() }
                     fetchImpl(fetchSize - tmpPostsCount)
@@ -268,18 +286,32 @@ class PostList(private val client: JumblrClient) {
 
     private var rate = 1.0
 
+    /**
+     * 次に指定するSinceIdを取得
+     */
     private fun nextId(): Long {
+        // tmpPostsが空でなければ、tmpPostsの先頭からもう一度ダッシュボードを取得
         if (tmpPosts.size > 0) {
             return tmpPosts.first().id
         }
 
+        // 取得済みポストリストが空（ありえないはず）
         if (posts.size <= 0) {
             return 0
         }
 
+        /**
+         * 取得済みポストの先頭と最後のIDの差をポストの数で割った値 = ポストと次のポストのIDの差の平均
+         * この平均に取得したいポスト数を掛ければ、どれだけ遡ればいいかが分かる
+         */
         val diff = ((posts.first().id - posts.last().id) / posts.size) * FETCH_LIMIT
-        Log.v(TAG, "diff: ${diff}")
+        Log.v(TAG, "diff: $diff")
 
+        /**
+         * うまくダッシュボードが取得できないときに、
+         * 上で求めた値にrate分の補正をかける
+         * もっと遡りたければrate > 1にし、遡りを抑制したければ、 0 < rate < 1 にする
+         */
         val sinceId = posts.last().id - (diff * rate).toLong()
 
         return if (sinceId <= 0) 0 else sinceId
@@ -289,6 +321,13 @@ class PostList(private val client: JumblrClient) {
         GOOD, FAR_AWAY, DUPLICATE, EMPTY
     }
 
+    /**
+     * SinceIdによるダッシュボードの取得結果の状態をチェック
+     * EMPTY: 取得結果が空（ありえないはず）
+     * FAR_AWAY: 取得ポストリストの先頭が取得済みポストリストの最後よりも前のポスト（間にまだポストがあるかもしれない）
+     * DUPLICATE: 取得ポストリストがすべて取得済みポストリストに含まれている
+     * GOOD: 取得ポストリストの一部が取得済みポストリストに含まれている
+     */
     private fun checkResult(result: List<Post>): Result {
         if (result.isEmpty()) {
             return Result.EMPTY
