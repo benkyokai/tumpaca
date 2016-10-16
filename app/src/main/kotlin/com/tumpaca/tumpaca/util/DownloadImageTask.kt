@@ -11,7 +11,7 @@ import java.net.URL
 /**
  * Created by yabu on 2016/06/13.
  */
-class DownloadImageTask(val callback: (Bitmap) -> Unit) : AsyncTask<String, Void, Bitmap>() {
+class DownloadImageTask(val callback: (Bitmap?) -> Unit) : AsyncTask<String, Void, Bitmap>() {
     companion object {
         private const val TAG = "DownloadImageTask"
     }
@@ -36,7 +36,7 @@ class DownloadImageTask(val callback: (Bitmap) -> Unit) : AsyncTask<String, Void
         }
     }
 
-    override fun onPostExecute(result: Bitmap) {
+    override fun onPostExecute(result: Bitmap?) {
         callback(result)
     }
 

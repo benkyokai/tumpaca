@@ -52,7 +52,7 @@ fun Post.reblogAsync(blogName: String, comment: String, callback: (Post) -> Unit
     }.execute()
 }
 
-fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
+fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
     object : AsyncTask<Void, Void, String?>() {
         override fun doInBackground(vararg args: Void): String? {
             return TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
@@ -62,7 +62,9 @@ fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
         }
 
         override fun onPostExecute(avatarUrl: String?) {
-            DownloadImageTask(callback).execute(avatarUrl)
+            avatarUrl?.let {
+                DownloadImageTask(callback).execute(it)
+            }
         }
     }.execute()
 }
