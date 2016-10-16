@@ -152,9 +152,7 @@ class DashboardFragment : FragmentBase() {
     override fun onDestroyView() {
         super.onDestroyView()
         dashboardAdapter?.onUnbind()
-        if (changedListener != null) {
-            postList?.removeListeners(changedListener!!)
-        }
+        changedListener?.let { postList?.removeListeners(it) }
         networkReceiver?.let { context.unregisterReceiver(it) }
     }
 
