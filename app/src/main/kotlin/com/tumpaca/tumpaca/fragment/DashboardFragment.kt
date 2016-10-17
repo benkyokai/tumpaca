@@ -1,13 +1,9 @@
 package com.tumpaca.tumpaca.fragment;
 
 import android.content.BroadcastReceiver
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AlertDialog
 import android.view.*
-import android.view.animation.AnimationUtils
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -82,31 +78,6 @@ class DashboardFragment : FragmentBase() {
 
         dashboardAdapter?.onBind()
 
-        (view.findViewById(R.id.main_menu_button) as ImageButton).let { mainFab ->
-            val fabOpen = AnimationUtils.loadAnimation(context, R.anim.fab_open)
-            val fabClose = AnimationUtils.loadAnimation(context, R.anim.fab_close)
-            val rotateForward = AnimationUtils.loadAnimation(context, R.anim.rotate_forward)
-            val rotateBackward = AnimationUtils.loadAnimation(context, R.anim.rotate_backward)
-            val fabs = arrayOf(R.id.settings_button, R.id.reblog_button, R.id.like_button).map { view.findViewById(it) }
-            mainFab.setOnClickListener {
-                if (isFabOpen) {
-                    fabs.forEach {
-                        it.startAnimation(fabClose)
-                        it.isClickable = false
-                    }
-                    mainFab.startAnimation(rotateBackward)
-                    isFabOpen = false
-                } else {
-                    fabs.forEach {
-                        it.startAnimation(fabOpen)
-                        it.isClickable = true
-                    }
-                    mainFab.startAnimation(rotateForward)
-                    isFabOpen = true
-                }
-            }
-        }
-
         // Like
         (view.findViewById(R.id.like_button) as ImageButton).let {
             likeButton = it
@@ -176,20 +147,27 @@ class DashboardFragment : FragmentBase() {
 
     private fun doReblog() {
         val post = currentPost!!
+        val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
+        post.reblogAsync(blogName, null, {
+            Toast.makeText(context, R.string.reblogged_result, Toast.LENGTH_SHORT).show()
+        })
+
+        /** TODO 設定画面でリブログ時のコメント追加 on/off が出来るようになったら復活
         val input = EditText(context)
         input.setHint(R.string.comment_input_hint)
         AlertDialog.Builder(context)
-                .setTitle(R.string.reblog_dialog_header)
-                .setView(input)
-                .setPositiveButton(android.R.string.ok) { dialog, which ->
-                    val comment = input.text.toString()
-                    val blogName = TPRuntime.tumblrService!!.user?.blogs?.first()?.name!!
-                    post.reblogAsync(blogName, comment, {
-                        Toast.makeText(context, R.string.reblogged_result, Toast.LENGTH_SHORT).show()
-                    })
-                }
-                .setNegativeButton(android.R.string.cancel) { d, w -> }
-                .show()
+        .setTitle(R.string.reblog_dialog_header)
+        .setView(input)
+        .setPositiveButton(android.R.string.ok) { dialog, which ->
+        val comment = input.text.toString()
+        val blogName = TPRuntime.tumblrService!!.user?.blogs?.first()?.name!!
+        post.reblogAsync(blogName, comment, {
+        Toast.makeText(context, R.string.reblogged_result, Toast.LENGTH_SHORT).show()
+        })
+        }
+        .setNegativeButton(android.R.string.cancel) { d, w -> }
+        .show()
+         */
     }
 
 

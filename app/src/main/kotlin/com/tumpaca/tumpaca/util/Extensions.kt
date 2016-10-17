@@ -38,11 +38,15 @@ fun Post.likeAsync(callback: (Post) -> Unit) {
     }.execute()
 }
 
-fun Post.reblogAsync(blogName: String, comment: String, callback: (Post) -> Unit) {
+fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post) -> Unit) {
     val self = this
     object : AsyncTask<Unit, Unit, Unit>() {
         override fun doInBackground(vararg args: Unit) {
-            reblog(blogName, mapOf(Pair("comment", comment)))
+            val option = mapOf<String, String>()
+            if (comment != null) {
+                option.plus(Pair("comment", comment))
+            }
+            reblog(blogName, option)
             // TODO エラー処理
         }
 
