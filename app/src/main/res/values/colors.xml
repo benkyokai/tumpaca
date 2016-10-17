@@ -3,5 +3,6 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorAccentForFloatingButton">#aaFF4081</color>
     <color name="colorTumpaca">#36465d</color>
 </resources>

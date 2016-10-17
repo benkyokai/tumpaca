@@ -8,7 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorTumpaca"
-        android:padding="8dip"
+        android:paddingStart="8dip"
+        android:paddingEnd="8dip"
+        android:paddingTop="8dip"
+        android:paddingBottom="64dip"
         android:descendantFocusability="blocksDescendants">
 
         <WebView
@@ -52,7 +55,7 @@
 
                 <ImageView
                     android:id="@+id/reblog_icon"
-                    android:src="@drawable/ic_repeat_black_24dp"
+                    android:src="@drawable/ic_repeat_white_24dp"
                     android:layout_width="18dip"
                     android:layout_height="18dip"
                     android:paddingTop="5dp"

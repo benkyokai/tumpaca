@@ -1,0 +1,12 @@
+html, body {
+overflow: hidden;
+word-break: break-all;
+}
+
+body {
+color: #fafafa;
+}
+
+a {
+color: #40C4FF;
+}
