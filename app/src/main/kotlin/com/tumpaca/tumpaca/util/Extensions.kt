@@ -91,7 +91,7 @@ fun PhotoSize.debugString(): String {
 }
 
 fun ViewGroup.children(): List<View> {
-    return 0.until(childCount).map { getChildAt(it) }
+    return (0 until childCount).map { getChildAt(it) }
 }
 
 fun <T> List<T>.enumerate(): List<Pair<Int, T>> {
