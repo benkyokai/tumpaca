@@ -105,6 +105,7 @@ class DashboardFragment : FragmentBase() {
         // TODO: これはすごくイケてないので、activityを殺さずに表示を更新できるようにする
         // onDestroyView() で networkReceiver を登録解除していることに注意
         if (!context.isOnline()) {
+            Toast.makeText(context, R.string.offline_toast, Toast.LENGTH_SHORT).show()
             networkReceiver = context.onNetworkRestored {
                 activity.finish()
                 activity.startActivity(activity.intent)
