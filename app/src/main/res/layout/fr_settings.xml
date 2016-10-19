@@ -37,6 +37,15 @@
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/viewLicense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/view_license"
+        android:textColor="@color/text_button"
+        android:textSize="16sp" />
+
+    <TextView
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
