@@ -109,6 +109,7 @@ fun Context.onNetworkRestored(callback: () -> Unit): BroadcastReceiver {
         override fun onReceive(context: Context?, intent: Intent?) {
             context?.let {
                 if (it.isOnline()) {
+                    Log.d("Util", "インターネット接続が復活した")
                     callback()
                 }
             }
