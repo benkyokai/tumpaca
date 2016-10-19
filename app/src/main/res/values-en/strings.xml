@@ -15,4 +15,5 @@
     <string name="unliked_result">Unliked</string>
     <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>
     <string name="offline_toast">Network unavailable</string>
+    <string name="notes_unknown_placeholder">\? notes</string>
 </resources>

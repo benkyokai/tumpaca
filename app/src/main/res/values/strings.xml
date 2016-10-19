@@ -20,5 +20,6 @@
     <string name="logout">ログアウト</string>
     <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>
     <string name="offline_toast">ネットワーク通信ができません</string>
+    <string name="notes_unknown_placeholder">\? notes</string>
 
 </resources>
