@@ -5,6 +5,7 @@
     <string name="auth_start">Tumpaca をはじめる</string>
 
     <!-- DashboardFragment -->
+    <string name="dashboard_loading">ダッシュボードを取得中…</string>
     <string name="dashboard">ダッシュボード</string>
     <string name="dashboard_logout">ログアウト</string>
     <string name="reblog_dialog_header">Reblog</string>
@@ -18,6 +19,8 @@
     <string name="reload">ダッシュボードをリロード</string>
     <string name="logout">ログアウト</string>
     <string name="view_license">ライセンス</string>
-    <string name="copyright">Copyright (c) benkyokai. All right reserved.</string>
+    <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>
+    <string name="offline_toast">ネットワーク通信ができません</string>
+    <string name="notes_unknown_placeholder">\? notes</string>
 
 </resources>

@@ -107,11 +107,19 @@ class TumblrService(val context: Context) {
     private fun refreshUser() {
         object : AsyncTask<Void, Void, User>() {
             override fun doInBackground(vararg args: Void): User? {
-                return jumblerClient?.user()
+                try {
+                    return jumblerClient?.user()
+                } catch (e: Throwable) {
+                    Log.e(TAG, "TumblrService refreshUser error: ${e.message}")
+                    return null
+                }
             }
 
             override fun onPostExecute(result: User?) {
-                user = result!!
+                // ネットワーク接続がないときなどは null になってしまう
+                result?.let {
+                    user = it
+                }
             }
         }.execute()
     }

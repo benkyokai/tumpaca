@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clipChildren="false">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,6 +37,15 @@
             android:layout_height="wrap_content"
             android:text="0" />
     </LinearLayout>
+
+    <TextView
+        android:text="@string/dashboard_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/textView"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textColor="@color/text_button"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"

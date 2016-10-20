@@ -1,5 +1,6 @@
 package com.tumpaca.tumpaca.fragment;
 
+import android.content.BroadcastReceiver
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.view.*
@@ -10,7 +11,9 @@ import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.PostList
 import com.tumpaca.tumpaca.model.TPRuntime
+import com.tumpaca.tumpaca.util.isOnline
 import com.tumpaca.tumpaca.util.likeAsync
+import com.tumpaca.tumpaca.util.onNetworkRestored
 import com.tumpaca.tumpaca.util.reblogAsync
 
 class DashboardFragment : FragmentBase() {
@@ -25,6 +28,7 @@ class DashboardFragment : FragmentBase() {
     var viewPager: ViewPager? = null
     var dashboardAdapter: DashboardPageAdapter? = null
     var changedListener: PostList.ChangedListener? = null
+    var networkReceiver: BroadcastReceiver? = null
 
     var currentPost: Post? = null
         get() = postList?.get(viewPager!!.currentItem)
@@ -96,6 +100,18 @@ class DashboardFragment : FragmentBase() {
             ft.commit()
         }
 
+        // ダッシュボードをロードしようとした時点でネットワークに接続できない場合、
+        // ネットワークが復活したらダッシュボードを丸々リロードする
+        // TODO: これはすごくイケてないので、activityを殺さずに表示を更新できるようにする
+        // onDestroyView() で networkReceiver を登録解除していることに注意
+        if (!context.isOnline()) {
+            Toast.makeText(context, R.string.offline_toast, Toast.LENGTH_SHORT).show()
+            networkReceiver = context.onNetworkRestored {
+                activity.finish()
+                activity.startActivity(activity.intent)
+            }
+        }
+
         return view
     }
 
@@ -108,9 +124,8 @@ class DashboardFragment : FragmentBase() {
     override fun onDestroyView() {
         super.onDestroyView()
         dashboardAdapter?.onUnbind()
-        if (changedListener != null) {
-            postList?.removeListeners(changedListener!!)
-        }
+        changedListener?.let { postList?.removeListeners(it) }
+        networkReceiver?.let { context.unregisterReceiver(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -5,8 +5,10 @@ import android.support.annotation.Nullable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
+import com.tumpaca.tumpaca.util.isOnline
 
 class AuthFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
@@ -34,6 +36,10 @@ class AuthFragment : FragmentBase() {
     }
 
     private fun auth() {
-        TPRuntime.tumblrService.auth(activity)
+        if (context.isOnline()) {
+            TPRuntime.tumblrService.auth(activity)
+        } else {
+            Toast.makeText(context, R.string.offline_toast, Toast.LENGTH_SHORT).show()
+        }
     }
 }
