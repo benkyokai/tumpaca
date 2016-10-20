@@ -1,8 +1,8 @@
 package com.tumpaca.tumpaca.util
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.util.DisplayMetrics
 import android.util.Log
@@ -56,7 +56,7 @@ fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post) -> Uni
     }.execute()
 }
 
-fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
+fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
     object : AsyncTask<Void, Void, String?>() {
         override fun doInBackground(vararg args: Void): String? {
             return TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
@@ -66,7 +66,9 @@ fun Post.blogAvatarAsync(callback: (Bitmap) -> Unit) {
         }
 
         override fun onPostExecute(avatarUrl: String?) {
-            DownloadImageTask(callback).execute(avatarUrl)
+            avatarUrl?.let {
+                DownloadImageTask(callback).execute(it)
+            }
         }
     }.execute()
 }
@@ -89,9 +91,30 @@ fun PhotoSize.debugString(): String {
 }
 
 fun ViewGroup.children(): List<View> {
-    return 0.until(childCount).map { getChildAt(it) }
+    return (0 until childCount).map { getChildAt(it) }
 }
 
 fun <T> List<T>.enumerate(): List<Pair<Int, T>> {
     return (0 until size).map { it to get(it) }
+}
+
+fun Context.isOnline(): Boolean {
+    val connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkInfo = connMgr.activeNetworkInfo
+    return networkInfo != null && networkInfo.isConnected
+}
+
+fun Context.onNetworkRestored(callback: () -> Unit): BroadcastReceiver {
+    val receiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            context?.let {
+                if (it.isOnline()) {
+                    Log.d("Util", "インターネット接続が復活した")
+                    callback()
+                }
+            }
+        }
+    }
+    registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+    return receiver
 }

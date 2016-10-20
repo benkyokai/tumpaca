@@ -98,24 +98,31 @@ class PhotoPostFragment : PostFragment() {
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
-                object : AsyncTask<Unit, Unit, ByteArray>() {
+                object: AsyncTask<Unit, Unit, ByteArray?>() {
 
-                    override fun doInBackground(vararg args: Unit): ByteArray {
+                    override fun doInBackground(vararg args: Unit): ByteArray? {
                         // TODO: 失敗した場合のエラーハンドリング
-                        return URL(url).openStream().readBytes()
+                        try {
+                            return URL(url).openStream().readBytes()
+                        } catch (e: Throwable) {
+                            Log.e(TAG, "PhotoPost fetch error: ${e.message}")
+                            return null
+                        }
                     }
 
-                    override fun onPostExecute(result: ByteArray) {
-                        gifView.setBytes(result)
-                        if (isVisibleToUser) {
-                            // すでに見えているので今すぐアニメーションを開始
-                            gifView.startAnimation()
-                        } else {
-                            // まだ見えていないけれど、何も描画しないと可視判定ができないので
-                            // とりあえず最初のコマだけ表示しておく
-                            gifView.gotoFrame(0)
+                    override fun onPostExecute(result: ByteArray?) {
+                        result?.let {
+                            gifView.setBytes(it)
+                            if (isVisibleToUser) {
+                                // すでに見えているので今すぐアニメーションを開始
+                                gifView.startAnimation()
+                            } else {
+                                // まだ見えていないけれど、何も描画しないと可視判定ができないので
+                                // とりあえず最初のコマだけ表示しておく
+                                gifView.gotoFrame(0)
+                            }
+                            imageLayout?.removeView(loadingGifView)
                         }
-                        imageLayout?.removeView(loadingGifView)
                     }
                 }.execute()
             } else {

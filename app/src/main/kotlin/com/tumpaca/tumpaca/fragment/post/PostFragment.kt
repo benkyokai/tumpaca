@@ -1,5 +1,6 @@
 package com.tumpaca.tumpaca.fragment.post
 
+import android.content.BroadcastReceiver
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -7,12 +8,15 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.FragmentBase
 import com.tumpaca.tumpaca.model.PostList
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
+import com.tumpaca.tumpaca.util.isOnline
+import com.tumpaca.tumpaca.util.onNetworkRestored
 
 abstract class PostFragment : FragmentBase() {
     companion object {
@@ -22,6 +26,7 @@ abstract class PostFragment : FragmentBase() {
     // TODO
     // PostList で対象のポストを管理していると、PostList の先頭に新しい Post がきた場合に対応できないので本当はよくない
     protected var page: Int = -1
+    protected var networkReceiver: BroadcastReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +35,15 @@ abstract class PostFragment : FragmentBase() {
     }
 
     fun getPost(callback: (Post?) -> Unit) {
-        TPRuntime.tumblrService.postList?.getAsync(page, callback)
+        if (context.isOnline()) {
+            TPRuntime.tumblrService.postList?.getAsync(page, callback)
+        } else {
+            Toast.makeText(context, R.string.offline_toast, Toast.LENGTH_SHORT).show()
+            networkReceiver = context.onNetworkRestored {
+                removeNetworkReceiver()
+                TPRuntime.tumblrService.postList?.getAsync(page, callback)
+            }
+        }
     }
 
     fun initStandardViews(view: View, blogName: String, subText: String, reblogged: String?, noteCount: Long) {
@@ -66,5 +79,15 @@ abstract class PostFragment : FragmentBase() {
     fun setIcon(view: View, post: Post) {
         val iconView = view.findViewById(R.id.icon) as ImageView
         post.blogAvatarAsync { iconView.setImageBitmap(it) }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeNetworkReceiver()
+    }
+
+    fun removeNetworkReceiver() {
+        networkReceiver?.let { context.unregisterReceiver(it) }
+        networkReceiver = null
     }
 }

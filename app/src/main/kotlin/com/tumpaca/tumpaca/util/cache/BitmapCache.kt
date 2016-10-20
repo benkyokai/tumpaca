@@ -43,10 +43,14 @@ class BitmapCache() : Cache<Bitmap> {
         }
 
         // キャッシュになければラムダを実行した結果をキャッシュにセットして、その値を返す
-        f()?.let {
-            Log.d(TAG, "bitmap cache not hit: $lruCache")
-            set(key, it)
-            return it
+        try {
+            f()?.let {
+                Log.d(TAG, "bitmap cache not hit: $lruCache")
+                set(key, it)
+                return it
+            }
+        } catch (e: Throwable) {
+            Log.e(TAG, "BitmapCache fetch error: ${e.message}")
         }
 
         return null
@@ -82,10 +86,14 @@ class AvatarUrlCache() : Cache<String> {
         }
 
         // キャッシュになければラムダを実行した結果をキャッシュにセットして、その値を返す
-        f()?.let {
-            Log.d(TAG, "avatar url cache not hit: $lruCache")
-            set(key, it)
-            return it
+        try {
+            f()?.let {
+                Log.d(TAG, "avatar url cache not hit: $lruCache")
+                set(key, it)
+                return it
+            }
+        } catch (e: Throwable) {
+            Log.e(TAG, "AvatarUrlCache fetch error: ${e.message}")
         }
 
         return null
