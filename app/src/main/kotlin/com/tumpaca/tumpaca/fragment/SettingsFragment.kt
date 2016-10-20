@@ -1,6 +1,7 @@
 package com.tumpaca.tumpaca.fragment
 
-import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,15 @@ class SettingsFragment : FragmentBase() {
             TPRuntime.tumblrService.logout()
             replaceFragment(AuthFragment(), false)
         }
+
+        val licenseButton = view.findViewById(R.id.viewLicense)
+        licenseButton.setOnClickListener {
+            val uri = Uri.parse("https://github.com/benkyokai/tumpaca/blob/master/LICENSE.md")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        }
+
 
         return view
     }
