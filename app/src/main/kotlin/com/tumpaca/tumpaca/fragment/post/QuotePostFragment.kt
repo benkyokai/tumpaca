@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import com.tumblr.jumblr.types.QuotePost
 import com.tumpaca.tumpaca.R
+import com.tumpaca.tumpaca.util.UIUtil
 
 class QuotePostFragment : PostFragment() {
 
@@ -21,6 +23,9 @@ class QuotePostFragment : PostFragment() {
                 update(view, it)
             }
         })
+
+        val webView = view.findViewById(R.id.sub) as WebView
+        UIUtil.doNotHorizontalScroll(webView)
 
         return view
     }

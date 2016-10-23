@@ -12,20 +12,24 @@ import com.tumpaca.tumpaca.model.TPRuntime
 
 object UIUtil {
 
-    fun loadCss(webView: WebView): Unit {
+    fun loadCss(webView: WebView, cssFile: String = "style.css"): Unit {
         webView.settings.javaScriptEnabled = true
 
         webView.setWebViewClient(object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
-                webView.loadUrl(generateCSS())
+                webView.loadUrl(generateCSS(cssFile))
                 super.onPageFinished(view, url)
             }
         })
     }
 
-    private fun generateCSS(): String {
+    fun doNotHorizontalScroll(webView: WebView): Unit {
+        loadCss(webView, "doNotHorizontalScroll.css")
+    }
+
+    private fun generateCSS(cssFile: String): String {
         try {
-            val inputStream = TPRuntime.mainApplication.assets.open("style.css")
+            val inputStream = TPRuntime.mainApplication.assets.open(cssFile)
             val buffer = ByteArray(inputStream.available())
             inputStream.read(buffer)
             inputStream.close()
@@ -35,7 +39,7 @@ object UIUtil {
                     "var style = document.createElement('style');" +
                     "style.type = 'text/css';" +
                     // Tell the browser to BASE64-decode the string into your script !!!
-                    "style.innerHTML = window.atob('" + encoded + "');" +
+                    "style.innerHTML = window.atob('$encoded');" +
                     "parent.appendChild(style)" +
                     "})()"
             return scripts
