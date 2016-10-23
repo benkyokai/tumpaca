@@ -12,6 +12,20 @@ class TPSettings(val ctx: Context) {
 
     companion object {
         private const val TAG = "TPSettings"
+        private const val SHOW_MY_POSTS = "SHOW_MY_POSTS"
+    }
+
+    private var mIsShowMyPosts: Boolean? = null
+    fun isShowMyPosts(): Boolean {
+        if (mIsShowMyPosts == null) {
+            mIsShowMyPosts = getBoolean(SHOW_MY_POSTS, true)
+        }
+        return mIsShowMyPosts!!
+    }
+
+    fun setShowMyPosts(isShowMyPosts: Boolean): Unit {
+        mIsShowMyPosts = isShowMyPosts
+        save(SHOW_MY_POSTS, isShowMyPosts)
     }
 
     private fun save(key: String, value: Any): Unit {

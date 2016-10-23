@@ -171,9 +171,7 @@ class PostList(private val client: JumblrClient) {
                 // ここは UI スレッド
                 offset += result.size
 
-                val filteredResult = result.filter {
-                    SUPPORTED_TYPES.contains(it.type)
-                }
+                val filteredResult = filterPosts(result)
 
                 posts.addAll(filteredResult)
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
@@ -184,6 +182,25 @@ class PostList(private val client: JumblrClient) {
                 } // 取得したポストの数が0なら次回のロードはしない
             }
         }.execute()
+    }
+
+    /**
+     * サポート対象外のポストを除外
+     * また、設定で「自分のポストを表示しない」にしている場合は、
+     * 自分のポストを除外する
+     */
+    private fun filterPosts(posts: List<Post>): List<Post> {
+        if (TPRuntime.settings.isShowMyPosts()) {
+            // サポート対象外のポストを除外
+            return posts.filter { SUPPORTED_TYPES.contains(it.type) }
+        } else {
+            return posts.filter {
+                // サポート対象外のポストを除外 + 自分のブログ名一覧にポストのブログ名が含まれていれば除外する
+                val blogs = TPRuntime.tumblrService.user?.blogs?.map { it.name }
+                blogs?.contains(it.blogName)?.not() ?: true &&
+                        SUPPORTED_TYPES.contains(it.type)
+            }
+        }
     }
 
     /**
@@ -216,9 +233,7 @@ class PostList(private val client: JumblrClient) {
 
             override fun onPostExecute(result: List<Post>) {
                 // ここは UI スレッド
-                val filteredResult = result.filter {
-                    SUPPORTED_TYPES.contains(it.type)
-                }
+                val filteredResult = filterPosts(result)
 
                 // 取得結果の状態をチェック
                 val r = checkResult(filteredResult)

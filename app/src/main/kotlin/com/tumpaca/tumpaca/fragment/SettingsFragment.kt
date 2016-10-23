@@ -3,9 +3,11 @@ package com.tumpaca.tumpaca.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Switch
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
 
@@ -32,6 +34,13 @@ class SettingsFragment : FragmentBase() {
             // TODO 本当にログインしたのかダイアログで確認した方がいい
             TPRuntime.tumblrService.logout()
             replaceFragment(AuthFragment(), false)
+        }
+
+        val showMyPosts = view.findViewById(R.id.show_my_posts) as Switch
+        showMyPosts.isChecked = TPRuntime.settings.isShowMyPosts()
+        showMyPosts.setOnClickListener {
+            TPRuntime.settings.setShowMyPosts(showMyPosts.isChecked)
+            Log.v(TAG, "show_my_posts: ${showMyPosts.isChecked}")
         }
 
         val licenseButton = view.findViewById(R.id.viewLicense)
