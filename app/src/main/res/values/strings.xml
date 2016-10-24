@@ -18,6 +18,7 @@
     <string name="tumpaca">Tumpaca</string>
     <string name="reload">ダッシュボードをリロード</string>
     <string name="show_my_posts">自分のポストを表示する</string>
+    <string name="exclude_photo">PHOTOポストを表示しない</string>
     <string name="logout">ログアウト</string>
     <string name="view_license">ライセンス</string>
     <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>

@@ -3,7 +3,6 @@ package com.tumpaca.tumpaca.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +39,12 @@ class SettingsFragment : FragmentBase() {
         showMyPosts.isChecked = TPRuntime.settings.isShowMyPosts()
         showMyPosts.setOnClickListener {
             TPRuntime.settings.setShowMyPosts(showMyPosts.isChecked)
-            Log.v(TAG, "show_my_posts: ${showMyPosts.isChecked}")
+        }
+
+        val excludePhoto = view.findViewById(R.id.exclude_photo) as Switch
+        excludePhoto.isChecked = TPRuntime.settings.isExcludePhoto()
+        excludePhoto.setOnClickListener {
+            TPRuntime.settings.setExcludePhoto(excludePhoto.isChecked)
         }
 
         val licenseButton = view.findViewById(R.id.viewLicense)

@@ -42,8 +42,19 @@
         android:textColor="@color/text_button"
         android:textSize="16sp"
         android:layout_marginTop="20dp"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchPadding="24dp" />
+
+    <Switch
+        android:id="@+id/exclude_photo"
+        android:text="@string/exclude_photo"
+        android:textColor="@color/text_button"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchPadding="24dp" />
 
     <TextView
         android:id="@+id/viewLicense"

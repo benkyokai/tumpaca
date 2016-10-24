@@ -44,6 +44,12 @@ class PostList(private val client: JumblrClient) {
             Post.PostType.TEXT,
             Post.PostType.VIDEO)
 
+    private val SUPPORTED_TYPES_WITHOUT_PHOTO = setOf(
+            Post.PostType.LINK,
+            Post.PostType.QUOTE,
+            Post.PostType.TEXT
+    )
+
     // SUPPORTED_TYPES で列挙されたタイプでフィルタリングされたポストリスト
     // バックグラウンドスレッドからもアクセスするのでスレッドセーフリストを使う必要あり。
     private val posts: CopyOnWriteArrayList<Post> = CopyOnWriteArrayList()
@@ -190,17 +196,27 @@ class PostList(private val client: JumblrClient) {
      * 自分のポストを除外する
      */
     private fun filterPosts(posts: List<Post>): List<Post> {
-        if (TPRuntime.settings.isShowMyPosts()) {
-            // サポート対象外のポストを除外
-            return posts.filter { SUPPORTED_TYPES.contains(it.type) }
-        } else {
-            return posts.filter {
-                // サポート対象外のポストを除外 + 自分のブログ名一覧にポストのブログ名が含まれていれば除外する
-                val blogs = TPRuntime.tumblrService.user?.blogs?.map { it.name }
-                blogs?.contains(it.blogName)?.not() ?: true &&
-                        SUPPORTED_TYPES.contains(it.type)
-            }
-        }
+        // 自分のポストを表示するかどうか
+        val posts1 =
+                if (TPRuntime.settings.isShowMyPosts()) {
+                    posts
+                } else {
+                    posts.filter {
+                        // 自分のブログ名一覧にポストのブログ名が含まれていれば除外する
+                        val blogs = TPRuntime.tumblrService.user?.blogs?.map { it.name }
+                        blogs?.contains(it.blogName)?.not() ?: true
+                    }
+                }
+
+        // 写真ポストを除外するかどうか
+        val posts2 =
+                if (TPRuntime.settings.isExcludePhoto()) {
+                    posts1.filter { SUPPORTED_TYPES_WITHOUT_PHOTO.contains(it.type) }
+                } else {
+                    posts1.filter { SUPPORTED_TYPES.contains(it.type) }
+                }
+
+        return posts2
     }
 
     /**
