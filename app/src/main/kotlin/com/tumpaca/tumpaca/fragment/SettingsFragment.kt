@@ -35,10 +35,10 @@ class SettingsFragment : FragmentBase() {
             replaceFragment(AuthFragment(), false)
         }
 
-        val showMyPosts = view.findViewById(R.id.show_my_posts) as Switch
-        showMyPosts.isChecked = TPRuntime.settings.isShowMyPosts()
-        showMyPosts.setOnClickListener {
-            TPRuntime.settings.setShowMyPosts(showMyPosts.isChecked)
+        val excludeMyPosts = view.findViewById(R.id.exclude_my_posts) as Switch
+        excludeMyPosts.isChecked = TPRuntime.settings.isExcludeMyPosts()
+        excludeMyPosts.setOnClickListener {
+            TPRuntime.settings.setExcludeMyPosts(excludeMyPosts.isChecked)
         }
 
         val excludePhoto = view.findViewById(R.id.exclude_photo) as Switch

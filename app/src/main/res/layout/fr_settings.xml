@@ -37,8 +37,8 @@
         android:textSize="16sp" />
 
     <Switch
-        android:id="@+id/show_my_posts"
-        android:text="@string/show_my_posts"
+        android:id="@+id/exclude_my_posts"
+        android:text="@string/exclude_my_posts"
         android:textColor="@color/text_button"
         android:textSize="16sp"
         android:layout_marginTop="20dp"

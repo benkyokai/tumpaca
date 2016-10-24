@@ -12,25 +12,25 @@ class TPSettings(val ctx: Context) {
 
     companion object {
         private const val TAG = "TPSettings"
-        private const val SHOW_MY_POSTS = "SHOW_MY_POSTS"
+        private const val EXCLUDE_MY_POSTS = "EXCLUDE_MY_POSTS"
         private const val EXCLUDE_PHOTO = "EXCLUDE_PHOTO"
     }
 
     /**
      * 自分のポストを表示するかどうかの設定
      */
-    private var mIsShowMyPosts: Boolean? = null
+    private var mIsExcludeMyPosts: Boolean? = null
 
-    fun isShowMyPosts(): Boolean {
-        if (mIsShowMyPosts == null) {
-            mIsShowMyPosts = getBoolean(SHOW_MY_POSTS, true)
+    fun isExcludeMyPosts(): Boolean {
+        if (mIsExcludeMyPosts == null) {
+            mIsExcludeMyPosts = getBoolean(EXCLUDE_MY_POSTS, false)
         }
-        return mIsShowMyPosts!!
+        return mIsExcludeMyPosts!!
     }
 
-    fun setShowMyPosts(isShowMyPosts: Boolean): Unit {
-        mIsShowMyPosts = isShowMyPosts
-        save(SHOW_MY_POSTS, isShowMyPosts)
+    fun setExcludeMyPosts(isExcludeMyPosts: Boolean): Unit {
+        mIsExcludeMyPosts = isExcludeMyPosts
+        save(EXCLUDE_MY_POSTS, isExcludeMyPosts)
     }
 
     /**

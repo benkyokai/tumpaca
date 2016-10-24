@@ -198,14 +198,14 @@ class PostList(private val client: JumblrClient) {
     private fun filterPosts(posts: List<Post>): List<Post> {
         // 自分のポストを表示するかどうか
         val posts1 =
-                if (TPRuntime.settings.isShowMyPosts()) {
-                    posts
-                } else {
+                if (TPRuntime.settings.isExcludeMyPosts()) {
                     posts.filter {
                         // 自分のブログ名一覧にポストのブログ名が含まれていれば除外する
                         val blogs = TPRuntime.tumblrService.user?.blogs?.map { it.name }
                         blogs?.contains(it.blogName)?.not() ?: true
                     }
+                } else {
+                    posts
                 }
 
         // 写真ポストを除外するかどうか
