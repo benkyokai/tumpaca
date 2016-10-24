@@ -14,11 +14,22 @@
         android:paddingBottom="64dip"
         android:descendantFocusability="blocksDescendants">
 
-        <WebView
-            android:id="@+id/sub"
+        <TextView
+            android:id="@+id/post_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#999999"
+            android:textSize="16sp"
+            android:textColor="#666"
+            android:padding="8dp"
+            android:background="@drawable/round"
+            android:layout_alignParentEnd="true" />
+
+        <WebView
+            android:id="@+id/sub"
+            android:layout_below="@id/post_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fafafa"
             android:textSize="12sp"
             android:layout_alignParentEnd="true" />
 
