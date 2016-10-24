@@ -14,6 +14,7 @@ class TPSettings(val ctx: Context) {
         private const val TAG = "TPSettings"
         private const val EXCLUDE_MY_POSTS = "EXCLUDE_MY_POSTS"
         private const val EXCLUDE_PHOTO = "EXCLUDE_PHOTO"
+        private const val HIGH_RESOLUTION_PHOTO = "HIGH_RESOLUTION_PHOTO"
     }
 
     /**
@@ -48,6 +49,23 @@ class TPSettings(val ctx: Context) {
     fun setExcludePhoto(excludePhoto: Boolean): Unit {
         mExcludePhoto = excludePhoto
         save(EXCLUDE_PHOTO, excludePhoto)
+    }
+
+    /**
+     * 高画質な写真を読み込むかどうかの設定
+     */
+    private var mIsHighResolutionPhoto: Boolean? = null
+
+    fun isHighResolutionPhoto(): Boolean {
+        if (mIsHighResolutionPhoto == null) {
+            mIsHighResolutionPhoto = getBoolean(HIGH_RESOLUTION_PHOTO, false)
+        }
+        return mIsHighResolutionPhoto!!
+    }
+
+    fun setHighResolutionPhoto(isHighResolutionPhoto: Boolean): Unit {
+        mIsHighResolutionPhoto = isHighResolutionPhoto
+        save(HIGH_RESOLUTION_PHOTO, isHighResolutionPhoto)
     }
 
     private fun save(key: String, value: Any): Unit {
