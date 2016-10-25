@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Tumpaca</string>
+
+    <!-- AuthFragment -->
+    <string name="auth_start">Tumpaca をはじめる</string>
+
+    <!-- DashboardFragment -->
+    <string name="dashboard_loading">ダッシュボードを取得中…</string>
+    <string name="dashboard">ダッシュボード</string>
+    <string name="dashboard_logout">ログアウト</string>
+    <string name="reblog_dialog_header">Reblog</string>
+    <string name="comment_input_hint">コメント</string>
+    <string name="liked_result">Likeしました</string>
+    <string name="unliked_result">Like解除しました</string>
+    <string name="reblogged_result">Reblogしました</string>
+
+    <!-- SettingsFragment -->
+    <string name="tumpaca">Tumpaca</string>
+    <string name="reload">ダッシュボードをリロード</string>
+    <string name="exclude_my_posts">自分のポストを表示しない</string>
+    <string name="exclude_photo">PHOTOポストを表示しない</string>
+    <string name="high_resolution_photo">高画質な写真を表示する</string>
+    <string name="logout">ログアウト</string>
+    <string name="view_license">ライセンス</string>
+    <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>
+    <string name="offline_toast">ネットワーク通信ができません</string>
+    <string name="notes_unknown_placeholder">\? notes</string>
+
+</resources>
