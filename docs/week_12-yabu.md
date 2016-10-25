@@ -13,9 +13,9 @@
     - 写真ポストを除外する設定を追加
     - 写真の画質設定を追加
     - デフォルト言語を英語に変更
+    - WebView内のリンクをタップしたときに、外部ブラウザを開くよう修正
 - 問題点
     - たまにポストに抜けがある
-    - WebView内のリンクをクリックすると、そのWebViewでページ遷移する
 - その他
     - ストアのリソースを作成
         - 説明、アイコン、スクリーンショット、バナー
@@ -55,14 +55,13 @@
 - 日本以外でもリリースするので、デフォルト言語を英語に変えた
 - 日本語リソースをvalues-jaに移して、英語リソースをvaluesに移動
 
+### WebView内のリンクをタップしたときに、外部ブラウザを開くよう修正
+- WebView内のリンクをタップしたときに、そのWebView内で遷移していたため見づらかった
+- WebViewClientのshouldOverrideUrlLoading()をオーバーライドしたらできた
+    - http://stackoverflow.com/questions/4229494/webview-link-click-open-default-browser
+
 ## 問題点
 ### たまにポストに抜けがある
 - 原因は特定できていない
 - since_idによるダッシュボード取得のバグっぽい
 - since_idの指定の仕方とか、重複分を削るところとかで、端っこのポストが抜けてる感じ
-
-### WebView内のリンクをクリックすると、そのWebViewでページ遷移する
-- WebView内のリンクを外部ブラウザで開きたい
-- WebViewClientのshouldOverrideUrlLoading()をオーバーライドしたらできるっぽい
-    - http://stackoverflow.com/questions/4229494/webview-link-click-open-default-browser
-- しかし、文字色や折り返しのためのcssロードと衝突してうまくいかない
