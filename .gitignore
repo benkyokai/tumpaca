@@ -39,3 +39,6 @@ captures/
 # Others
 .DS_Store
 auth.properties
+
+# Google Services JSON
+app/google-services.json
