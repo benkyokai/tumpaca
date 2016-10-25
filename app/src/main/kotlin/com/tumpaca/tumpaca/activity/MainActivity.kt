@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.AuthFragment
+import com.tumpaca.tumpaca.model.TPRuntime
 
 /**
  * Tumpaca クラスのメインアクティビティ。
@@ -19,6 +20,8 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(TAG, "onCreate()")
         setContentView(R.layout.activity_main)
+
+        TPRuntime.mainApplication.analytics.logEvent("launched", null)
 
         if (savedInstanceState == null) {
             val start = AuthFragment()
