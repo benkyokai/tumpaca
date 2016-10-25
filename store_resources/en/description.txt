@@ -1,6 +1,11 @@
+## タイトル
 Tumpaca for Tumblr
 
+## 簡単な説明
+
 The very bestest Tumblr client
+
+## 詳しい説明
 
 Just want to swipe through your dashboard? Just swipe, and swipe, and swipe, with no other nonsense? Then this is the client for you.
 (Tumblr account required.)
