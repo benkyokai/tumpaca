@@ -63,7 +63,6 @@ class DashboardFragment : FragmentBase() {
         }
 
         // PostList と ViewPage のバインド
-        TPRuntime.tumblrService.resetPosts()
         postList = TPRuntime.tumblrService.postList
 
         changedListener = object : PostList.ChangedListener {
@@ -73,7 +72,7 @@ class DashboardFragment : FragmentBase() {
         }
         postList?.addListeners(changedListener!!)
 
-        dashboardAdapter = DashboardPageAdapter(fragmentManager, postList!!)
+        dashboardAdapter = DashboardPageAdapter(childFragmentManager, postList!!)
         viewPager?.adapter = dashboardAdapter
 
         dashboardAdapter?.onBind()
