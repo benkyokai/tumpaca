@@ -7,11 +7,13 @@ package com.tumpaca.tumpaca.fragment.post
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -41,9 +43,16 @@ class PhotoPostFragment : PostFragment() {
     var isVisibleToUser = false
     var imageLayout: LinearLayout? = null
     // GIFの可視判定を行う呼び出しに渡す必要があるが、中身は使っていない
+    var mView: View? = null
+    val onScrollChangedListener = object : ViewTreeObserver.OnScrollChangedListener {
+        override fun onScrollChanged() {
+            startStopAnimations()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.post_photo, container, false)
+        mView = view
 
         getPost {
             if (isAdded && it is PhotoPost) {
@@ -55,6 +64,11 @@ class PhotoPostFragment : PostFragment() {
         UIUtil.loadCss(webView)
 
         return view
+    }
+
+    override fun onDetach() {
+        mView?.viewTreeObserver?.removeOnScrollChangedListener(onScrollChangedListener)
+        super.onDetach()
     }
 
     private fun update(view: View, post: PhotoPost) {
@@ -70,10 +84,17 @@ class PhotoPostFragment : PostFragment() {
 
         // このポストにGIFがあったら、再生／停止判定を行うリスナーを追加する
         if (urls.any { it.endsWith(".gif") }) {
-            view.setOnScrollChangeListener { view, x, y, oldX, oldY ->
-                // スクロール位置によって見えてきたものを再生、見えなくなったものを停止
-                startStopAnimations()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                view.setOnScrollChangeListener { view, x, y, oldX, oldY ->
+                    // スクロール位置によって見えてきたものを再生、見えなくなったものを停止
+                    startStopAnimations()
+                }
+            } else {
+                view.viewTreeObserver.addOnScrollChangedListener {
+                    onScrollChangedListener
+                }
             }
+
             imageLayout?.addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
                 // ローディングなどでレイアウトが変わると見えるものも変わるので再判定
                 startStopAnimations()
@@ -98,7 +119,7 @@ class PhotoPostFragment : PostFragment() {
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
-                object: AsyncTask<Unit, Unit, ByteArray?>() {
+                object : AsyncTask<Unit, Unit, ByteArray?>() {
 
                     override fun doInBackground(vararg args: Unit): ByteArray? {
                         // TODO: 失敗した場合のエラーハンドリング

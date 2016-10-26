@@ -39,8 +39,7 @@ android {
     }
     productFlavors {
         envDev {
-            // minSdkVersion を 21 以上にしておくとビルドが速くなるので、開発時には minSdkVersion を 21 にしておく
-            minSdkVersion 21
+            minSdkVersion 19
             buildConfigField "boolean", "FIREBASE_ENABLED", "false"
         }
         envProd {

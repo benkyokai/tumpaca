@@ -2,6 +2,7 @@ package com.tumpaca.tumpaca.fragment.post
 
 import android.content.BroadcastReceiver
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
@@ -53,8 +54,9 @@ abstract class PostFragment : FragmentBase() {
         val mimeType = "text/html; charset=utf-8"
         subTextView.setBackgroundColor(Color.TRANSPARENT)
         subTextView.loadData(subText, mimeType, null)
-        subTextView.clipToOutline = true
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            subTextView.clipToOutline = true
+        }
 
         val rebloggedView = view.findViewById(R.id.reblogged) as TextView
         if (reblogged != null) {
