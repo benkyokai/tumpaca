@@ -99,6 +99,7 @@ class TumblrService(val context: Context) {
     }
 
     fun logout() {
+        postList = null
         jumblerClient = null
         authInfo = null
         removeAuthToken()

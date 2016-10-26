@@ -1,8 +1,11 @@
 package com.tumpaca.tumpaca.fragment
 
+import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,15 +27,15 @@ class SettingsFragment : FragmentBase() {
 
         val reloadButton = view.findViewById(R.id.reload)
         reloadButton.setOnClickListener {
+            TPRuntime.tumblrService.resetPosts()
             activity.finish()
             activity.startActivity(activity.intent)
         }
 
         val logoutButton = view.findViewById(R.id.logout)
         logoutButton.setOnClickListener {
-            // TODO 本当にログインしたのかダイアログで確認した方がいい
-            TPRuntime.tumblrService.logout()
-            replaceFragment(AuthFragment(), false)
+            val fragment = LogoutDialogFragment()
+            fragment.show(childFragmentManager, null)
         }
 
         /**
@@ -73,5 +76,29 @@ class SettingsFragment : FragmentBase() {
 
 
         return view
+    }
+}
+
+// 直接 Builder から show() すると Activity 破棄時に memory leak するらしいので
+// DialogFragment で包んであげる。
+// ref: http://qiita.com/suzukihr/items/8973527ebb8bb35f6bb8
+class LogoutDialogFragment : DialogFragment() {
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return AlertDialog.Builder(activity)
+                .setMessage(R.string.ensure_logout)
+                .setPositiveButton(R.string.yes, { dialogInterface, i ->
+                    TPRuntime.tumblrService.logout()
+                    val transaction = activity.supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.fragment_container, AuthFragment(), tag)
+                    transaction.commit()
+                })
+                .setNegativeButton(R.string.no, null)
+                .create()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
     }
 }

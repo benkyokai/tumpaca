@@ -14,6 +14,7 @@
     <string name="reblog">Reblogging...</string>
     <string name="reblogged_result">Reblogged</string>
     <string name="reload">Reload dashboard</string>
+    <string name="ensure_logout">Are you sure you want to log out?</string>
     <string name="tumpaca">Tumpaca</string>
     <string name="unliked_result">Unliked</string>
     <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>
@@ -23,4 +24,7 @@
     <string name="exclude_photo">Hide PHOTO posts</string>
     <string name="high_resolution_photo">Show hi-res photos</string>
     <string name="view_license">License</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

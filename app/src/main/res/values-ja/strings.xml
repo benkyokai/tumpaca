@@ -20,6 +20,7 @@
     <!-- SettingsFragment -->
     <string name="tumpaca">Tumpaca</string>
     <string name="reload">ダッシュボードをリロード</string>
+    <string name="ensure_logout">ログアウトしてもよろしいですか？</string>
     <string name="exclude_my_posts">自分のポストを表示しない</string>
     <string name="exclude_photo">PHOTOポストを表示しない</string>
     <string name="high_resolution_photo">高画質な写真を表示する</string>
@@ -28,5 +29,8 @@
     <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>
     <string name="offline_toast">ネットワーク通信ができません</string>
     <string name="notes_unknown_placeholder">\? notes</string>
+
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
 
 </resources>
