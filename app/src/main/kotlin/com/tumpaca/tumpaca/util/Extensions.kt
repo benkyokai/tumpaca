@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.tumblr.jumblr.types.Photo
 import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
+import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
@@ -21,6 +22,12 @@ fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE
 }
 
 fun Post.likeAsync(callback: (Post) -> Unit) {
+    if (this.isLiked) {
+        TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.unlike))
+    } else {
+        TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.like))
+    }
+
     val self = this
     object : AsyncTask<Unit, Unit, Unit>() {
         override fun doInBackground(vararg args: Unit) {
@@ -40,6 +47,7 @@ fun Post.likeAsync(callback: (Post) -> Unit) {
 
 fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post) -> Unit) {
     val self = this
+    TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
     object : AsyncTask<Unit, Unit, Unit>() {
         override fun doInBackground(vararg args: Unit) {
             val option = mapOf<String, String>()

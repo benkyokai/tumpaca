@@ -12,7 +12,10 @@
     <string name="comment_input_hint">コメント</string>
     <string name="liked_result">Likeしました</string>
     <string name="unliked_result">Like解除しました</string>
+    <string name="like">Likeしています...</string>
+    <string name="unlike">Likeを解除しています...</string>
     <string name="reblogged_result">Reblogしました</string>
+    <string name="reblog">Reblogしています...</string>
 
     <!-- SettingsFragment -->
     <string name="tumpaca">Tumpaca</string>
