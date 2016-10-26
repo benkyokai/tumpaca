@@ -36,7 +36,7 @@ class SettingsFragment : FragmentBase() {
 
         val licenseButton = view.findViewById(R.id.viewLicense)
         licenseButton.setOnClickListener {
-            val uri = Uri.parse("https://github.com/benkyokai/tumpaca/blob/master/LICENSE.md")
+            val uri = Uri.parse("https://github.com/benkyokai/tumpaca/blob/master/docs/LICENSE.md")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
