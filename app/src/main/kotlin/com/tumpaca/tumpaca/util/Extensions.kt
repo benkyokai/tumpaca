@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.tumblr.jumblr.types.Photo
 import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
+import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.TPRuntime
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
@@ -21,6 +22,12 @@ fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE
 }
 
 fun Post.likeAsync(callback: (Post) -> Unit) {
+    if (this.isLiked) {
+        TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.unlike))
+    } else {
+        TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.like))
+    }
+
     val self = this
     object : AsyncTask<Unit, Unit, Unit>() {
         override fun doInBackground(vararg args: Unit) {
@@ -40,6 +47,7 @@ fun Post.likeAsync(callback: (Post) -> Unit) {
 
 fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post) -> Unit) {
     val self = this
+    TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
     object : AsyncTask<Unit, Unit, Unit>() {
         override fun doInBackground(vararg args: Unit) {
             val option = mapOf<String, String>()
@@ -73,17 +81,31 @@ fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
     }.execute()
 }
 
+/**
+ * PHOTOポストの写真に対して最適なサイズを取得する
+ * 高画質写真設定がtrueの場合:
+ *   画面解像度の幅を超える最小の画像を取得
+ * 高画質写真設定がfalseの場合:
+ *   幅500px以下の最大の画像を取得
+ * 上記条件で取得できない場合:
+ *   サイズリストの最大の画像を取得
+ */
 fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): PhotoSize {
     val w = metrics.widthPixels
     val biggest = sizes.first()
     val optimal = sizes.lastOrNull { it.width >= w }
+    val better = sizes.firstOrNull { it.width <= 500 }
 
     if (optimal != null && optimal != biggest) {
         Log.d("Util", "画面の解像度：${metrics.widthPixels}x${metrics.heightPixels}　採択した解像度：")
-        sizes.forEach { Log.d("Util", (if (it == optimal) "=>" else "  ") + it.debugString()) }
+        sizes.forEach { Log.d("Util", it.debugString() + (if (it == optimal) " optimal" else if (it == better) " better" else "")) }
     }
 
-    return optimal ?: biggest
+    if (TPRuntime.settings.isHighResolutionPhoto()) {
+        return optimal ?: biggest
+    } else {
+        return better ?: biggest
+    }
 }
 
 fun PhotoSize.debugString(): String {
@@ -105,7 +127,7 @@ fun Context.isOnline(): Boolean {
 }
 
 fun Context.onNetworkRestored(callback: () -> Unit): BroadcastReceiver {
-    val receiver = object: BroadcastReceiver() {
+    val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             context?.let {
                 if (it.isOnline()) {

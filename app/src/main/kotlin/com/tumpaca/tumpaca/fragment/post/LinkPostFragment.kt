@@ -8,9 +8,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tumblr.jumblr.types.AudioPost
+import android.webkit.WebView
 import com.tumblr.jumblr.types.LinkPost
 import com.tumpaca.tumpaca.R
+import com.tumpaca.tumpaca.util.UIUtil
 
 class LinkPostFragment : PostFragment() {
 
@@ -22,6 +23,9 @@ class LinkPostFragment : PostFragment() {
                 update(view, it)
             }
         })
+
+        val webView = view.findViewById(R.id.sub) as WebView
+        UIUtil.loadCss(webView)
 
         return view
     }

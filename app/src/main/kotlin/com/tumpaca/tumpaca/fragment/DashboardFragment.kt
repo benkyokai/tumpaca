@@ -11,10 +11,7 @@ import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.model.PostList
 import com.tumpaca.tumpaca.model.TPRuntime
-import com.tumpaca.tumpaca.util.isOnline
-import com.tumpaca.tumpaca.util.likeAsync
-import com.tumpaca.tumpaca.util.onNetworkRestored
-import com.tumpaca.tumpaca.util.reblogAsync
+import com.tumpaca.tumpaca.util.*
 
 class DashboardFragment : FragmentBase() {
     companion object {
@@ -141,7 +138,7 @@ class DashboardFragment : FragmentBase() {
                 }
             }
             val msg = if (post.isLiked) R.string.liked_result else R.string.unliked_result
-            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            TPToastManager.show(resources.getString(msg))
         })
     }
 
@@ -149,7 +146,7 @@ class DashboardFragment : FragmentBase() {
         val post = currentPost!!
         val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
         post.reblogAsync(blogName, null, {
-            Toast.makeText(context, R.string.reblogged_result, Toast.LENGTH_SHORT).show()
+            TPToastManager.show(resources.getString(R.string.reblogged_result))
         })
 
         /** TODO 設定画面でリブログ時のコメント追加 on/off が出来るようになったら復活

@@ -44,6 +44,12 @@ class PostList(private val client: JumblrClient) {
             Post.PostType.TEXT,
             Post.PostType.VIDEO)
 
+    private val SUPPORTED_TYPES_WITHOUT_PHOTO = setOf(
+            Post.PostType.LINK,
+            Post.PostType.QUOTE,
+            Post.PostType.TEXT
+    )
+
     // SUPPORTED_TYPES で列挙されたタイプでフィルタリングされたポストリスト
     // バックグラウンドスレッドからもアクセスするのでスレッドセーフリストを使う必要あり。
     private val posts: CopyOnWriteArrayList<Post> = CopyOnWriteArrayList()
@@ -171,9 +177,7 @@ class PostList(private val client: JumblrClient) {
                 // ここは UI スレッド
                 offset += result.size
 
-                val filteredResult = result.filter {
-                    SUPPORTED_TYPES.contains(it.type)
-                }
+                val filteredResult = filterPosts(result)
 
                 posts.addAll(filteredResult)
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
@@ -184,6 +188,35 @@ class PostList(private val client: JumblrClient) {
                 } // 取得したポストの数が0なら次回のロードはしない
             }
         }.execute()
+    }
+
+    /**
+     * サポート対象外のポストを除外
+     * また、設定で「自分のポストを表示しない」にしている場合は、
+     * 自分のポストを除外する
+     */
+    private fun filterPosts(posts: List<Post>): List<Post> {
+        // 自分のポストを表示するかどうか
+        val posts1 =
+                if (TPRuntime.settings.isExcludeMyPosts()) {
+                    posts.filter {
+                        // 自分のブログ名一覧にポストのブログ名が含まれていれば除外する
+                        val blogs = TPRuntime.tumblrService.user?.blogs?.map { it.name }
+                        blogs?.contains(it.blogName)?.not() ?: true
+                    }
+                } else {
+                    posts
+                }
+
+        // 写真ポストを除外するかどうか
+        val posts2 =
+                if (TPRuntime.settings.isExcludePhoto()) {
+                    posts1.filter { SUPPORTED_TYPES_WITHOUT_PHOTO.contains(it.type) }
+                } else {
+                    posts1.filter { SUPPORTED_TYPES.contains(it.type) }
+                }
+
+        return posts2
     }
 
     /**
@@ -216,9 +249,7 @@ class PostList(private val client: JumblrClient) {
 
             override fun onPostExecute(result: List<Post>) {
                 // ここは UI スレッド
-                val filteredResult = result.filter {
-                    SUPPORTED_TYPES.contains(it.type)
-                }
+                val filteredResult = filterPosts(result)
 
                 // 取得結果の状態をチェック
                 val r = checkResult(filteredResult)

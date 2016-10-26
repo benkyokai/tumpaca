@@ -1,6 +1,7 @@
 package com.tumpaca.tumpaca.fragment.post
 
 /**
+ * TextPost
  * Created by yabu on 7/11/16.
  */
 
@@ -8,8 +9,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.widget.TextView
 import com.tumblr.jumblr.types.TextPost
 import com.tumpaca.tumpaca.R
+import com.tumpaca.tumpaca.util.UIUtil
 
 class TextPostFragment : PostFragment() {
 
@@ -18,9 +22,14 @@ class TextPostFragment : PostFragment() {
 
         getPost({
             if (isAdded && it is TextPost) {
+                val titleView = view.findViewById(R.id.post_title) as TextView
+                titleView.setText(it.title)
                 update(view, it)
             }
         })
+
+        val webView = view.findViewById(R.id.sub) as WebView
+        UIUtil.loadCss(webView)
 
         return view
     }

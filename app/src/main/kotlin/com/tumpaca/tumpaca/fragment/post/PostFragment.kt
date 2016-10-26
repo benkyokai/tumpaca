@@ -12,7 +12,6 @@ import android.widget.Toast
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tumpaca.R
 import com.tumpaca.tumpaca.fragment.FragmentBase
-import com.tumpaca.tumpaca.model.PostList
 import com.tumpaca.tumpaca.model.TPRuntime
 import com.tumpaca.tumpaca.util.blogAvatarAsync
 import com.tumpaca.tumpaca.util.isOnline

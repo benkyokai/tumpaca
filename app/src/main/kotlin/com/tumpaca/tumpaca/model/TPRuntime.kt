@@ -5,6 +5,7 @@ import com.tumpaca.tumpaca.util.cache.AvatarUrlCache
 import com.tumpaca.tumpaca.util.cache.BitmapCache
 
 /**
+ * 実行環境
  * Created by yabu on 7/21/16.
  */
 
@@ -12,6 +13,7 @@ object TPRuntime {
     val bitMapCache = BitmapCache()
     val avatarUrlCache = AvatarUrlCache()
     var initialized = false
+    lateinit var settings: TPSettings
     lateinit var mainApplication: MainApplication
     lateinit var tumblrService: TumblrService
         private set
@@ -20,5 +22,6 @@ object TPRuntime {
         mainApplication = application
         tumblrService = TumblrService(application)
         initialized = true
+        settings = TPSettings(mainApplication)
     }
 }
