@@ -21,7 +21,7 @@ fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE
     assert(committed)
 }
 
-fun Post.likeAsync(callback: (Post) -> Unit) {
+fun Post.likeAsync(likeMsg: String, unlikeMsg: String, callback: (Post, String, String) -> Unit) {
     if (this.isLiked) {
         TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.unlike))
     } else {
@@ -40,12 +40,12 @@ fun Post.likeAsync(callback: (Post) -> Unit) {
         }
 
         override fun onPostExecute(result: Unit) {
-            callback(self)
+            callback(self, likeMsg, unlikeMsg)
         }
     }.execute()
 }
 
-fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post) -> Unit) {
+fun Post.reblogAsync(blogName: String, msg: String, comment: String?, callback: (Post, String) -> Unit) {
     val self = this
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
     object : AsyncTask<Unit, Unit, Unit>() {
@@ -59,7 +59,7 @@ fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post) -> Uni
         }
 
         override fun onPostExecute(result: Unit) {
-            callback(self)
+            callback(self, msg)
         }
     }.execute()
 }

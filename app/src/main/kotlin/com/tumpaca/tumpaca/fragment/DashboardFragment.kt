@@ -130,23 +130,26 @@ class DashboardFragment : FragmentBase() {
     }
 
     private fun doLike() {
-        currentPost?.likeAsync({ post ->
+        currentPost?.likeAsync(resources.getString(R.string.liked_result), resources.getString(R.string.unliked_result), { post, likeMsg, unlikeMsg ->
             // ここまで来ると違うPostが表示されているかもしれないのでチェック
             currentPost?.let {
                 if (it == post) {
                     toggleLikeButton(post)
                 }
             }
-            val msg = if (post.isLiked) R.string.liked_result else R.string.unliked_result
-            TPToastManager.show(resources.getString(msg))
+            if (post.isLiked) {
+                TPToastManager.show(likeMsg)
+            } else {
+                TPToastManager.show(unlikeMsg)
+            }
         })
     }
 
     private fun doReblog() {
         val post = currentPost!!
         val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
-        post.reblogAsync(blogName, null, {
-            TPToastManager.show(resources.getString(R.string.reblogged_result))
+        post.reblogAsync(blogName, resources.getString(R.string.reblogged_result), null, { post, msg ->
+            TPToastManager.show(msg)
         })
 
         /** TODO 設定画面でリブログ時のコメント追加 on/off が出来るようになったら復活
