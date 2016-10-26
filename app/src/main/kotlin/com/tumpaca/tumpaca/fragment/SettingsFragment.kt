@@ -24,6 +24,7 @@ class SettingsFragment : FragmentBase() {
 
         val reloadButton = view.findViewById(R.id.reload)
         reloadButton.setOnClickListener {
+            TPRuntime.tumblrService.resetPosts()
             activity.finish()
             activity.startActivity(activity.intent)
         }
