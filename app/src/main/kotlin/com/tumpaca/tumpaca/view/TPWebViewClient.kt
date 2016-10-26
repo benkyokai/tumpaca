@@ -17,9 +17,13 @@ class TPWebViewClient(val cssFilePath: String) : WebViewClient() {
      * WebView内のリンクをタップしたときは、外部ブラウザを立ち上げる
      */
     override fun shouldOverrideUrlLoading(view: WebView, url: String?): Boolean {
-        if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
-            view.context.startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        if (url != null) {
+            try {
+                view.context.startActivity(
+                        Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            } catch (e: Exception) {
+                return false
+            }
             return true
         } else {
             return false
