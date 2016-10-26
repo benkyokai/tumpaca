@@ -6,12 +6,12 @@
     <string name="dashboard">Dashboard</string>
     <string name="dashboard_loading">Loading dashboard...</string>
     <string name="dashboard_logout">Log out</string>
-    <string name="like">Like...</string>
-    <string name="unlike">Unlike...</string>
+    <string name="like">Liking...</string>
+    <string name="unlike">Unliking...</string>
     <string name="liked_result">Liked</string>
     <string name="logout">Log out</string>
     <string name="reblog_dialog_header">Reblog</string>
-    <string name="reblog">Reblog...</string>
+    <string name="reblog">Reblogging...</string>
     <string name="reblogged_result">Reblogged</string>
     <string name="reload">Reload dashboard</string>
     <string name="tumpaca">Tumpaca</string>
