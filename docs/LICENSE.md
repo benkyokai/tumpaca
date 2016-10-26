@@ -45,7 +45,7 @@ Tumpaca uses the following open-source software.
    SOFTWARE.
 ```
 
-### jumbl
+### jumblr
 ```
                                  Apache License
                            Version 2.0, January 2004
