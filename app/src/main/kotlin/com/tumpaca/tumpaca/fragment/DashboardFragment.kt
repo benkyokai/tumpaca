@@ -130,7 +130,9 @@ class DashboardFragment : FragmentBase() {
     }
 
     private fun doLike() {
-        currentPost?.likeAsync(resources.getString(R.string.liked_result), resources.getString(R.string.unliked_result), { post, likeMsg, unlikeMsg ->
+        val likeMsg = resources.getString(R.string.liked_result)
+        val unlikeMsg = resources.getString(R.string.unliked_result)
+        currentPost?.likeAsync({ post ->
             // ここまで来ると違うPostが表示されているかもしれないのでチェック
             currentPost?.let {
                 if (it == post) {
@@ -148,7 +150,8 @@ class DashboardFragment : FragmentBase() {
     private fun doReblog() {
         val post = currentPost!!
         val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
-        post.reblogAsync(blogName, resources.getString(R.string.reblogged_result), null, { post, msg ->
+        val msg = resources.getString(R.string.reblogged_result)
+        post.reblogAsync(blogName, null, { post ->
             TPToastManager.show(msg)
         })
 
