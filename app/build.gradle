@@ -39,7 +39,6 @@ android {
     }
     productFlavors {
         envDev {
-            minSdkVersion 19
             buildConfigField "boolean", "FIREBASE_ENABLED", "false"
         }
         envProd {
