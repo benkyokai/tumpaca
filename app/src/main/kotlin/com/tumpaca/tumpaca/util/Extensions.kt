@@ -28,7 +28,6 @@ fun Post.likeAsync(callback: (Post) -> Unit) {
         TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.like))
     }
 
-    val self = this
     object : AsyncTask<Unit, Unit, Unit>() {
         override fun doInBackground(vararg args: Unit) {
             if (isLiked) {
@@ -40,26 +39,26 @@ fun Post.likeAsync(callback: (Post) -> Unit) {
         }
 
         override fun onPostExecute(result: Unit) {
-            callback(self)
+            callback(this@likeAsync)
         }
     }.execute()
 }
 
 fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post) -> Unit) {
-    val self = this
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
     object : AsyncTask<Unit, Unit, Unit>() {
         override fun doInBackground(vararg args: Unit) {
-            val option = mapOf<String, String>()
-            if (comment != null) {
-                option.plus(Pair("comment", comment))
+            val option = if (comment == null) {
+                emptyMap<String, String>()
+            } else {
+                mapOf("comment" to comment)
             }
             reblog(blogName, option)
             // TODO エラー処理
         }
 
         override fun onPostExecute(result: Unit) {
-            callback(self)
+            callback(this@reblogAsync)
         }
     }.execute()
 }
