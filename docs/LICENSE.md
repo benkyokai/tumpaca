@@ -1,6 +1,8 @@
 # LICENSE
 
 ```
+    tumpaca is the very bestest Tumblr client.
+    
     Copyright (C) 2016 benkyokai
 
     This program is free software: you can redistribute it and/or modify
