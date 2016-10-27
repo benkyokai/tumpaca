@@ -23,7 +23,11 @@ class TextPostFragment : PostFragment() {
         getPost({
             if (isAdded && it is TextPost) {
                 val titleView = view.findViewById(R.id.post_title) as TextView
-                titleView.setText(it.title)
+                if (it.title == null || it.title.isBlank()) {
+                    titleView.visibility = View.GONE
+                } else {
+                    titleView.setText(it.title)
+                }
                 update(view, it)
             }
         })
