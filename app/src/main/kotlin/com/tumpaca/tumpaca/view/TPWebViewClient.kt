@@ -34,7 +34,10 @@ class TPWebViewClient(val cssFilePath: String) : WebViewClient() {
      * ページ読み込み完了時にスタイルシート適用
      */
     override fun onPageFinished(view: WebView, url: String) {
+        // CSSロード用javascriptを読み込むために一時的にjavascriptを有効にする
+        view.settings.javaScriptEnabled = true
         view.loadUrl(generateCSS(cssFilePath))
+        view.settings.javaScriptEnabled = false
         super.onPageFinished(view, url)
     }
 
