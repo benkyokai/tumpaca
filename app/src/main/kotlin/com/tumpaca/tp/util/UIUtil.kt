@@ -14,12 +14,10 @@ object UIUtil {
     val DoNotHorizontalScrollWebViewClient = TPWebViewClient("doNotHorizontalScroll.css")
 
     fun loadCss(webView: WebView): Unit {
-        webView.settings.javaScriptEnabled = true
         webView.setWebViewClient(TPWebViewClient)
     }
 
     fun doNotHorizontalScroll(webView: WebView): Unit {
-        webView.settings.javaScriptEnabled = true
         webView.setWebViewClient(DoNotHorizontalScrollWebViewClient)
     }
 
