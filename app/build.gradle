@@ -24,7 +24,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.tumpaca.tumpaca"
+        applicationId "com.tumpaca.tp"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode buildVersionCode(version)
