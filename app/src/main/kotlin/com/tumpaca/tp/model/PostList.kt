@@ -33,7 +33,7 @@ class PostList(private val client: JumblrClient) {
     }
 
     val size: Int
-        get() = posts.size
+        get() = filteredPosts.size
 
     // CHAT, ANSWER, POSTCARDは対応していないので、postから除く
     private val SUPPORTED_TYPES = setOf(
@@ -53,6 +53,7 @@ class PostList(private val client: JumblrClient) {
     // SUPPORTED_TYPES で列挙されたタイプでフィルタリングされたポストリスト
     // バックグラウンドスレッドからもアクセスするのでスレッドセーフリストを使う必要あり。
     private val posts: CopyOnWriteArrayList<Post> = CopyOnWriteArrayList()
+    private val filteredPosts: CopyOnWriteArrayList<Post> = CopyOnWriteArrayList()
     private val tmpPosts: CopyOnWriteArrayList<Post> = CopyOnWriteArrayList()
 
     // fetch はいまのところ UI スレッドからのみアクセスするので volatile いらない
@@ -85,8 +86,8 @@ class PostList(private val client: JumblrClient) {
             fetch(unit)
         }
 
-        if (i < posts.size) {
-            return posts[i]
+        if (i < filteredPosts.size) {
+            return filteredPosts[i]
         } else {
             return null
         }
@@ -101,9 +102,9 @@ class PostList(private val client: JumblrClient) {
             // onChanged() 呼び出しよりも先に呼ばれるので問題なし
             val listener = object : PostList.ChangedListener {
                 override fun onChanged() {
-                    if (i < posts.size) {
+                    if (i < filteredPosts.size) {
                         removeListeners(this)
-                        callback(posts[i])
+                        callback(filteredPosts[i])
                     }
                 }
             }
@@ -119,7 +120,7 @@ class PostList(private val client: JumblrClient) {
             return false
         }
 
-        val remain = posts.size - (i + 1)
+        val remain = filteredPosts.size - (i + 1)
         return remain < FETCH_MIN_POST_NUM // 最小よりも小さかったら fetch が必要
     }
 
@@ -177,9 +178,8 @@ class PostList(private val client: JumblrClient) {
                 // ここは UI スレッド
                 offset += result.size
 
-                val filteredResult = filterPosts(result)
-
-                posts.addAll(filteredResult)
+                posts.addAll(result)
+                filteredPosts.addAll(filterPosts(result))
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
                 listeners.forEach { it.onChanged() }
                 fetching = false
@@ -248,29 +248,27 @@ class PostList(private val client: JumblrClient) {
             }
 
             override fun onPostExecute(result: List<Post>) {
-                // ここは UI スレッド
-                val filteredResult = filterPosts(result)
-
                 // 取得結果の状態をチェック
-                val r = checkResult(filteredResult)
+                val r = checkResult(result)
 
                 when (r) {
                     Result.EMPTY -> {
                         Log.v(TAG, "EMPTY")
-                        tmpPosts.removeAll(tmpPosts)
+                        rate = 1.0
+                        return
                     }
                     Result.FAR_AWAY -> {
                         // すべてtmpPostsに追加
-                        tmpPosts.addAll(0, filteredResult)
+                        tmpPosts.addAll(0, result)
                         Log.v(TAG, "FAR_AWAY tmpPosts=${tmpPosts.size}")
                     }
                     Result.DUPLICATE -> {
-                        Log.v(TAG, "DUPLICATE")
+                        Log.v(TAG, "DUPLICATE tmpPosts=${tmpPosts.size}")
                     }
                     Result.GOOD -> {
                         // 重なっている分を除外して、残りをtmpPostsに追加
-                        val i = filteredResult.indexOf(posts.last())
-                        tmpPosts.addAll(0, filteredResult.drop(i + 1))
+                        val i = result.indexOf(posts.last())
+                        tmpPosts.addAll(0, result.drop(i + 1))
                         Log.v(TAG, "GOOD tmpPosts=${tmpPosts.size}")
                     }
                 }
@@ -282,7 +280,7 @@ class PostList(private val client: JumblrClient) {
                  * 結果がGOOD, もしくはDUPLICATEかつtmpPostsが空ではない、ときは
                  * postsに追加すべきポストがtmpPostsに入っているはずなので成功
                  */
-                if (r == Result.GOOD || (r == Result.DUPLICATE && tmpPosts.isNotEmpty()) || (r == Result.EMPTY && tmpPosts.isNotEmpty())) {
+                if (r == Result.GOOD || (r == Result.DUPLICATE && tmpPosts.isNotEmpty())) {
                     rate = 1.0
                     // tmpPostsからpostsの重複分を除く
                     val index = tmpPosts.map { it.id }.indexOf(posts.last().id)
@@ -291,6 +289,7 @@ class PostList(private val client: JumblrClient) {
 
                     // postsに追加
                     posts.addAll(postsExcludeDuplicate)
+                    filteredPosts.addAll(filterPosts(postsExcludeDuplicate))
                     val tmpPostsCount = postsExcludeDuplicate.size
 
                     // ここで一旦成功なので、tmpPostsを空にして、再度最初からフェッチする
@@ -301,9 +300,6 @@ class PostList(private val client: JumblrClient) {
                     rate = rate * 2.0
                     Log.v(TAG, "DUPLICATE and tmpPosts is empty, rate = ${rate}")
                     fetchImpl(fetchSize, retryCount - 1)
-                } else if (r == Result.EMPTY && tmpPosts.isEmpty()) {
-                    rate = 1.0
-                    return
                 } else if (r == Result.FAR_AWAY) {
                     rate = 1.0
                     fetchImpl(fetchSize, retryCount - 1)
