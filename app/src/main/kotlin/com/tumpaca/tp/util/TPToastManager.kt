@@ -15,6 +15,7 @@ import com.tumpaca.tp.model.TPRuntime
 object TPToastManager {
 
     private var toastCounts = 0
+    private var currentToast: Toast? = null;
 
     fun show(msg: String) {
         val frameLayout = object : FrameLayout(TPRuntime.mainApplication) {
@@ -24,6 +25,10 @@ object TPToastManager {
             }
         }
         synchronized(this, {
+            if (currentToast != null) {
+                currentToast?.cancel()
+            }
+
             val toast = Toast(TPRuntime.mainApplication)
             toast.duration = Toast.LENGTH_SHORT
             val inflater = TPRuntime.mainApplication.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -42,6 +47,7 @@ object TPToastManager {
             //toast.setGravity(Gravity.RIGHT or Gravity.TOP, 16, 10 + location.get(1))
             toast.setGravity(Gravity.RIGHT or Gravity.TOP, 16, 10)
             toast.show()
+            currentToast = toast
             toastCounts += 1
         })
     }
