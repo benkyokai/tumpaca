@@ -74,7 +74,7 @@ class AvatarUrlCache() : Cache<String> {
     }
 
     override fun get(key: String): String? {
-        val url = lruCache.get(key) as String?
+        val url = lruCache.get(key)
         return url
     }
 
