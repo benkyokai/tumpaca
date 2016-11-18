@@ -42,3 +42,6 @@ auth.properties
 
 # Google Services JSON
 app/google-services.json
+
+# Release keystore
+keystore.jks
