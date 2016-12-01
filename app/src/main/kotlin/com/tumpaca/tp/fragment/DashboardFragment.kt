@@ -148,10 +148,9 @@ class DashboardFragment : FragmentBase() {
     }
 
     private fun doReblog() {
-        val post = currentPost!!
         val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
         val msg = resources.getString(R.string.reblogged_result)
-        post.reblogAsync(blogName, null, { post ->
+        currentPost?.reblogAsync(blogName, null, { post ->
             TPToastManager.show(msg)
         })
 
