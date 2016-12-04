@@ -89,9 +89,8 @@ class LogoutDialogFragment : DialogFragment() {
                 .setMessage(R.string.ensure_logout)
                 .setPositiveButton(R.string.yes, { dialogInterface, i ->
                     TPRuntime.tumblrService.logout()
-                    val transaction = activity.supportFragmentManager.beginTransaction()
-                    transaction.replace(R.id.fragment_container, AuthFragment(), tag)
-                    transaction.commit()
+                    activity.finish()
+                    activity.startActivity(activity.intent)
                 })
                 .setNegativeButton(R.string.no, null)
                 .create()
