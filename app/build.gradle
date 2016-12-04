@@ -15,6 +15,7 @@ ext {
         (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
         major * 1000000 + minor * 1000 + patch
     }
+    keystorePassword = project.hasProperty('keystorePassword') ? project.property('keystorePassword') : ''
 }
 
 android {
@@ -31,10 +32,20 @@ android {
         versionName version
     }
 
+    signingConfigs {
+        release {
+            storeFile file('keystore.jks')
+            storePassword keystorePassword
+            keyAlias 'keystore'
+            keyPassword keystorePassword
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     productFlavors {
@@ -54,6 +65,9 @@ android {
         dexInProcess true
         javaMaxHeapSize "4g"
         preDexLibraries true
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
