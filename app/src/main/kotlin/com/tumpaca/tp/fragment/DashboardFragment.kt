@@ -137,17 +137,22 @@ class DashboardFragment : FragmentBase() {
     private fun doLike() {
         val likeMsg = resources.getString(R.string.liked_result)
         val unlikeMsg = resources.getString(R.string.unliked_result)
-        currentPost?.likeAsync({ post ->
-            // ここまで来ると違うPostが表示されているかもしれないのでチェック
-            currentPost?.let {
-                if (it == post) {
-                    toggleLikeButton(post)
+        val errorMsg = resources.getString(R.string.error_like)
+        currentPost?.likeAsync({ post, result ->
+            if (result) {
+                // ここまで来ると違うPostが表示されているかもしれないのでチェック
+                currentPost?.let {
+                    if (it == post) {
+                        toggleLikeButton(post)
+                    }
                 }
-            }
-            if (post.isLiked) {
-                TPToastManager.show(likeMsg)
+                if (post.isLiked) {
+                    TPToastManager.show(likeMsg)
+                } else {
+                    TPToastManager.show(unlikeMsg)
+                }
             } else {
-                TPToastManager.show(unlikeMsg)
+                TPToastManager.show(errorMsg)
             }
         })
     }
@@ -155,8 +160,13 @@ class DashboardFragment : FragmentBase() {
     private fun doReblog() {
         val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
         val msg = resources.getString(R.string.reblogged_result)
-        currentPost?.reblogAsync(blogName, null, { post ->
-            TPToastManager.show(msg)
+        val errorMsg = resources.getString(R.string.error_reblog)
+        currentPost?.reblogAsync(blogName, null, { post, result ->
+            if (result) {
+                TPToastManager.show(msg)
+            } else {
+                TPToastManager.show(errorMsg)
+            }
         })
 
         /** TODO 設定画面でリブログ時のコメント追加 on/off が出来るようになったら復活

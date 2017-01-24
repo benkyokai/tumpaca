@@ -33,4 +33,8 @@
     <string name="yes">はい</string>
     <string name="no">いいえ</string>
 
+    <!-- エラー文言 -->
+    <string name="error_reblog">reblogに失敗しました</string>
+    <string name="error_like">likeに失敗しました</string>
+
 </resources>

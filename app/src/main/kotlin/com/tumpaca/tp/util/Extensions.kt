@@ -21,44 +21,54 @@ fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE
     assert(committed)
 }
 
-fun Post.likeAsync(callback: (Post) -> Unit) {
+fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
     if (this.isLiked) {
         TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.unlike))
     } else {
         TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.like))
     }
 
-    object : AsyncTask<Unit, Unit, Unit>() {
-        override fun doInBackground(vararg args: Unit) {
-            if (isLiked) {
-                unlike()
-            } else {
-                like()
+    object : AsyncTask<Unit, Unit, Boolean>() {
+        override fun doInBackground(vararg args: Unit): Boolean {
+            try {
+                if (isLiked) {
+                    unlike()
+                } else {
+                    like()
+                }
+                return true
+            } catch(e: Exception) {
+                Log.e("LikeTask", e.message.orEmpty())
+                return false
             }
-            // TODO エラー処理
         }
 
-        override fun onPostExecute(result: Unit) {
-            callback(this@likeAsync)
+        override fun onPostExecute(result: Boolean) {
+            callback(this@likeAsync, result)
         }
     }.execute()
 }
 
-fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post) -> Unit) {
+fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post, Boolean) -> Unit) {
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
-    object : AsyncTask<Unit, Unit, Unit>() {
-        override fun doInBackground(vararg args: Unit) {
-            val option = if (comment == null) {
-                emptyMap<String, String>()
-            } else {
-                mapOf("comment" to comment)
+    object : AsyncTask<Unit, Unit, Boolean>() {
+        override fun doInBackground(vararg args: Unit): Boolean {
+            try {
+                val option = if (comment == null) {
+                    emptyMap<String, String>()
+                } else {
+                    mapOf("comment" to comment)
+                }
+                reblog(blogName, option)
+                return true
+            } catch(e: Exception) {
+                Log.e("ReblogTask", e.message.orEmpty())
+                return false
             }
-            reblog(blogName, option)
-            // TODO エラー処理
         }
 
-        override fun onPostExecute(result: Unit) {
-            callback(this@reblogAsync)
+        override fun onPostExecute(result: Boolean) {
+            callback(this@reblogAsync, result)
         }
     }.execute()
 }
