@@ -62,6 +62,19 @@ class DashboardFragment : FragmentBase() {
         // PostList と ViewPage のバインド
         postList = TPRuntime.tumblrService.postList
 
+        val settingsButton = view.findViewById(R.id.settings_button)
+        settingsButton.setOnClickListener {
+            val ft = fragmentManager.beginTransaction()
+            ft.addToBackStack(null)
+            ft.replace(R.id.fragment_container, SettingsFragment())
+            ft.commit()
+        }
+
+        if (postList == null) {
+            // postListがnullなら何も表示しない
+            return view
+        }
+
         changedListener = object : PostList.ChangedListener {
             override fun onChanged() {
                 postCount.text = postList?.size.toString()
@@ -86,14 +99,6 @@ class DashboardFragment : FragmentBase() {
         val reblogButton = view.findViewById(R.id.reblog_button)
         reblogButton.setOnClickListener {
             doReblog()
-        }
-
-        val settingsButton = view.findViewById(R.id.settings_button)
-        settingsButton.setOnClickListener {
-            val ft = fragmentManager.beginTransaction()
-            ft.addToBackStack(null)
-            ft.replace(R.id.fragment_container, SettingsFragment())
-            ft.commit()
         }
 
         // ダッシュボードをロードしようとした時点でネットワークに接続できない場合、
