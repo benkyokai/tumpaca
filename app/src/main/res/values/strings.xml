@@ -27,4 +27,7 @@
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <string name="error_reblog">Reblog failed</string>
+    <string name="error_like">Like failed</string>
 </resources>
