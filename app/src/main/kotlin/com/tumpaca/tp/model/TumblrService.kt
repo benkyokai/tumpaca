@@ -122,7 +122,7 @@ class TumblrService(val context: Context) {
                     user = it
                 }
             }
-        }.execute()
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     // バンドルされたファイルから ConsumerInfo を読み取ります。
