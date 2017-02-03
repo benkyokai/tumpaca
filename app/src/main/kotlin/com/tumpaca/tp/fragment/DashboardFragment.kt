@@ -13,7 +13,8 @@ import com.tumpaca.tp.R
 import com.tumpaca.tp.model.PostList
 import com.tumpaca.tp.model.TPRuntime
 import com.tumpaca.tp.util.*
-import io.reactivex.functions.Consumer
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 
 class DashboardFragment : FragmentBase() {
     companion object {
@@ -171,13 +172,19 @@ class DashboardFragment : FragmentBase() {
         val errorMsg = resources.getString(R.string.error_reblog)
         currentPost
                 ?.reblogAsync(blogName, null)
-                ?.subscribe(object : Consumer<Boolean> {
-                    override fun accept(result: Boolean) {
-                        if (result) {
-                            TPToastManager.show(msg)
-                        } else {
-                            TPToastManager.show(errorMsg)
-                        }
+                ?.subscribe(object : Observer<Boolean> {
+                    override fun onError(e: Throwable?) {
+                        TPToastManager.show(errorMsg)
+                    }
+
+                    override fun onNext(t: Boolean?) {
+                        TPToastManager.show(msg)
+                    }
+
+                    override fun onSubscribe(d: Disposable?) {
+                    }
+
+                    override fun onComplete() {
                     }
                 })
 

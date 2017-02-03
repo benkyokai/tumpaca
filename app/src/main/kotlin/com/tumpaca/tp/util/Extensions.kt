@@ -56,9 +56,20 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
 fun Post.reblogAsync(blogName: String, comment: String?): Observable<Boolean> {
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
     val observableOnSubscribe = object : ObservableOnSubscribe<Boolean> {
-        override fun subscribe(e: ObservableEmitter<Boolean>) {
-            e.onNext(true)
-            e.onComplete()
+        override fun subscribe(emitter: ObservableEmitter<Boolean>) {
+            try {
+                val option = if (comment == null) {
+                    emptyMap<String, String>()
+                } else {
+                    mapOf("comment" to comment)
+                }
+                reblog(blogName, option)
+                emitter.onNext(true)
+                emitter.onComplete()
+            } catch(e: Exception) {
+                Log.e("ReblogTask", e.message.orEmpty())
+                emitter.onError(e)
+            }
         }
     }
     return Observable
