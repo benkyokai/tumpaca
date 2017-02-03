@@ -13,6 +13,7 @@ import com.tumpaca.tp.R
 import com.tumpaca.tp.model.PostList
 import com.tumpaca.tp.model.TPRuntime
 import com.tumpaca.tp.util.*
+import io.reactivex.functions.Consumer
 
 class DashboardFragment : FragmentBase() {
     companion object {
@@ -168,13 +169,17 @@ class DashboardFragment : FragmentBase() {
         val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
         val msg = resources.getString(R.string.reblogged_result)
         val errorMsg = resources.getString(R.string.error_reblog)
-        currentPost?.reblogAsync(blogName, null, { _, result ->
-            if (result) {
-                TPToastManager.show(msg)
-            } else {
-                TPToastManager.show(errorMsg)
-            }
-        })
+        currentPost
+                ?.reblogAsync(blogName, null)
+                ?.subscribe(object : Consumer<Boolean> {
+                    override fun accept(result: Boolean) {
+                        if (result) {
+                            TPToastManager.show(msg)
+                        } else {
+                            TPToastManager.show(errorMsg)
+                        }
+                    }
+                })
 
         /** TODO 設定画面でリブログ時のコメント追加 on/off が出来るようになったら復活
         val input = EditText(context)

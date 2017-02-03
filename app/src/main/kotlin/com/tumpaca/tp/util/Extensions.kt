@@ -8,14 +8,15 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.ads.AdRequest
 import com.tumblr.jumblr.types.Photo
 import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
-import com.tumpaca.tp.BuildConfig
 import com.tumpaca.tp.R
 import com.tumpaca.tp.model.AdPost
 import com.tumpaca.tp.model.TPRuntime
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.ObservableOnSubscribe
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
     val editor = getSharedPreferences(name, mode).edit()
@@ -52,28 +53,16 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 }
 
-fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post, Boolean) -> Unit) {
+fun Post.reblogAsync(blogName: String, comment: String?): Observable<Boolean> {
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
-    object : AsyncTask<Unit, Unit, Boolean>() {
-        override fun doInBackground(vararg args: Unit): Boolean {
-            try {
-                val option = if (comment == null) {
-                    emptyMap<String, String>()
-                } else {
-                    mapOf("comment" to comment)
-                }
-                reblog(blogName, option)
-                return true
-            } catch(e: Exception) {
-                Log.e("ReblogTask", e.message.orEmpty())
-                return false
-            }
+    val observableOnSubscribe = object : ObservableOnSubscribe<Boolean> {
+        override fun subscribe(e: ObservableEmitter<Boolean>) {
+            e.onNext(true)
+            e.onComplete()
         }
-
-        override fun onPostExecute(result: Boolean) {
-            callback(this@reblogAsync, result)
-        }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    }
+    return Observable
+            .create(observableOnSubscribe)
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
