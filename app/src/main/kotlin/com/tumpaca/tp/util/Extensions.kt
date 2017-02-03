@@ -17,6 +17,7 @@ import com.tumpaca.tp.model.TPRuntime
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.ObservableOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
@@ -76,6 +77,7 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Boolean> {
     return Observable
             .create(observableOnSubscribe)
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
