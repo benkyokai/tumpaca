@@ -16,7 +16,6 @@ import com.tumpaca.tp.model.AdPost
 import com.tumpaca.tp.model.TPRuntime
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
-import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -57,25 +56,22 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
 
 fun Post.reblogAsync(blogName: String, comment: String?): Observable<Boolean> {
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
-    val observableOnSubscribe = object : ObservableOnSubscribe<Boolean> {
-        override fun subscribe(emitter: ObservableEmitter<Boolean>) {
-            try {
-                val option = if (comment == null) {
-                    emptyMap<String, String>()
-                } else {
-                    mapOf("comment" to comment)
-                }
-                reblog(blogName, option)
-                emitter.onNext(true)
-                emitter.onComplete()
-            } catch(e: Exception) {
-                Log.e("ReblogTask", e.message.orEmpty())
-                emitter.onError(e)
-            }
-        }
-    }
     return Observable
-            .create(observableOnSubscribe)
+            .create({ emitter: ObservableEmitter<Boolean> ->
+                try {
+                    val option = if (comment == null) {
+                        emptyMap<String, String>()
+                    } else {
+                        mapOf("comment" to comment)
+                    }
+                    reblog(blogName, option)
+                    emitter.onNext(true)
+                    emitter.onComplete()
+                } catch(e: Exception) {
+                    Log.e("ReblogTask", e.message.orEmpty())
+                    emitter.onError(e)
+                }
+            })
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 }
