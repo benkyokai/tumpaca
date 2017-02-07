@@ -7,6 +7,8 @@ import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tp.R
 import com.tumpaca.tp.model.PostList
@@ -112,6 +114,10 @@ class DashboardFragment : FragmentBase() {
                 activity.startActivity(activity.intent)
             }
         }
+
+        val adView = view.findViewById(R.id.adView) as AdView
+        val adRequest = AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build()
+        adView.loadAd(adRequest)
 
         return view
     }

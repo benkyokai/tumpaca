@@ -30,4 +30,7 @@
 
     <string name="error_reblog">Reblog failed</string>
     <string name="error_like">Like failed</string>
+
+    <!-- 以下の ID はテスト用のダミー -->
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
