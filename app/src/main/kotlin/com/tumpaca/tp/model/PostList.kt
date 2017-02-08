@@ -183,7 +183,7 @@ class PostList(private val client: JumblrClient) {
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
                 listeners.forEach { it.onChanged() }
                 fetching = false
-                if (result.size > 0) {
+                if (result.isNotEmpty()) {
                     fetchImpl(fetchSize - result.size)
                 } // 取得したポストの数が0なら次回のロードはしない
             }
@@ -318,12 +318,12 @@ class PostList(private val client: JumblrClient) {
      */
     private fun nextId(): Long {
         // tmpPostsが空でなければ、tmpPostsの先頭からもう一度ダッシュボードを取得
-        if (tmpPosts.size > 0) {
+        if (tmpPosts.isNotEmpty()) {
             return tmpPosts.first().id
         }
 
         // 取得済みポストリストが空（ありえないはず）
-        if (posts.size <= 0) {
+        if (posts.isEmpty()) {
             return 0
         }
 
