@@ -141,7 +141,7 @@ class PostList(private val client: JumblrClient) {
 
         if (fetchSize <= 0) {
             Log.v(TAG, "fetchSize: ${fetchSize}")
-            tmpPosts.removeAll(tmpPosts)
+            tmpPosts.clear()
             fetching = false
             return
         }
@@ -293,7 +293,7 @@ class PostList(private val client: JumblrClient) {
                     val tmpPostsCount = postsExcludeDuplicate.size
 
                     // ここで一旦成功なので、tmpPostsを空にして、再度最初からフェッチする
-                    tmpPosts.removeAll(tmpPosts)
+                    tmpPosts.clear()
                     listeners.forEach { it.onChanged() }
                     fetchImpl(fetchSize - tmpPostsCount)
                 } else if (r == Result.DUPLICATE && tmpPosts.isEmpty()) {
