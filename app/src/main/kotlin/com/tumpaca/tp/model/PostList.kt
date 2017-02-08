@@ -135,7 +135,7 @@ class PostList(private val client: JumblrClient) {
         fetching = true
 
         if (retryCount <= 0) {
-            Log.v(TAG, "retryCouns is 0")
+            Log.v(TAG, "retryCount is 0")
             return;
         }
 
