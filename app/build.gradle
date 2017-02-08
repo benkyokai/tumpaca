@@ -87,10 +87,13 @@ preBuild {
     // TumblrのAPIキーをlocal.propertiesから読み込んでアプリに組み込まれるリソースを生成
     def authFile = file('src/main/res/raw/auth.properties')
     outputs.file authFile
+    def adMobFile = file('src/main/res/raw/admob.properties')
+    outputs.file adMobFile
     doLast {
         def localProps = new Properties()
         rootProject.file('local.properties').withReader { localProps.load it }
         writeProps(['tumblr.consumer.key', 'tumblr.consumer.secret'], localProps, authFile)
+        writeProps(['admob.app.id'], localProps, adMobFile)
     }
 }
 
