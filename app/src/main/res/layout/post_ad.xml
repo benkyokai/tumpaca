@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorTumpaca"
+        android:paddingStart="8dip"
+        android:paddingEnd="8dip"
+        android:paddingTop="8dip"
+        android:paddingBottom="64dip"
+        android:descendantFocusability="blocksDescendants">
+
+        <com.google.android.gms.ads.NativeExpressAdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="12dp"
+            ads:adSize="300x300"
+            ads:adUnitId="@string/adpost_ad_unit_id">
+        </com.google.android.gms.ads.NativeExpressAdView>
+
+    </RelativeLayout>
+</ScrollView>
