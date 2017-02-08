@@ -12,6 +12,7 @@ import com.tumblr.jumblr.types.Photo
 import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tp.R
+import com.tumpaca.tp.model.AdPost
 import com.tumpaca.tp.model.TPRuntime
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
@@ -148,4 +149,8 @@ fun Context.onNetworkRestored(callback: () -> Unit): BroadcastReceiver {
     }
     registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
     return receiver
+}
+
+fun List<Post>.lastNonAdId(): Long? {
+    return findLast { it !is AdPost }?.id
 }

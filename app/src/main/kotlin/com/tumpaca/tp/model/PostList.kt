@@ -5,6 +5,7 @@ import android.util.Log
 import com.tumblr.jumblr.JumblrClient
 import com.tumblr.jumblr.types.Post
 import com.tumblr.jumblr.types.User
+import com.tumpaca.tp.util.lastNonAdId
 import java.util.concurrent.CopyOnWriteArrayList
 
 class PostList(private val client: JumblrClient) {
@@ -181,6 +182,7 @@ class PostList(private val client: JumblrClient) {
                 posts.addAll(result)
                 filteredPosts.addAll(filterPosts(result))
                 Log.v(TAG, "Loaded ${result.size} posts, size=$size")
+                maybeInsertAd()
                 listeners.forEach { it.onChanged() }
                 fetching = false
                 if (result.isNotEmpty()) {
@@ -283,13 +285,14 @@ class PostList(private val client: JumblrClient) {
                 if (r == Result.GOOD || (r == Result.DUPLICATE && tmpPosts.isNotEmpty())) {
                     rate = 1.0
                     // tmpPostsからpostsの重複分を除く
-                    val index = tmpPosts.map { it.id }.indexOf(posts.last().id)
+                    val index = tmpPosts.map { it.id }.indexOf(posts.lastNonAdId()!!)
                     Log.v(TAG, "duplicate index: $index")
                     val postsExcludeDuplicate = tmpPosts.drop(index + 1)
 
                     // postsに追加
                     posts.addAll(postsExcludeDuplicate)
                     filteredPosts.addAll(filterPosts(postsExcludeDuplicate))
+                    maybeInsertAd()
                     val tmpPostsCount = postsExcludeDuplicate.size
 
                     // ここで一旦成功なので、tmpPostsを空にして、再度最初からフェッチする
@@ -309,6 +312,22 @@ class PostList(private val client: JumblrClient) {
                 }
             }
         }.execute()
+    }
+
+    private fun maybeInsertAd(): Unit {
+        Log.d(TAG, "AMK filteredPosts: ${filteredPosts.size}, last ad: ${filteredPosts.indexOfLast { it is AdPost }}")
+        if (filteredPosts.size - filteredPosts.indexOfLast { it is AdPost } >= 20) {
+            Log.d(TAG, "AMK inserted ad at ${filteredPosts.size}")
+            val adPost = AdPost()
+            posts.add(adPost)
+            filteredPosts.add(adPost)
+        }
+        // テスト用に先頭に近いところにも挟む
+        if (filteredPosts.get(2) !is AdPost) {
+            val adPost = AdPost()
+            filteredPosts.add(2, adPost)
+            posts.add(2, adPost)
+        }
     }
 
     private var rate = 1.0
@@ -331,7 +350,7 @@ class PostList(private val client: JumblrClient) {
          * 取得済みポストの先頭と最後のIDの差をポストの数で割った値 = ポストと次のポストのIDの差の平均
          * この平均に取得したいポスト数を掛ければ、どれだけ遡ればいいかが分かる
          */
-        val diff = ((posts.first().id - posts.last().id) / posts.size) * FETCH_LIMIT
+        val diff = ((posts.first().id - posts.lastNonAdId()!!) / posts.size) * FETCH_LIMIT
         Log.v(TAG, "diff: $diff")
 
         /**
@@ -339,7 +358,7 @@ class PostList(private val client: JumblrClient) {
          * 上で求めた値にrate分の補正をかける
          * もっと遡りたければrate > 1にし、遡りを抑制したければ、 0 < rate < 1 にする
          */
-        val sinceId = posts.last().id - (diff * rate).toLong()
+        val sinceId = posts.lastNonAdId()!! - (diff * rate).toLong()
 
         return if (sinceId <= 0) 0 else sinceId
     }
@@ -361,9 +380,9 @@ class PostList(private val client: JumblrClient) {
         }
 
         val firstPost = result[0]
-        if (posts.last().id > firstPost.id) {
+        if (posts.lastNonAdId()!! > firstPost.id) {
             return Result.FAR_AWAY
-        } else if (result.last().id >= posts.last().id) {
+        } else if (result.lastNonAdId()!! >= posts.lastNonAdId()!!) {
             return Result.DUPLICATE
         } else {
             return Result.GOOD

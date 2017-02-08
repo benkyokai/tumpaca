@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.Log
 import com.tumblr.jumblr.types.Post
 import com.tumpaca.tp.fragment.post.*
+import com.tumpaca.tp.model.AdPost
 import com.tumpaca.tp.model.PostList
 
 class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList) : FragmentStatePagerAdapter(fm) {
@@ -47,6 +48,9 @@ class DashboardPageAdapter(fm: FragmentManager, private val postList: PostList) 
     }
 
     private fun createFragment(post: Post): PostFragment {
+        if (post is AdPost) {
+            return AdPostFragment()
+        }
         when (post.type) {
             Post.PostType.TEXT -> {
                 return TextPostFragment()
