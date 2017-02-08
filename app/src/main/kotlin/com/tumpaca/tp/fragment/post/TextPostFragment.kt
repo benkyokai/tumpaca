@@ -20,7 +20,7 @@ class TextPostFragment : PostFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.post_text, container, false)
 
-        getPost({
+        getPost {
             if (isAdded && it is TextPost) {
                 val titleView = view.findViewById(R.id.post_title) as TextView
                 if (it.title == null || it.title.isBlank()) {
@@ -30,7 +30,7 @@ class TextPostFragment : PostFragment() {
                 }
                 update(view, it)
             }
-        })
+        }
 
         val webView = view.findViewById(R.id.sub) as WebView
         UIUtil.loadCss(webView)

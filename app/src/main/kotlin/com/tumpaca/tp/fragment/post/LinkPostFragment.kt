@@ -18,11 +18,11 @@ class LinkPostFragment : PostFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.post_link, container, false)
 
-        getPost({
+        getPost {
             if (isAdded && it is LinkPost) {
                 update(view, it)
             }
-        })
+        }
 
         val webView = view.findViewById(R.id.sub) as WebView
         UIUtil.loadCss(webView)
