@@ -2,8 +2,7 @@ package com.tumpaca.tp.util
 
 import android.content.*
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
+import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.util.DisplayMetrics
@@ -22,6 +21,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.net.URL
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
     val editor = getSharedPreferences(name, mode).edit()
@@ -80,11 +80,13 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
             .observeOn(AndroidSchedulers.mainThread())
 }
 
-fun Post.blogAvatar(): Observable<Bitmap> {
+fun Post.blogAvatar(): Observable<Bitmap?> {
     val observable = Observable
             .create { emitter: ObservableEmitter<String> ->
                 try {
-                    val url = client.blogInfo(blogName).avatar()
+                    val url = TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
+                        client.blogInfo(blogName).avatar()
+                    })
                     Log.d("blogAvatar", "url=" + url)
                     emitter.onNext(url)
                     emitter.onComplete()
@@ -95,9 +97,12 @@ fun Post.blogAvatar(): Observable<Bitmap> {
             }
             .map { url ->
                 Log.d("avatar", "url=" + url)
-                val avatar = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888)
-                val blackCanvas = Canvas(avatar)
-                blackCanvas.drawColor(Color.BLACK)
+                val avatar = TPRuntime.bitMapCache.getIfNoneAndSet(url, {
+                    val stream = URL(url).openStream()
+                    val options = BitmapFactory.Options()
+                    options.inDensity = DisplayMetrics.DENSITY_MEDIUM
+                    BitmapFactory.decodeStream(stream, null, options)
+                })
                 avatar
             }
             .subscribeOn(Schedulers.io())
