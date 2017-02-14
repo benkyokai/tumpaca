@@ -54,18 +54,18 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 }
 
-fun Post.reblogAsync(blogName: String, comment: String?): Observable<Boolean> {
+fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
     return Observable
-            .create({ emitter: ObservableEmitter<Boolean> ->
+            .create({ emitter: ObservableEmitter<Post> ->
                 try {
                     val option = if (comment == null) {
                         emptyMap<String, String>()
                     } else {
                         mapOf("comment" to comment)
                     }
-                    reblog(blogName, option)
-                    emitter.onNext(true)
+                    val post = reblog(blogName, option)
+                    emitter.onNext(post)
                     emitter.onComplete()
                 } catch(e: Exception) {
                     Log.e("ReblogTask", e.message.orEmpty())
