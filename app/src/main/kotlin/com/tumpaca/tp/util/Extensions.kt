@@ -2,6 +2,8 @@ package com.tumpaca.tp.util
 
 import android.content.*
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.util.DisplayMetrics
@@ -78,21 +80,18 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
             .observeOn(AndroidSchedulers.mainThread())
 }
 
-fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
-    object : AsyncTask<Void, Void, String?>() {
-        override fun doInBackground(vararg args: Void): String? {
-            return TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
-                client.blogInfo(blogName).avatar()
-            })
-            // TODO エラー処理
-        }
-
-        override fun onPostExecute(avatarUrl: String?) {
-            avatarUrl?.let {
-                DownloadImageTask(callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, it)
+fun Post.blogAvatar(): Observable<Bitmap> {
+    val observable = Observable
+            .create { emitter: ObservableEmitter<Bitmap> ->
+                val avatar = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888)
+                val blackCanvas = Canvas(avatar)
+                blackCanvas.drawColor(Color.BLACK)
+                emitter.onNext(avatar)
+                emitter.onComplete()
             }
-        }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    return observable
 }
 
 /**
