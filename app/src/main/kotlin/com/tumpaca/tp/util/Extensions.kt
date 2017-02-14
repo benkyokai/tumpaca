@@ -82,12 +82,23 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
 
 fun Post.blogAvatar(): Observable<Bitmap> {
     val observable = Observable
-            .create { emitter: ObservableEmitter<Bitmap> ->
+            .create { emitter: ObservableEmitter<String> ->
+                try {
+                    val url = client.blogInfo(blogName).avatar()
+                    Log.d("blogAvatar", "url=" + url)
+                    emitter.onNext(url)
+                    emitter.onComplete()
+                } catch(e: Exception) {
+                    Log.e("blogAvatar", e.message.orEmpty())
+                    emitter.onError(e)
+                }
+            }
+            .map { url ->
+                Log.d("avatar", "url=" + url)
                 val avatar = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888)
                 val blackCanvas = Canvas(avatar)
                 blackCanvas.drawColor(Color.BLACK)
-                emitter.onNext(avatar)
-                emitter.onComplete()
+                avatar
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
