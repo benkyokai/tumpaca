@@ -57,7 +57,7 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
 fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
     return Observable
-            .create({ emitter: ObservableEmitter<Post> ->
+            .create { emitter: ObservableEmitter<Post> ->
                 try {
                     val option = if (comment == null) {
                         emptyMap<String, String>()
@@ -71,7 +71,7 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
                     Log.e("ReblogTask", e.message.orEmpty())
                     emitter.onError(e)
                 }
-            })
+            }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
 }

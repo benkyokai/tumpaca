@@ -172,9 +172,9 @@ class DashboardFragment : FragmentBase() {
                 ?.reblogAsync(blogName, null)
                 ?.subscribe({ post ->
                     TPToastManager.show(msg)
-                }, { e ->
+                }) { e ->
                     TPToastManager.show(errorMsg)
-                })
+                }
 
         /** TODO 設定画面でリブログ時のコメント追加 on/off が出来るようになったら復活
         val input = EditText(context)
