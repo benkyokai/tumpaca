@@ -16,6 +16,7 @@ class TPSettings(val ctx: Context) {
         private const val EXCLUDE_PHOTO = "EXCLUDE_PHOTO"
         private const val HIGH_RESOLUTION_PHOTO = "HIGH_RESOLUTION_PHOTO"
         private const val SHOW_AD_POSTS = "SHOW_AD_POSTS"
+        private const val SHOW_SETTINGS_AD = "SHOW_SETTINGS_AD"
     }
 
     /**
@@ -45,6 +46,13 @@ class TPSettings(val ctx: Context) {
     var showAdPosts: Boolean
         get() = getBoolean(SHOW_AD_POSTS, false)
         set(value) = save(SHOW_AD_POSTS, value)
+
+    /**
+     * 設定画面に広告を表示するかどうかの設定。今のところ隠し設定で必ずON。
+     */
+    var showSettingsAd: Boolean
+        get() = getBoolean(SHOW_SETTINGS_AD, true)
+        set(value) = save(SHOW_SETTINGS_AD, value)
 
     private fun save(key: String, value: Any): Unit {
         val data = ctx.getSharedPreferences("DataSave", Context.MODE_PRIVATE)

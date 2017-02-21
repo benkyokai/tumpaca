@@ -10,8 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.tumpaca.tp.BuildConfig
 import com.tumpaca.tp.R
 import com.tumpaca.tp.model.TPRuntime
+import com.tumpaca.tp.util.configureForTest
 
 /**
  * 設定画面
@@ -74,6 +78,16 @@ class SettingsFragment : FragmentBase() {
             startActivity(intent)
         }
 
+        val adView = view.findViewById(R.id.adView) as AdView
+        if (TPRuntime.settings.showSettingsAd) {
+            val adRequest = AdRequest.Builder()
+            if (BuildConfig.ADMOB_TEST) {
+                adRequest.configureForTest()
+            }
+            adView.loadAd(adRequest.build())
+        } else {
+            adView.visibility = View.GONE
+        }
 
         return view
     }
