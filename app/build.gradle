@@ -63,9 +63,11 @@ android {
     productFlavors {
         envDev {
             buildConfigField "boolean", "FIREBASE_ENABLED", "false"
+            buildConfigField "boolean", "ADMOB_TEST", "true"
         }
         envProd {
             buildConfigField "boolean", "FIREBASE_ENABLED", "true"
+            buildConfigField "boolean", "ADMOB_TEST", "false"
         }
     }
     sourceSets {
