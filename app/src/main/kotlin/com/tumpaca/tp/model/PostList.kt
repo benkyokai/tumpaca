@@ -187,7 +187,7 @@ class PostList(private val client: JumblrClient) {
                     fetchImpl(fetchSize - result.size)
                 } // 取得したポストの数が0なら次回のロードはしない
             }
-        }.execute()
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     /**
@@ -308,7 +308,7 @@ class PostList(private val client: JumblrClient) {
                     throw RuntimeException("PostList: Result is invalid. ${r}, tmpPosts.size == ${tmpPosts.size}")
                 }
             }
-        }.execute()
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     private var rate = 1.0
@@ -389,6 +389,6 @@ class PostList(private val client: JumblrClient) {
                     user = result
                 }
             }
-        }.execute()
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 }

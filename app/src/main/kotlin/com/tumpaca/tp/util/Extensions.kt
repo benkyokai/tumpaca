@@ -46,7 +46,7 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
         override fun onPostExecute(result: Boolean) {
             callback(this@likeAsync, result)
         }
-    }.execute()
+    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 }
 
 fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post, Boolean) -> Unit) {
@@ -70,7 +70,7 @@ fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post, Boolea
         override fun onPostExecute(result: Boolean) {
             callback(this@reblogAsync, result)
         }
-    }.execute()
+    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
@@ -84,10 +84,10 @@ fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
 
         override fun onPostExecute(avatarUrl: String?) {
             avatarUrl?.let {
-                DownloadImageTask(callback).execute(it)
+                DownloadImageTask(callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, it)
             }
         }
-    }.execute()
+    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 }
 
 /**

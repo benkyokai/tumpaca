@@ -145,14 +145,14 @@ class PhotoPostFragment : PostFragment() {
                             imageLayout?.removeView(loadingGifView)
                         }
                     }
-                }.execute()
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
             } else {
                 val iView = createImageView(i != 0)
                 imageLayout?.addView(iView)
                 DownloadImageTask { bitmap ->
                     iView.setImageBitmap(bitmap)
                     imageLayout?.removeView(loadingGifView)
-                }.execute(url)
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url)
             }
         }
     }
