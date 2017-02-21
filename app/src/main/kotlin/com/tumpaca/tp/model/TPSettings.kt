@@ -15,6 +15,7 @@ class TPSettings(val ctx: Context) {
         private const val EXCLUDE_MY_POSTS = "EXCLUDE_MY_POSTS"
         private const val EXCLUDE_PHOTO = "EXCLUDE_PHOTO"
         private const val HIGH_RESOLUTION_PHOTO = "HIGH_RESOLUTION_PHOTO"
+        private const val SHOW_AD_POSTS = "SHOW_AD_POSTS"
     }
 
     /**
@@ -37,6 +38,13 @@ class TPSettings(val ctx: Context) {
     var highResolutionPhoto: Boolean
         get() = getBoolean(HIGH_RESOLUTION_PHOTO, false)
         set(value) = save(HIGH_RESOLUTION_PHOTO, value)
+
+    /**
+     * ダッシュボードのPostとして広告を挟むかどうかの設定。今のところ隠し設定で必ずOFF。
+     */
+    var showAdPosts: Boolean
+        get() = getBoolean(SHOW_AD_POSTS, false)
+        set(value) = save(SHOW_AD_POSTS, value)
 
     private fun save(key: String, value: Any): Unit {
         val data = ctx.getSharedPreferences("DataSave", Context.MODE_PRIVATE)

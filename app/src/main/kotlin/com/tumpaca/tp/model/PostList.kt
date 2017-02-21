@@ -315,6 +315,9 @@ class PostList(private val client: JumblrClient) {
     }
 
     private fun maybeInsertAd(): Unit {
+        if (!TPRuntime.settings.showAdPosts) {
+            return
+        }
         Log.d(TAG, "AMK filteredPosts: ${filteredPosts.size}, last ad: ${filteredPosts.indexOfLast { it is AdPost }}")
         if (filteredPosts.size - filteredPosts.indexOfLast { it is AdPost } >= 20) {
             Log.d(TAG, "AMK inserted ad at ${filteredPosts.size}")
