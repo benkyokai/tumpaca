@@ -28,6 +28,8 @@ ext {
         outFile.parentFile.mkdirs()
         outFile.withWriter { props.store it, null }
     }
+    localProps = new Properties()
+    rootProject.file('local.properties').withReader { localProps.load it }
 }
 
 android {
@@ -92,8 +94,6 @@ preBuild {
     def adMobFile = file('src/main/res/raw/admob.properties')
     outputs.file adMobFile
     doLast {
-        def localProps = new Properties()
-        rootProject.file('local.properties').withReader { localProps.load it }
         writeProps(['tumblr.consumer.key', 'tumblr.consumer.secret'], localProps, authFile)
         writeProps(['admob.app.id'], localProps, adMobFile)
     }
