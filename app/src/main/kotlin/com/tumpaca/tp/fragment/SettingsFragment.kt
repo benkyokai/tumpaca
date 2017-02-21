@@ -42,9 +42,9 @@ class SettingsFragment : FragmentBase() {
          * 自分のポストを除外するかどうかの設定
          */
         val excludeMyPosts = view.findViewById(R.id.exclude_my_posts) as Switch
-        excludeMyPosts.isChecked = TPRuntime.settings.isExcludeMyPosts()
+        excludeMyPosts.isChecked = TPRuntime.settings.excludeMyPosts
         excludeMyPosts.setOnClickListener {
-            TPRuntime.settings.setExcludeMyPosts(excludeMyPosts.isChecked)
+            TPRuntime.settings.excludeMyPosts = excludeMyPosts.isChecked
         }
 
         /**
@@ -52,18 +52,18 @@ class SettingsFragment : FragmentBase() {
          * 除外の場合はPHOTO, VIDEO, AUDIOを除外する
          */
         val excludePhoto = view.findViewById(R.id.exclude_photo) as Switch
-        excludePhoto.isChecked = TPRuntime.settings.isExcludePhoto()
+        excludePhoto.isChecked = TPRuntime.settings.excludePhoto
         excludePhoto.setOnClickListener {
-            TPRuntime.settings.setExcludePhoto(excludePhoto.isChecked)
+            TPRuntime.settings.excludePhoto = excludePhoto.isChecked
         }
 
         /**
          * 写真を高画質で読み込むかどうかの設定
          */
         val highResolutionPhoto = view.findViewById(R.id.high_resolution_photo) as Switch
-        highResolutionPhoto.isChecked = TPRuntime.settings.isHighResolutionPhoto()
+        highResolutionPhoto.isChecked = TPRuntime.settings.highResolutionPhoto
         highResolutionPhoto.setOnClickListener {
-            TPRuntime.settings.setHighResolutionPhoto(highResolutionPhoto.isChecked)
+            TPRuntime.settings.highResolutionPhoto = highResolutionPhoto.isChecked
         }
 
         val licenseButton = view.findViewById(R.id.viewLicense)

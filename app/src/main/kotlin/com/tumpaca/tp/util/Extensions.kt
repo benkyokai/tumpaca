@@ -111,7 +111,7 @@ fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): PhotoSize {
         sizes.forEach { Log.d("Util", it.debugString() + (if (it == optimal) " optimal" else if (it == better) " better" else "")) }
     }
 
-    if (TPRuntime.settings.isHighResolutionPhoto()) {
+    if (TPRuntime.settings.highResolutionPhoto) {
         return optimal ?: biggest
     } else {
         return better ?: biggest
