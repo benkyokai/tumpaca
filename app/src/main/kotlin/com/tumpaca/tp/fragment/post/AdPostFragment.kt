@@ -12,6 +12,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.NativeExpressAdView
 import com.tumpaca.tp.BuildConfig
 import com.tumpaca.tp.R
+import com.tumpaca.tp.util.configureForTest
 
 class AdPostFragment : PostFragment() {
 
@@ -21,7 +22,7 @@ class AdPostFragment : PostFragment() {
         val adView = view.findViewById(R.id.adView) as NativeExpressAdView
         val adRequest = AdRequest.Builder()
         if (BuildConfig.ADMOB_TEST) {
-            adRequest.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+            adRequest.configureForTest()
         }
         adView.loadAd(adRequest.build())
 

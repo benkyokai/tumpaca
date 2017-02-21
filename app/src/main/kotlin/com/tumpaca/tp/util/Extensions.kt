@@ -8,9 +8,11 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.ads.AdRequest
 import com.tumblr.jumblr.types.Photo
 import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
+import com.tumpaca.tp.BuildConfig
 import com.tumpaca.tp.R
 import com.tumpaca.tp.model.AdPost
 import com.tumpaca.tp.model.TPRuntime
@@ -153,4 +155,13 @@ fun Context.onNetworkRestored(callback: () -> Unit): BroadcastReceiver {
 
 fun List<Post>.lastNonAdId(): Long? {
     return findLast { it !is AdPost }?.id
+}
+
+fun AdRequest.Builder.configureForTest() {
+    val deviceId = if (BuildConfig.ADMOB_TESTDEVICE.isEmpty()) {
+        AdRequest.DEVICE_ID_EMULATOR
+    } else {
+        BuildConfig.ADMOB_TESTDEVICE
+    }
+    addTestDevice(deviceId)
 }
