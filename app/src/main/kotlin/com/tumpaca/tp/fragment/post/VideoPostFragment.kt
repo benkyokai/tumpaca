@@ -16,11 +16,11 @@ class VideoPostFragment : PostFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.post_video, container, false)
 
-        getPost({
+        getPost {
             if (isAdded && it is VideoPost) {
                 update(view, it)
             }
-        })
+        }
 
         return view
     }

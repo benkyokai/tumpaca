@@ -8,10 +8,13 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.ads.AdRequest
 import com.tumblr.jumblr.types.Photo
 import com.tumblr.jumblr.types.PhotoSize
 import com.tumblr.jumblr.types.Post
+import com.tumpaca.tp.BuildConfig
 import com.tumpaca.tp.R
+import com.tumpaca.tp.model.AdPost
 import com.tumpaca.tp.model.TPRuntime
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
@@ -110,7 +113,7 @@ fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): PhotoSize {
         sizes.forEach { Log.d("Util", it.debugString() + (if (it == optimal) " optimal" else if (it == better) " better" else "")) }
     }
 
-    if (TPRuntime.settings.isHighResolutionPhoto()) {
+    if (TPRuntime.settings.highResolutionPhoto) {
         return optimal ?: biggest
     } else {
         return better ?: biggest
@@ -148,4 +151,17 @@ fun Context.onNetworkRestored(callback: () -> Unit): BroadcastReceiver {
     }
     registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
     return receiver
+}
+
+fun List<Post>.lastNonAdId(): Long? {
+    return findLast { it !is AdPost }?.id
+}
+
+fun AdRequest.Builder.configureForTest() {
+    val deviceId = if (BuildConfig.ADMOB_TESTDEVICE.isEmpty()) {
+        AdRequest.DEVICE_ID_EMULATOR
+    } else {
+        BuildConfig.ADMOB_TESTDEVICE
+    }
+    addTestDevice(deviceId)
 }

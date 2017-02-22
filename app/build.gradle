@@ -16,6 +16,20 @@ ext {
         major * 1000000 + minor * 1000 + patch
     }
     keystorePassword = project.hasProperty('keystorePassword') ? project.property('keystorePassword') : ''
+    writeProps = { keys, localProps, outFile ->
+        def props = new Properties()
+        keys.each {
+            def val = localProps.get(it)
+            if (val == null) {
+                throw new GradleException("$it は定義されていない。 local.properties にて定義してください。")
+            }
+            props.putAll((it): val.toString().bytes.encodeBase64().toString())
+        }
+        outFile.parentFile.mkdirs()
+        outFile.withWriter { props.store it, null }
+    }
+    localProps = new Properties()
+    rootProject.file('local.properties').withReader { localProps.load it }
 }
 
 android {
@@ -51,9 +65,13 @@ android {
     productFlavors {
         envDev {
             buildConfigField "boolean", "FIREBASE_ENABLED", "false"
+            buildConfigField "boolean", "ADMOB_TEST", "true"
+            buildConfigField "String", "ADMOB_TESTDEVICE", '"' + localProps.getProperty('admob.testdevice', '') + '"'
         }
         envProd {
             buildConfigField "boolean", "FIREBASE_ENABLED", "true"
+            buildConfigField "boolean", "ADMOB_TEST", "false"
+            buildConfigField "String", "ADMOB_TESTDEVICE", '""'
         }
     }
     sourceSets {
@@ -75,19 +93,11 @@ preBuild {
     // TumblrのAPIキーをlocal.propertiesから読み込んでアプリに組み込まれるリソースを生成
     def authFile = file('src/main/res/raw/auth.properties')
     outputs.file authFile
+    def adMobFile = file('src/main/res/raw/admob.properties')
+    outputs.file adMobFile
     doLast {
-        def localProps = new Properties()
-        rootProject.file('local.properties').withReader { localProps.load it }
-        def props = new Properties()
-        ['tumblr.consumer.key', 'tumblr.consumer.secret'].each {
-            def val = localProps.get(it)
-            if (val == null) {
-                throw new GradleException("$it は定義されていない。 local.properties にて定義してください。")
-            }
-            props.putAll((it): val.toString().bytes.encodeBase64().toString())
-        }
-        authFile.parentFile.mkdirs()
-        authFile.withWriter { props.store it, null }
+        writeProps(['tumblr.consumer.key', 'tumblr.consumer.secret'], localProps, authFile)
+        writeProps(['admob.app.id'], localProps, adMobFile)
     }
 }
 
@@ -98,10 +108,11 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.daksh:loglr:1.0.0'
-    compile 'com.google.firebase:firebase-analytics:9.0.0'
+    compile 'com.google.firebase:firebase-ads:10.0.1'
+    compile 'com.google.firebase:firebase-analytics:10.0.1'
     // firebase-crash はコード上で on/off を切り替えられないので依存性の有無によって切り替える
-    envProdReleaseCompile 'com.google.firebase:firebase-crash:9.0.0'
-    envProdDebugCompile 'com.google.firebase:firebase-crash:9.0.0'
+    envProdReleaseCompile 'com.google.firebase:firebase-crash:10.0.1'
+    envProdDebugCompile 'com.google.firebase:firebase-crash:10.0.1'
     compile project(':jumblr')
     compile project(':GifImageView:library')
 }

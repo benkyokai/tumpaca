@@ -15,58 +15,44 @@ class TPSettings(val ctx: Context) {
         private const val EXCLUDE_MY_POSTS = "EXCLUDE_MY_POSTS"
         private const val EXCLUDE_PHOTO = "EXCLUDE_PHOTO"
         private const val HIGH_RESOLUTION_PHOTO = "HIGH_RESOLUTION_PHOTO"
+        private const val SHOW_AD_POSTS = "SHOW_AD_POSTS"
+        private const val SHOW_SETTINGS_AD = "SHOW_SETTINGS_AD"
     }
 
     /**
      * 自分のポストを表示するかどうかの設定
      */
-    private var mIsExcludeMyPosts: Boolean? = null
-
-    fun isExcludeMyPosts(): Boolean {
-        if (mIsExcludeMyPosts == null) {
-            mIsExcludeMyPosts = getBoolean(EXCLUDE_MY_POSTS, false)
-        }
-        return mIsExcludeMyPosts!!
-    }
-
-    fun setExcludeMyPosts(isExcludeMyPosts: Boolean): Unit {
-        mIsExcludeMyPosts = isExcludeMyPosts
-        save(EXCLUDE_MY_POSTS, isExcludeMyPosts)
-    }
+    var excludeMyPosts: Boolean
+        get() = getBoolean(EXCLUDE_MY_POSTS, false)
+        set(value) = save(EXCLUDE_MY_POSTS, value)
 
     /**
      * 写真、動画、音声ポストを除外するかどうかの設定
      */
-    private var mExcludePhoto: Boolean? = null
-
-    fun isExcludePhoto(): Boolean {
-        if (mExcludePhoto == null) {
-            mExcludePhoto = getBoolean(EXCLUDE_PHOTO, false)
-        }
-        return mExcludePhoto!!
-    }
-
-    fun setExcludePhoto(excludePhoto: Boolean): Unit {
-        mExcludePhoto = excludePhoto
-        save(EXCLUDE_PHOTO, excludePhoto)
-    }
+    var excludePhoto: Boolean
+        get() = getBoolean(EXCLUDE_PHOTO, false)
+        set(value) = save(EXCLUDE_PHOTO, value)
 
     /**
      * 高画質な写真を読み込むかどうかの設定
      */
-    private var mIsHighResolutionPhoto: Boolean? = null
+    var highResolutionPhoto: Boolean
+        get() = getBoolean(HIGH_RESOLUTION_PHOTO, false)
+        set(value) = save(HIGH_RESOLUTION_PHOTO, value)
 
-    fun isHighResolutionPhoto(): Boolean {
-        if (mIsHighResolutionPhoto == null) {
-            mIsHighResolutionPhoto = getBoolean(HIGH_RESOLUTION_PHOTO, false)
-        }
-        return mIsHighResolutionPhoto!!
-    }
+    /**
+     * ダッシュボードのPostとして広告を挟むかどうかの設定。今のところ隠し設定で必ずOFF。
+     */
+    var showAdPosts: Boolean
+        get() = getBoolean(SHOW_AD_POSTS, false)
+        set(value) = save(SHOW_AD_POSTS, value)
 
-    fun setHighResolutionPhoto(isHighResolutionPhoto: Boolean): Unit {
-        mIsHighResolutionPhoto = isHighResolutionPhoto
-        save(HIGH_RESOLUTION_PHOTO, isHighResolutionPhoto)
-    }
+    /**
+     * 設定画面に広告を表示するかどうかの設定。今のところ隠し設定で必ずON。
+     */
+    var showSettingsAd: Boolean
+        get() = getBoolean(SHOW_SETTINGS_AD, true)
+        set(value) = save(SHOW_SETTINGS_AD, value)
 
     private fun save(key: String, value: Any): Unit {
         val data = ctx.getSharedPreferences("DataSave", Context.MODE_PRIVATE)
@@ -82,21 +68,18 @@ class TPSettings(val ctx: Context) {
     }
 
     private fun getInt(key: String, defaultValue: Int): Int {
-        val data = getSharedPreferences()
-        return data.getInt(key, defaultValue)
+        return sharedPreferences.getInt(key, defaultValue)
     }
 
     private fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-        val data = getSharedPreferences()
-        return data.getBoolean(key, defaultValue)
+        return sharedPreferences.getBoolean(key, defaultValue)
     }
 
     private fun getString(key: String, defaultValue: String): String {
-        val data = getSharedPreferences()
-        return data.getString(key, defaultValue)
+        return sharedPreferences.getString(key, defaultValue)
     }
 
-    private fun getSharedPreferences(): SharedPreferences =
-            ctx.getSharedPreferences("DataSave", Context.MODE_PRIVATE)
+    val sharedPreferences: SharedPreferences
+        get() = ctx.getSharedPreferences("DataSave", Context.MODE_PRIVATE)
 
 }
