@@ -32,9 +32,9 @@
     <string name="error_like">Like failed</string>
 
     <!-- 以下の ID はテスト用のダミー -->
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string translatable="false" name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <!-- 以下の ID は NativeAd テスト用のダミー -->
-    <string name="adpost_ad_unit_id">ca-app-pub-5569142544566797/6481951063</string>
+    <string translatable="false" name="adpost_ad_unit_id">ca-app-pub-5569142544566797/6481951063</string>
 
-    <string name="settings_banner_unit_id">ca-app-pub-5569142544566797/4695553061</string>
+    <string translatable="false" name="settings_banner_unit_id">ca-app-pub-5569142544566797/4695553061</string>
 </resources>
