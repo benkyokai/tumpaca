@@ -10,12 +10,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
+import android.widget.TextView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.tumpaca.tp.BuildConfig
 import com.tumpaca.tp.R
 import com.tumpaca.tp.model.TPRuntime
 import com.tumpaca.tp.util.configureForTest
+import com.tumpaca.tp.util.getVersionName
 
 /**
  * 設定画面
@@ -41,6 +43,9 @@ class SettingsFragment : FragmentBase() {
             val fragment = LogoutDialogFragment()
             fragment.show(childFragmentManager, null)
         }
+
+        val versionLabel = view.findViewById(R.id.versionname) as TextView
+        versionLabel.text = resources.getString(R.string.version_name, context.getVersionName())
 
         /**
          * 自分のポストを除外するかどうかの設定
