@@ -46,12 +46,6 @@ android {
         versionName version
     }
 
-    applicationVariants.all { variant ->
-        if (!(variant.flavorName == 'envProd' && variant.buildType.name == 'release')) {
-            variant.mergedFlavor.versionName = variant.versionName + '-develop'
-        }
-    }
-
     signingConfigs {
         release {
             storeFile file('keystore.jks')
@@ -71,6 +65,7 @@ android {
         }
         debug {
             applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
             buildConfigField "boolean", "ADMOB_TEST", "true"
             buildConfigField "String", "ADMOB_TESTDEVICE", '"' + localProps.getProperty('admob.testdevice', '') + '"'
         }
