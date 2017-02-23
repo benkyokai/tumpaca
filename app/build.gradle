@@ -15,7 +15,6 @@ ext {
         (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
         major * 1000000 + minor * 1000 + patch
     }
-    keystorePassword = project.hasProperty('keystorePassword') ? project.property('keystorePassword') : ''
     writeProps = { keys, localProps, outFile ->
         def props = new Properties()
         keys.each {
@@ -30,6 +29,7 @@ ext {
     }
     localProps = new Properties()
     rootProject.file('local.properties').withReader { localProps.load it }
+    keystorePassword = localProps.getProperty('keystore.password')
 }
 
 android {
