@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tumpaca</string>
+    <string name="app_name_debug">Tumpaca🐞</string>
     <string name="auth_start">Get started</string>
     <string name="comment_input_hint">Comment</string>
     <string name="dashboard">Dashboard</string>

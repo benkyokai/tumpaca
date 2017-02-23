@@ -44,6 +44,7 @@ android {
         targetSdkVersion 23
         versionCode buildVersionCode(version)
         versionName version
+        manifestPlaceholders = ['appName': '@string/app_name']
     }
 
     signingConfigs {
@@ -64,6 +65,7 @@ android {
             buildConfigField "String", "ADMOB_TESTDEVICE", '""'
         }
         debug {
+            manifestPlaceholders = ['appName': '@string/app_name_debug']
             applicationIdSuffix '.debug'
             versionNameSuffix '-debug'
             buildConfigField "boolean", "ADMOB_TEST", "true"

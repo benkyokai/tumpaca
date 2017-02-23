@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Tumpaca</string>
+    <string name="app_name_debug">Tumpaca🐞</string>
 
     <!-- AuthFragment -->
     <string name="auth_start">Tumpaca をはじめる</string>
