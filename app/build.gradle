@@ -15,7 +15,6 @@ ext {
         (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
         major * 1000000 + minor * 1000 + patch
     }
-    keystorePassword = project.hasProperty('keystorePassword') ? project.property('keystorePassword') : ''
     writeProps = { keys, localProps, outFile ->
         def props = new Properties()
         keys.each {
@@ -30,6 +29,7 @@ ext {
     }
     localProps = new Properties()
     rootProject.file('local.properties').withReader { localProps.load it }
+    keystorePassword = localProps.getProperty('keystore.password')
 }
 
 android {
@@ -46,12 +46,6 @@ android {
         versionName version
     }
 
-    applicationVariants.all { variant ->
-        if (!(variant.flavorName == 'envProd' && variant.buildType.name == 'release')) {
-            variant.mergedFlavor.versionName = variant.versionName + '-develop'
-        }
-    }
-
     signingConfigs {
         release {
             storeFile file('keystore.jks')
@@ -66,18 +60,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-        }
-    }
-    productFlavors {
-        envDev {
-            buildConfigField "boolean", "FIREBASE_ENABLED", "false"
-            buildConfigField "boolean", "ADMOB_TEST", "true"
-            buildConfigField "String", "ADMOB_TESTDEVICE", '"' + localProps.getProperty('admob.testdevice', '') + '"'
-        }
-        envProd {
-            buildConfigField "boolean", "FIREBASE_ENABLED", "true"
             buildConfigField "boolean", "ADMOB_TEST", "false"
             buildConfigField "String", "ADMOB_TESTDEVICE", '""'
+        }
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+            buildConfigField "boolean", "ADMOB_TEST", "true"
+            buildConfigField "String", "ADMOB_TESTDEVICE", '"' + localProps.getProperty('admob.testdevice', '') + '"'
         }
     }
     sourceSets {
@@ -116,9 +106,7 @@ dependencies {
     compile 'com.daksh:loglr:1.0.0'
     compile 'com.google.firebase:firebase-ads:10.0.1'
     compile 'com.google.firebase:firebase-analytics:10.0.1'
-    // firebase-crash はコード上で on/off を切り替えられないので依存性の有無によって切り替える
-    envProdReleaseCompile 'com.google.firebase:firebase-crash:10.0.1'
-    envProdDebugCompile 'com.google.firebase:firebase-crash:10.0.1'
+    compile 'com.google.firebase:firebase-crash:10.0.1'
     compile project(':jumblr')
     compile project(':GifImageView:library')
 }

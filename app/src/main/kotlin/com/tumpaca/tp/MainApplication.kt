@@ -18,8 +18,6 @@ class MainApplication : Application() {
         TPRuntime.initialize(this)
 
         analytics = FirebaseAnalytics.getInstance(this)
-        if (BuildConfig.FIREBASE_ENABLED) {
-            analytics.setAnalyticsCollectionEnabled(true)
-        }
+        analytics.setAnalyticsCollectionEnabled(true)
     }
 }
