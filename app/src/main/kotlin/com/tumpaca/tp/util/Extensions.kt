@@ -153,6 +153,21 @@ fun Context.onNetworkRestored(callback: () -> Unit): BroadcastReceiver {
     return receiver
 }
 
+/**
+ * バージョン名取得
+ */
+fun Context.getVersionName(): String {
+    val pm = this.packageManager
+    try {
+        val packageInfo = pm.getPackageInfo(this.packageName, 0)
+        return packageInfo.versionName
+    } catch (e: Exception) {
+        Log.e("Context", "not found version name")
+        return ""
+    }
+}
+
+
 fun List<Post>.lastNonAdId(): Long? {
     return findLast { it !is AdPost }?.id
 }
