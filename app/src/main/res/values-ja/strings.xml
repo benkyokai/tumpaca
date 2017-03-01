@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Tumpaca</string>
+    <string name="app_name_debug">Tumpaca🐞</string>
 
     <!-- AuthFragment -->
     <string name="auth_start">Tumpaca をはじめる</string>
@@ -12,10 +13,10 @@
     <string name="comment_input_hint">コメント</string>
     <string name="liked_result">Likeしました</string>
     <string name="unliked_result">Like解除しました</string>
-    <string name="like">Likeしています...</string>
-    <string name="unlike">Likeを解除しています...</string>
+    <string name="like">Likeしています…</string>
+    <string name="unlike">Likeを解除しています…</string>
     <string name="reblogged_result">Reblogしました</string>
-    <string name="reblog">Reblogしています...</string>
+    <string name="reblog">Reblogしています…</string>
 
     <!-- SettingsFragment -->
     <string name="tumpaca">Tumpaca</string>
@@ -26,7 +27,7 @@
     <string name="high_resolution_photo">高画質な写真を表示する</string>
     <string name="logout">ログアウト</string>
     <string name="view_license">ライセンス</string>
-    <string name="copyright">Copyright (c) benkyokai. All rights reserved.</string>
+    <string name="copyright">Copyright © benkyokai. All rights reserved.</string>
     <string name="offline_toast">ネットワーク通信ができません</string>
     <string name="notes_unknown_placeholder">\? notes</string>
 
