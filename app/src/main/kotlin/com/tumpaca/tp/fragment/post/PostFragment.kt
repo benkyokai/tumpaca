@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.widget.ImageView
@@ -87,7 +88,13 @@ abstract class PostFragment : FragmentBase() {
     }
 
     fun removeNetworkReceiver() {
-        networkReceiver?.let { context.unregisterReceiver(it) }
+        networkReceiver?.let {
+            try {
+                context.unregisterReceiver(it)
+            } catch (e: Throwable) {
+                Log.d(TAG, "Receiver was not registered", e)
+            }
+        }
         networkReceiver = null
     }
 }
