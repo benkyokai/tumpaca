@@ -3,6 +3,7 @@ package com.tumpaca.tp.fragment;
 import android.content.BroadcastReceiver
 import android.os.Bundle
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
@@ -126,7 +127,13 @@ class DashboardFragment : FragmentBase() {
         super.onDestroyView()
         dashboardAdapter?.onUnbind()
         changedListener?.let { postList?.removeListeners(it) }
-        networkReceiver?.let { context.unregisterReceiver(it) }
+        networkReceiver?.let {
+            try {
+                context.unregisterReceiver(it)
+            } catch (e: Throwable) {
+                Log.d(TAG, "Receiver was not registered", e)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
