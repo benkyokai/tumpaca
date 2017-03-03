@@ -85,7 +85,7 @@ class PhotoPostFragment : PostFragment() {
         // このポストにGIFがあったら、再生／停止判定を行うリスナーを追加する
         if (urls.any { it.endsWith(".gif") }) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                view.setOnScrollChangeListener { view, x, y, oldX, oldY ->
+                view.setOnScrollChangeListener { _, _, _, _, _ ->
                     // スクロール位置によって見えてきたものを再生、見えなくなったものを停止
                     startStopAnimations()
                 }
@@ -95,7 +95,7 @@ class PhotoPostFragment : PostFragment() {
                 }
             }
 
-            imageLayout?.addOnLayoutChangeListener { view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            imageLayout?.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
                 // ローディングなどでレイアウトが変わると見えるものも変わるので再判定
                 startStopAnimations()
             }

@@ -168,7 +168,7 @@ class DashboardFragment : FragmentBase() {
         val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
         val msg = resources.getString(R.string.reblogged_result)
         val errorMsg = resources.getString(R.string.error_reblog)
-        currentPost?.reblogAsync(blogName, null, { post, result ->
+        currentPost?.reblogAsync(blogName, null, { _, result ->
             if (result) {
                 TPToastManager.show(msg)
             } else {
