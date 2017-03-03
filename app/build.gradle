@@ -34,14 +34,14 @@ ext {
 
 android {
     // セマンティックバージョニングを利用してください
-    version "1.1.1"
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    version "1.2.0"
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.tumpaca.tp"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode buildVersionCode(version)
         versionName version
         manifestPlaceholders = ['appName': '@string/app_name']
@@ -102,8 +102,8 @@ preBuild {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:design:25.1.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.daksh:loglr:1.0.0'
     compile 'com.google.firebase:firebase-ads:10.0.1'

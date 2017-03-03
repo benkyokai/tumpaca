@@ -106,12 +106,11 @@ class LogoutDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(activity)
                 .setMessage(R.string.ensure_logout)
-                .setPositiveButton(R.string.yes, { dialogInterface, i ->
+                .setPositiveButton(R.string.yes) { _, _ ->
                     TPRuntime.tumblrService.logout()
                     activity.finish()
                     activity.startActivity(activity.intent)
-                })
-                .setNegativeButton(R.string.no, null)
+                }.setNegativeButton(R.string.no, null)
                 .create()
     }
 
