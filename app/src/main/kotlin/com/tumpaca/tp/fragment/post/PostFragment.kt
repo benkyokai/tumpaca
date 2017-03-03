@@ -70,11 +70,10 @@ abstract class PostFragment : FragmentBase() {
         }
 
         val noteCountView = view.findViewById(R.id.notes) as TextView
-        if (noteCount == 1L) {
-            noteCountView.text = "${noteCount} note"
-        } else {
-            noteCountView.text = "${noteCount} notes"
-        }
+        // ここで getQuantityString を使っていないのは、count="one" が無視される言語
+        // （日本語など）でもあえて one と other を区別したいため。
+        val strId = if (noteCount == 1L) R.string.note_one else R.string.note_other
+        noteCountView.text = resources.getString(strId, noteCount)
     }
 
     fun setIcon(view: View, post: Post) {

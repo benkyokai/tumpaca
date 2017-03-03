@@ -38,4 +38,7 @@
     <string name="error_reblog">reblogに失敗しました</string>
     <string name="error_like">likeに失敗しました</string>
 
+    <string name="note_one">%d note</string>
+    <string name="note_other">%d notes</string>
+
 </resources>
