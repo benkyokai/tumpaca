@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.widget.ImageView
@@ -70,11 +71,10 @@ abstract class PostFragment : FragmentBase() {
         }
 
         val noteCountView = view.findViewById(R.id.notes) as TextView
-        if (noteCount == 1L) {
-            noteCountView.text = "${noteCount} note"
-        } else {
-            noteCountView.text = "${noteCount} notes"
-        }
+        // ここで getQuantityString を使っていないのは、count="one" が無視される言語
+        // （日本語など）でもあえて one と other を区別したいため。
+        val strId = if (noteCount == 1L) R.string.note_one else R.string.note_other
+        noteCountView.text = resources.getString(strId, noteCount)
     }
 
     fun setIcon(view: View, post: Post) {
@@ -88,7 +88,13 @@ abstract class PostFragment : FragmentBase() {
     }
 
     fun removeNetworkReceiver() {
-        networkReceiver?.let { context.unregisterReceiver(it) }
+        networkReceiver?.let {
+            try {
+                context.unregisterReceiver(it)
+            } catch (e: Throwable) {
+                Log.d(TAG, "Receiver was not registered", e)
+            }
+        }
         networkReceiver = null
     }
 }

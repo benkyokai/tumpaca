@@ -32,6 +32,9 @@
     <string name="error_reblog">Reblog failed</string>
     <string name="error_like">Like failed</string>
 
+    <string name="note_one">%d note</string>
+    <string name="note_other">%d notes</string>
+
     <string translatable="false" name="version_name">Version %1$s</string>
 
     <!-- 以下の ID はテスト用のダミー -->
