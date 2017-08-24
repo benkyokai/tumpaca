@@ -102,6 +102,23 @@ fun Post.downloadPhoto(url: String): Observable<Bitmap> {
     return observable
 }
 
+fun Post.downloadGif(url: String): Observable<ByteArray> {
+    val observable = Observable
+            .create { emitter: ObservableEmitter<ByteArray> ->
+                try {
+                    val bytes = URL(url).openStream().readBytes()
+                    emitter.onNext(bytes)
+                    emitter.onComplete()
+                } catch (e: Exception) {
+                    Log.e("downloadGif", e.message.orEmpty())
+                    emitter.onError(e)
+                }
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    return observable
+}
+
 fun Post.blogAvatar(): Observable<Bitmap?> {
     val observable = Observable
             .create { emitter: ObservableEmitter<String> ->
