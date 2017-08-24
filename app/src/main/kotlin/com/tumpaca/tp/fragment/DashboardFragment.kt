@@ -168,30 +168,13 @@ class DashboardFragment : FragmentBase() {
         val blogName = TPRuntime.tumblrService.user?.blogs?.first()?.name!!
         val msg = resources.getString(R.string.reblogged_result)
         val errorMsg = resources.getString(R.string.error_reblog)
-        currentPost?.reblogAsync(blogName, null, { _, result ->
-            if (result) {
-                TPToastManager.show(msg)
-            } else {
-                TPToastManager.show(errorMsg)
-            }
-        })
-
-        /** TODO 設定画面でリブログ時のコメント追加 on/off が出来るようになったら復活
-        val input = EditText(context)
-        input.setHint(R.string.comment_input_hint)
-        AlertDialog.Builder(context)
-        .setTitle(R.string.reblog_dialog_header)
-        .setView(input)
-        .setPositiveButton(android.R.string.ok) { dialog, which ->
-        val comment = input.text.toString()
-        val blogName = TPRuntime.tumblrService!!.user?.blogs?.first()?.name!!
-        post.reblogAsync(blogName, comment, {
-        Toast.makeText(context, R.string.reblogged_result, Toast.LENGTH_SHORT).show()
-        })
-        }
-        .setNegativeButton(android.R.string.cancel) { d, w -> }
-        .show()
-         */
+        currentPost
+                ?.reblogAsync(blogName, null)
+                ?.subscribe({ post ->
+                    TPToastManager.show(msg)
+                }) { e ->
+                    TPToastManager.show(errorMsg)
+                }
     }
 
 

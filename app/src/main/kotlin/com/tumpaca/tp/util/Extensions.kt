@@ -16,6 +16,10 @@ import com.tumpaca.tp.BuildConfig
 import com.tumpaca.tp.R
 import com.tumpaca.tp.model.AdPost
 import com.tumpaca.tp.model.TPRuntime
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
     val editor = getSharedPreferences(name, mode).edit()
@@ -52,28 +56,26 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
 }
 
-fun Post.reblogAsync(blogName: String, comment: String?, callback: (Post, Boolean) -> Unit) {
+fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
     TPToastManager.show(TPRuntime.mainApplication.resources.getString(R.string.reblog))
-    object : AsyncTask<Unit, Unit, Boolean>() {
-        override fun doInBackground(vararg args: Unit): Boolean {
-            try {
-                val option = if (comment == null) {
-                    emptyMap<String, String>()
-                } else {
-                    mapOf("comment" to comment)
+    return Observable
+            .create { emitter: ObservableEmitter<Post> ->
+                try {
+                    val option = if (comment == null) {
+                        emptyMap<String, String>()
+                    } else {
+                        mapOf("comment" to comment)
+                    }
+                    val post = reblog(blogName, option)
+                    emitter.onNext(post)
+                    emitter.onComplete()
+                } catch(e: Exception) {
+                    Log.e("ReblogTask", e.message.orEmpty())
+                    emitter.onError(e)
                 }
-                reblog(blogName, option)
-                return true
-            } catch(e: Exception) {
-                Log.e("ReblogTask", e.message.orEmpty())
-                return false
             }
-        }
-
-        override fun onPostExecute(result: Boolean) {
-            callback(this@reblogAsync, result)
-        }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 }
 
 fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {

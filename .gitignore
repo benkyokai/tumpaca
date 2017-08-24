@@ -2,6 +2,7 @@
 *.iml
 /.idea/workspace.xml
 /.idea/libraries
+/.idea/markdown*
 
 # Built application files
 *.apk
