@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="4dp"
-    android:background="#a333">
+    android:background="@drawable/round">
 
     <TextView
         android:id="@+id/tp_toast_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10dp"
-        android:textColor="#fafafa" />
+        android:textColor="#a333" />
 </LinearLayout>
