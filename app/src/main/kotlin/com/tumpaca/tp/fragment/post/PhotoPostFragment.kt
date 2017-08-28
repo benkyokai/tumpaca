@@ -4,10 +4,13 @@ package com.tumpaca.tp.fragment.post
  * Created by yabu on 7/11/16.
  */
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -117,6 +120,7 @@ class PhotoPostFragment : PostFragment() {
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
+                attachImageSaveListener(gifView, url)
                 DownloadUtils.downloadGif(url)
                         .subscribe { gif: ByteArray ->
                             gifView.setBytes(gif)
@@ -133,12 +137,27 @@ class PhotoPostFragment : PostFragment() {
             } else {
                 val iView = createImageView(i != 0)
                 imageLayout?.addView(iView)
+                attachImageSaveListener(iView, url)
                 DownloadUtils.downloadPhoto(url)
                         .subscribe { photo ->
                             iView.setImageBitmap(photo)
                             imageLayout?.removeView(loadingGifView)
                         }
             }
+        }
+    }
+
+    // ロングタップによる画像保存を実行するためのイベントを attach
+    private fun attachImageSaveListener(imageView: ImageView, url: String) {
+        imageView.setOnLongClickListener {
+            val fragment = ImageSaveDialogFragment()
+
+            val args = Bundle()
+            args.putString(ImageSaveDialogFragment.URL_KEY, url)
+            fragment.arguments = args
+
+            fragment.show(childFragmentManager, null)
+            true
         }
     }
 
@@ -218,5 +237,38 @@ class PhotoPostFragment : PostFragment() {
         }
         iView.scaleType = ImageView.ScaleType.FIT_CENTER
         iView.adjustViewBounds = true
+    }
+}
+
+class ImageSaveDialogFragment : DialogFragment() {
+
+    companion object {
+        private const val TAG = "ImageSaveDialogFragment"
+        const val URL_KEY = "url"
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return AlertDialog.Builder(activity)
+                .setMessage(R.string.save_image)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    val url = arguments.getString(ImageSaveDialogFragment.URL_KEY, null)
+                    startDownload(url)
+                }.setNegativeButton(R.string.no, null)
+                .create()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
+    }
+
+    private fun startDownload(url: String?) {
+        Log.d(TAG, "startDownload url=$url")
+
+        if (url == null) {
+            return
+        }
+
+        // TODO
     }
 }
