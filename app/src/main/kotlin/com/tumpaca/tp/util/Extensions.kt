@@ -81,7 +81,7 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
 }
 
 fun Post.downloadPhoto(url: String): Observable<Bitmap> {
-    val observable = Observable
+    return Observable
             .create { emitter: ObservableEmitter<Bitmap> ->
                 try {
                     val photo = TPRuntime.bitMapCache.getIfNoneAndSet(url, {
@@ -99,11 +99,10 @@ fun Post.downloadPhoto(url: String): Observable<Bitmap> {
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-    return observable
 }
 
 fun Post.downloadGif(url: String): Observable<ByteArray> {
-    val observable = Observable
+    return Observable
             .create { emitter: ObservableEmitter<ByteArray> ->
                 try {
                     val bytes = URL(url).openStream().readBytes()
@@ -116,11 +115,10 @@ fun Post.downloadGif(url: String): Observable<ByteArray> {
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-    return observable
 }
 
 fun Post.blogAvatar(): Observable<Bitmap?> {
-    val observable = Observable
+    return Observable
             .create { emitter: ObservableEmitter<String> ->
                 try {
                     val url = TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
@@ -146,7 +144,6 @@ fun Post.blogAvatar(): Observable<Bitmap?> {
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-    return observable
 }
 
 /**
