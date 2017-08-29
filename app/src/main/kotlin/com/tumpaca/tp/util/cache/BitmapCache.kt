@@ -48,7 +48,7 @@ class BitmapCache : Cache<Bitmap> {
                 return it
             }
         } catch (e: Throwable) {
-            Log.e(BitmapCache.TAG, "BitmapCache fetch error: ${e.message}")
+            Log.e(BitmapCache.TAG, "BitmapCache fetch error: ${e.message}", e)
         }
 
         return null
@@ -89,7 +89,7 @@ class AvatarUrlCache : Cache<String> {
                 return it
             }
         } catch (e: Throwable) {
-            Log.e(TAG, "AvatarUrlCache fetch error: ${e.message}")
+            Log.e(TAG, "AvatarUrlCache fetch error: ${e.message}", e)
         }
 
         return null

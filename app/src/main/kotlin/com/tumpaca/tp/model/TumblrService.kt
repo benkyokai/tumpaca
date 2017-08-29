@@ -111,7 +111,7 @@ class TumblrService(val context: Context) {
                 try {
                     return jumblerClient?.user()
                 } catch (e: Throwable) {
-                    Log.e(TAG, "TumblrService refreshUser error: ${e.message}")
+                    Log.e(TAG, "TumblrService refreshUser error: ${e.message}", e)
                     return null
                 }
             }

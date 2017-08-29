@@ -47,7 +47,7 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
                 }
                 return true
             } catch(e: Exception) {
-                Log.e("LikeTask", e.message.orEmpty())
+                Log.e("LikeTask", e.message.orEmpty(), e)
                 return false
             }
         }
@@ -72,7 +72,7 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
                     emitter.onNext(post)
                     emitter.onComplete()
                 } catch(e: Exception) {
-                    Log.e("ReblogTask", e.message.orEmpty())
+                    Log.e("ReblogTask", e.message.orEmpty(), e)
                     emitter.onError(e)
                 }
             }
@@ -94,7 +94,7 @@ fun Post.downloadPhoto(url: String): Observable<Bitmap> {
                     emitter.onNext(photo)
                     emitter.onComplete()
                 } catch (e: Exception) {
-                    Log.e("downloadPhoto", e.message.orEmpty())
+                    Log.e("downloadPhoto", e.message.orEmpty(), e)
                     emitter.onError(e)
                 }
             }
@@ -112,7 +112,7 @@ fun Post.downloadGif(url: String): Observable<ByteArray> {
                         emitter.onComplete()
                     }
                 } catch (e: Exception) {
-                    Log.e("downloadGif", e.message.orEmpty())
+                    Log.e("downloadGif", e.message.orEmpty(), e)
                     emitter.onError(e)
                 }
             }
@@ -131,7 +131,7 @@ fun Post.blogAvatar(): Observable<Bitmap?> {
                     emitter.onNext(url)
                     emitter.onComplete()
                 } catch(e: Exception) {
-                    Log.e("blogAvatar", e.message.orEmpty())
+                    Log.e("blogAvatar", e.message.orEmpty(), e)
                     emitter.onError(e)
                 }
             }
@@ -218,7 +218,7 @@ fun Context.getVersionName(): String {
         val packageInfo = pm.getPackageInfo(this.packageName, 0)
         return packageInfo.versionName
     } catch (e: Exception) {
-        Log.e("Context", "not found version name")
+        Log.e("Context", "not found version name", e)
         return ""
     }
 }
