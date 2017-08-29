@@ -118,19 +118,17 @@ class PhotoPostFragment : PostFragment() {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
                 post.downloadGif(url)
-                        .subscribe({ gif ->
-                            if (gif != null) {
-                                gifView.setBytes(gif)
-                                if (isVisibleToUser) {
-                                    // すでに見えているので今すぐアニメーションを開始
-                                    gifView.startAnimation()
-                                } else {
-                                    // まだ見えていないけれど、何も描画しないと可視判定ができないので
-                                    // とりあえず最初のコマだけ表示しておく
-                                    gifView.gotoFrame(0)
-                                }
-                                imageLayout?.removeView(loadingGifView)
+                        .subscribe({ gif: ByteArray ->
+                            gifView.setBytes(gif)
+                            if (isVisibleToUser) {
+                                // すでに見えているので今すぐアニメーションを開始
+                                gifView.startAnimation()
+                            } else {
+                                // まだ見えていないけれど、何も描画しないと可視判定ができないので
+                                // とりあえず最初のコマだけ表示しておく
+                                gifView.gotoFrame(0)
                             }
+                            imageLayout?.removeView(loadingGifView)
                         }, { e ->
                             // nop
                         })
