@@ -22,6 +22,7 @@ import android.widget.LinearLayout
 import com.felipecsl.gifimageview.library.GifImageView
 import com.tumblr.jumblr.types.PhotoPost
 import com.tumpaca.tp.R
+import com.tumpaca.tp.activity.MainActivity
 import com.tumpaca.tp.util.*
 import com.tumpaca.tp.view.GifSquareImageView
 
@@ -264,6 +265,12 @@ class ImageSaveDialogFragment : DialogFragment() {
 
     private fun startDownload(url: String?) {
         Log.d(TAG, "startDownload url=$url")
+
+        val mainActivity = activity as MainActivity
+        if (!mainActivity.checkStoragePermissions()) {
+            mainActivity.requestStoragePermissions()
+            return
+        }
 
         if (url == null) {
             return
