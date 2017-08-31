@@ -80,46 +80,6 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
             .observeOn(AndroidSchedulers.mainThread())
 }
 
-fun Post.downloadPhoto(url: String): Observable<Bitmap> {
-    return Observable
-            .create { emitter: ObservableEmitter<Bitmap> ->
-                try {
-                    val photo = TPRuntime.bitMapCache.getIfNoneAndSet(url, {
-                        URL(url).openStream().use { stream ->
-                            val options = BitmapFactory.Options()
-                            options.inDensity = DisplayMetrics.DENSITY_MEDIUM
-                            BitmapFactory.decodeStream(stream, null, options)
-                        }
-                    })
-                    emitter.onNext(photo)
-                    emitter.onComplete()
-                } catch (e: Exception) {
-                    Log.e("downloadPhoto", e.message.orEmpty(), e)
-                    emitter.onError(e)
-                }
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-}
-
-fun Post.downloadGif(url: String): Observable<ByteArray> {
-    return Observable
-            .create { emitter: ObservableEmitter<ByteArray> ->
-                try {
-                    URL(url).openStream().use { stream ->
-                        val bytes = stream.readBytes()
-                        emitter.onNext(bytes)
-                        emitter.onComplete()
-                    }
-                } catch (e: Exception) {
-                    Log.e("downloadGif", e.message.orEmpty(), e)
-                    emitter.onError(e)
-                }
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-}
-
 fun Post.blogAvatar(): Observable<Bitmap?> {
     return Observable
             .create { emitter: ObservableEmitter<String> ->

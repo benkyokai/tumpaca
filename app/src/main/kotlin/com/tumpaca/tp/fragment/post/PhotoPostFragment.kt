@@ -117,7 +117,7 @@ class PhotoPostFragment : PostFragment() {
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
-                post.downloadGif(url)
+                DownloadUtils.downloadGif(url)
                         .subscribe { gif: ByteArray ->
                             gifView.setBytes(gif)
                             if (isVisibleToUser) {
@@ -133,7 +133,7 @@ class PhotoPostFragment : PostFragment() {
             } else {
                 val iView = createImageView(i != 0)
                 imageLayout?.addView(iView)
-                post.downloadPhoto(url)
+                DownloadUtils.downloadPhoto(url)
                         .subscribe { photo ->
                             iView.setImageBitmap(photo)
                             imageLayout?.removeView(loadingGifView)
