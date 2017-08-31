@@ -21,6 +21,10 @@ class DownloadUtils {
     companion object {
         private const val TAG = "DownloadUtils"
 
+        // 外部ストレージ許可のダイアログから戻ってきたときにダウンロードを再開するために
+        // 対象の URL をこれに保存しておく。なお、画面が回転されたりしたら復元しないがそれは諦める。
+        private var urlToSave: String? = null
+
         @JvmStatic fun downloadPhoto(url: String): Observable<Bitmap> {
             return Observable
                     .create { emitter: ObservableEmitter<Bitmap> ->
@@ -63,6 +67,7 @@ class DownloadUtils {
 
         @JvmStatic fun saveImage(activity: MainActivity, url: String) {
             if (!activity.checkStoragePermissions()) {
+                urlToSave = url
                 activity.requestStoragePermissions()
                 return
             }
@@ -78,6 +83,14 @@ class DownloadUtils {
             val manager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager?
             manager?.enqueue(request)
             Log.d(TAG, "startDownload started... fileName=$fileName,url=$url")
+        }
+
+        @JvmStatic fun resumeSaveImage(activity: MainActivity) {
+            if (urlToSave != null) {
+                val url: String = urlToSave as String
+                urlToSave = null
+                saveImage(activity, url)
+            }
         }
     }
 }

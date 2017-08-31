@@ -9,6 +9,7 @@ import com.google.android.gms.ads.MobileAds
 import com.tumpaca.tp.R
 import com.tumpaca.tp.fragment.AuthFragment
 import com.tumpaca.tp.model.TPRuntime
+import com.tumpaca.tp.util.DownloadUtils
 import com.tumpaca.tp.util.RuntimePermissionsChecker
 import java.util.*
 
@@ -65,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
             when (ret) {
                 RuntimePermissionsChecker.Result.GRANTED -> {
-                    // TODO ダウンロード再開
+                    DownloadUtils.resumeSaveImage(this)
                 }
                 else -> {
                     Toast.makeText(this, R.string.cant_access_storage, Toast.LENGTH_LONG).show()
