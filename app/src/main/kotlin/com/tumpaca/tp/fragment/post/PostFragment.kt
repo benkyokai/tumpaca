@@ -80,10 +80,8 @@ abstract class PostFragment : FragmentBase() {
     fun setIcon(view: View, post: Post) {
         val iconView = view.findViewById(R.id.icon) as ImageView
         post.blogAvatar()
-                .subscribe({ avatar ->
+                .subscribe { avatar ->
                     iconView.setImageBitmap(avatar)
-                }) {
-                    // nop
                 }
     }
 

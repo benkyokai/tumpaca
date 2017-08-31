@@ -118,7 +118,7 @@ class PhotoPostFragment : PostFragment() {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
                 post.downloadGif(url)
-                        .subscribe({ gif: ByteArray ->
+                        .subscribe { gif: ByteArray ->
                             gifView.setBytes(gif)
                             if (isVisibleToUser) {
                                 // すでに見えているので今すぐアニメーションを開始
@@ -129,19 +129,15 @@ class PhotoPostFragment : PostFragment() {
                                 gifView.gotoFrame(0)
                             }
                             imageLayout?.removeView(loadingGifView)
-                        }, { e ->
-                            // nop
-                        })
+                        }
             } else {
                 val iView = createImageView(i != 0)
                 imageLayout?.addView(iView)
                 post.downloadPhoto(url)
-                        .subscribe({ photo ->
+                        .subscribe { photo ->
                             iView.setImageBitmap(photo)
                             imageLayout?.removeView(loadingGifView)
-                        }, {
-                            // nop
-                        })
+                        }
             }
         }
     }
