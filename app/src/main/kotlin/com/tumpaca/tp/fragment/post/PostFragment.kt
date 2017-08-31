@@ -15,7 +15,7 @@ import com.tumblr.jumblr.types.Post
 import com.tumpaca.tp.R
 import com.tumpaca.tp.fragment.FragmentBase
 import com.tumpaca.tp.model.TPRuntime
-import com.tumpaca.tp.util.blogAvatarAsync
+import com.tumpaca.tp.util.blogAvatar
 import com.tumpaca.tp.util.isOnline
 import com.tumpaca.tp.util.onNetworkRestored
 
@@ -79,7 +79,10 @@ abstract class PostFragment : FragmentBase() {
 
     fun setIcon(view: View, post: Post) {
         val iconView = view.findViewById(R.id.icon) as ImageView
-        post.blogAvatarAsync { iconView.setImageBitmap(it) }
+        post.blogAvatar()
+                .subscribe { avatar ->
+                    iconView.setImageBitmap(avatar)
+                }
     }
 
     override fun onDestroyView() {

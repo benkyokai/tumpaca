@@ -2,6 +2,7 @@ package com.tumpaca.tp.util
 
 import android.content.*
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.ConnectivityManager
 import android.os.AsyncTask
 import android.util.DisplayMetrics
@@ -20,6 +21,7 @@ import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.net.URL
 
 fun Context.editSharedPreferences(name: String, mode: Int = Context.MODE_PRIVATE, actions: (SharedPreferences.Editor) -> Unit) {
     val editor = getSharedPreferences(name, mode).edit()
@@ -45,7 +47,7 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
                 }
                 return true
             } catch(e: Exception) {
-                Log.e("LikeTask", e.message.orEmpty())
+                Log.e("LikeTask", e.message.orEmpty(), e)
                 return false
             }
         }
@@ -70,7 +72,7 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
                     emitter.onNext(post)
                     emitter.onComplete()
                 } catch(e: Exception) {
-                    Log.e("ReblogTask", e.message.orEmpty())
+                    Log.e("ReblogTask", e.message.orEmpty(), e)
                     emitter.onError(e)
                 }
             }
@@ -78,21 +80,33 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
             .observeOn(AndroidSchedulers.mainThread())
 }
 
-fun Post.blogAvatarAsync(callback: (Bitmap?) -> Unit) {
-    object : AsyncTask<Void, Void, String?>() {
-        override fun doInBackground(vararg args: Void): String? {
-            return TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
-                client.blogInfo(blogName).avatar()
-            })
-            // TODO エラー処理
-        }
-
-        override fun onPostExecute(avatarUrl: String?) {
-            avatarUrl?.let {
-                DownloadImageTask(callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, it)
+fun Post.blogAvatar(): Observable<Bitmap?> {
+    return Observable
+            .create { emitter: ObservableEmitter<String> ->
+                try {
+                    val url = TPRuntime.avatarUrlCache.getIfNoneAndSet(blogName, {
+                        client.blogInfo(blogName).avatar()
+                    })
+                    Log.d("blogAvatar", "url=" + url)
+                    emitter.onNext(url)
+                    emitter.onComplete()
+                } catch(e: Exception) {
+                    Log.e("blogAvatar", e.message.orEmpty(), e)
+                    emitter.onError(e)
+                }
             }
-        }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            .map { url ->
+                Log.d("avatar", "url=" + url)
+                val avatar = TPRuntime.bitMapCache.getIfNoneAndSet(url, {
+                    val stream = URL(url).openStream()
+                    val options = BitmapFactory.Options()
+                    options.inDensity = DisplayMetrics.DENSITY_MEDIUM
+                    BitmapFactory.decodeStream(stream, null, options)
+                })
+                avatar
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
 }
 
 /**
@@ -164,7 +178,7 @@ fun Context.getVersionName(): String {
         val packageInfo = pm.getPackageInfo(this.packageName, 0)
         return packageInfo.versionName
     } catch (e: Exception) {
-        Log.e("Context", "not found version name")
+        Log.e("Context", "not found version name", e)
         return ""
     }
 }

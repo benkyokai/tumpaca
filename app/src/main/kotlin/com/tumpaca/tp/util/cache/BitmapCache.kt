@@ -13,8 +13,11 @@ interface Cache<T> {
     fun getIfNoneAndSet(key: String, f: () -> T?): T?
 }
 
-class BitmapCache() : Cache<Bitmap> {
-    val TAG = "BitmapCache"
+// TODO Cache の統一化
+class BitmapCache : Cache<Bitmap> {
+    companion object {
+        val TAG = "BitmapCache"
+    }
 
     private val MAX_SIZE = 32 * 1024 * 1024
 
@@ -25,42 +28,39 @@ class BitmapCache() : Cache<Bitmap> {
     }
 
     override fun set(key: String, value: Bitmap) {
-        val bitmap: Bitmap = value
-        lruCache.put(key, bitmap)
+        lruCache.put(key, value)
     }
 
     override fun get(key: String): Bitmap? {
-        // put でかならず Bitmap をいれていて、T は Bitmap を extends しているので問題なし
-        val bitmap = lruCache.get(key)
-        return bitmap
+        return lruCache.get(key)
     }
 
     override fun getIfNoneAndSet(key: String, f: () -> Bitmap?): Bitmap? {
-        // キャッシュにあればその値を返す
         get(key)?.let {
-            Log.d(TAG, "bitmap cache hit")
+            Log.d(BitmapCache.TAG, "cache hit: key=$key, cache=$lruCache, evict=${lruCache.evictionCount()}")
             return it
         }
 
-        // キャッシュになければラムダを実行した結果をキャッシュにセットして、その値を返す
         try {
             f()?.let {
-                Log.d(TAG, "bitmap cache not hit: $lruCache")
+                Log.d(BitmapCache.TAG, "cache not hit and set: key=$key, cache=$lruCache, evict=${lruCache.evictionCount()}")
                 set(key, it)
                 return it
             }
         } catch (e: Throwable) {
-            Log.e(TAG, "BitmapCache fetch error: ${e.message}")
+            Log.e(BitmapCache.TAG, "BitmapCache fetch error: ${e.message}", e)
         }
 
         return null
     }
 }
 
-class AvatarUrlCache() : Cache<String> {
-    val TAG = "AvatarUrlCache"
+class AvatarUrlCache : Cache<String> {
+    companion object {
+        val TAG = "AvatarUrlCache"
+    }
 
-    private val MAX_SIZE = 2 * 1024 * 1024 // 2MB
+    private val MAX_SIZE = 1 * 1024 * 1024
 
     private val lruCache = object : LruCache<String, String>(MAX_SIZE) {
         override fun sizeOf(key: String, value: String): Int {
@@ -69,31 +69,27 @@ class AvatarUrlCache() : Cache<String> {
     }
 
     override fun set(key: String, value: String) {
-        val url: String = value
-        lruCache.put(key, url)
+        lruCache.put(key, value)
     }
 
     override fun get(key: String): String? {
-        val url = lruCache.get(key)
-        return url
+        return lruCache.get(key)
     }
 
     override fun getIfNoneAndSet(key: String, f: () -> String?): String? {
-        // キャッシュにあればその値を返す
         get(key)?.let {
-            Log.d(TAG, "avatar url cache hit")
+            Log.d(TAG, "cache hit: key=$key, cache=$lruCache, evict=${lruCache.evictionCount()}")
             return it
         }
 
-        // キャッシュになければラムダを実行した結果をキャッシュにセットして、その値を返す
         try {
             f()?.let {
-                Log.d(TAG, "avatar url cache not hit: $lruCache")
+                Log.d(TAG, "cache not hit and set: key=$key, cache=$lruCache, evict=${lruCache.evictionCount()}")
                 set(key, it)
                 return it
             }
         } catch (e: Throwable) {
-            Log.e(TAG, "AvatarUrlCache fetch error: ${e.message}")
+            Log.e(TAG, "AvatarUrlCache fetch error: ${e.message}", e)
         }
 
         return null

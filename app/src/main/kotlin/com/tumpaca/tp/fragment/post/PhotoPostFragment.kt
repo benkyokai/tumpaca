@@ -6,7 +6,6 @@ package com.tumpaca.tp.fragment.post
 
 import android.graphics.Color
 import android.graphics.Rect
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -22,7 +21,6 @@ import com.tumblr.jumblr.types.PhotoPost
 import com.tumpaca.tp.R
 import com.tumpaca.tp.util.*
 import com.tumpaca.tp.view.GifSquareImageView
-import java.net.URL
 
 class PhotoPostFragment : PostFragment() {
 
@@ -119,21 +117,9 @@ class PhotoPostFragment : PostFragment() {
             if (url.endsWith(".gif")) {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
-                object : AsyncTask<Unit, Unit, ByteArray?>() {
-
-                    override fun doInBackground(vararg args: Unit): ByteArray? {
-                        // TODO: 失敗した場合のエラーハンドリング
-                        try {
-                            return URL(url).openStream().readBytes()
-                        } catch (e: Throwable) {
-                            Log.e(TAG, "PhotoPost fetch error: ${e.message}")
-                            return null
-                        }
-                    }
-
-                    override fun onPostExecute(result: ByteArray?) {
-                        result?.let {
-                            gifView.setBytes(it)
+                DownloadUtils.downloadGif(url)
+                        .subscribe { gif: ByteArray ->
+                            gifView.setBytes(gif)
                             if (isVisibleToUser) {
                                 // すでに見えているので今すぐアニメーションを開始
                                 gifView.startAnimation()
@@ -144,15 +130,14 @@ class PhotoPostFragment : PostFragment() {
                             }
                             imageLayout?.removeView(loadingGifView)
                         }
-                    }
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
             } else {
                 val iView = createImageView(i != 0)
                 imageLayout?.addView(iView)
-                DownloadImageTask { bitmap ->
-                    iView.setImageBitmap(bitmap)
-                    imageLayout?.removeView(loadingGifView)
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url)
+                DownloadUtils.downloadPhoto(url)
+                        .subscribe { photo ->
+                            iView.setImageBitmap(photo)
+                            imageLayout?.removeView(loadingGifView)
+                        }
             }
         }
     }

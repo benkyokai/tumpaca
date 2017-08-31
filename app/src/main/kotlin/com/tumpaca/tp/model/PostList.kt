@@ -169,7 +169,7 @@ class PostList(private val client: JumblrClient) {
                     return client.userDashboard(parameter)
                 } catch (e: Throwable) {
                     // TODO エラー処理
-                    Log.e(TAG, "PostList fetch error: ${e.message}")
+                    Log.e(TAG, "PostList fetch error: ${e.message}", e)
                     fetching = false
                     return emptyList()
                 }
@@ -243,7 +243,7 @@ class PostList(private val client: JumblrClient) {
                     return client.userDashboard(parameter)
                 } catch (e: Throwable) {
                     // TODO エラー処理
-                    Log.e(TAG, "PostList fetch error: ${e.message}")
+                    Log.e(TAG, "PostList fetch error: ${e.message}", e)
                     fetching = false
                     return emptyList()
                 }
@@ -400,7 +400,7 @@ class PostList(private val client: JumblrClient) {
                     return client.user()
                 } catch (e: Throwable) {
                     // TODO エラー処理
-                    Log.e(TAG, "PostList refreshUser error: ${e.message}")
+                    Log.e(TAG, "PostList refreshUser error: ${e.message}", e)
                     return null
                 }
             }
