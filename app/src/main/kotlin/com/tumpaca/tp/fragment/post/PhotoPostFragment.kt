@@ -252,8 +252,7 @@ class ImageSaveDialogFragment : DialogFragment() {
         return AlertDialog.Builder(activity)
                 .setMessage(R.string.save_image)
                 .setPositiveButton(R.string.yes) { _, _ ->
-                    val url = arguments.getString(ImageSaveDialogFragment.URL_KEY, null)
-                    startDownload(url)
+                    startSaveImage()
                 }.setNegativeButton(R.string.no, null)
                 .create()
     }
@@ -263,19 +262,10 @@ class ImageSaveDialogFragment : DialogFragment() {
         dismiss()
     }
 
-    private fun startDownload(url: String?) {
-        Log.d(TAG, "startDownload url=$url")
-
-        val mainActivity = activity as MainActivity
-        if (!mainActivity.checkStoragePermissions()) {
-            mainActivity.requestStoragePermissions()
-            return
+    private fun startSaveImage() {
+        val url: String? = arguments.getString(ImageSaveDialogFragment.URL_KEY, null)
+        if (url != null) {
+            DownloadUtils.saveImage(activity as MainActivity, url)
         }
-
-        if (url == null) {
-            return
-        }
-
-        // TODO
     }
 }
