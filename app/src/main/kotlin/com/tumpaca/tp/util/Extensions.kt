@@ -110,15 +110,21 @@ fun Post.blogAvatar(): Observable<Bitmap?> {
 }
 
 /**
- * PHOTOポストの写真に対して最適なサイズを取得する
- * 高画質写真設定がtrueの場合:
- *   画面解像度の幅を超える最小の画像を取得
- * 高画質写真設定がfalseの場合:
- *   幅500px以下の最大の画像を取得
- * 上記条件で取得できない場合:
- *   サイズリストの最大の画像を取得
+ * PHOTO ポストの写真に対し、最適なサイズと最高解像度のサイズの2つを取得する。
+ *
+ * 最適なサイズの仕様：
+ *   高画質写真設定がtrueの場合:
+ *     画面解像度の幅を超える最小の画像を取得
+ *   高画質写真設定がfalseの場合:
+ *     幅500px以下の最大の画像を取得
+ *   上記条件で取得できない場合:
+ *     サイズリストの最大の画像を取得
+ *
+ * 返り値：Pair<PhotoSize, PhotoSize>
+ *   first: 最適サイズ
+ *   second: 最高サイズ
  */
-fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): PhotoSize {
+fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): Pair<PhotoSize, PhotoSize> {
     val w = metrics.widthPixels
     val biggest = sizes.first()
     val optimal = sizes.lastOrNull { it.width >= w }
@@ -130,9 +136,9 @@ fun Photo.getBestSizeForScreen(metrics: DisplayMetrics): PhotoSize {
     }
 
     if (TPRuntime.settings.highResolutionPhoto) {
-        return optimal ?: biggest
+        return Pair(optimal ?: biggest, biggest)
     } else {
-        return better ?: biggest
+        return Pair(better ?: biggest, biggest)
     }
 }
 
