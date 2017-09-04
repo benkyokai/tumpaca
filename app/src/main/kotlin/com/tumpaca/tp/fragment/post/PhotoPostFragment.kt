@@ -4,10 +4,13 @@ package com.tumpaca.tp.fragment.post
  * Created by yabu on 7/11/16.
  */
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +22,7 @@ import android.widget.LinearLayout
 import com.felipecsl.gifimageview.library.GifImageView
 import com.tumblr.jumblr.types.PhotoPost
 import com.tumpaca.tp.R
+import com.tumpaca.tp.activity.MainActivity
 import com.tumpaca.tp.util.*
 import com.tumpaca.tp.view.GifSquareImageView
 
@@ -71,7 +75,7 @@ class PhotoPostFragment : PostFragment() {
 
     private fun update(view: View, post: PhotoPost) {
         // データを取得
-        val urls = post.photos.map { it.getBestSizeForScreen(resources.displayMetrics).url }
+        val sizes = post.photos.map { it.getBestSizeForScreen(resources.displayMetrics) }
 
         initStandardViews(view, post.blogName, post.caption, post.rebloggedFromName, post.noteCount)
         setIcon(view, post)
@@ -81,7 +85,7 @@ class PhotoPostFragment : PostFragment() {
         imageLayout = view.findViewById(R.id.photo_list) as LinearLayout
 
         // このポストにGIFがあったら、再生／停止判定を行うリスナーを追加する
-        if (urls.any { it.endsWith(".gif") }) {
+        if (sizes.map { pair -> pair.first.url }.any { it.endsWith(".gif") }) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 view.setOnScrollChangeListener { _, _, _, _, _ ->
                     // スクロール位置によって見えてきたものを再生、見えなくなったものを停止
@@ -112,12 +116,13 @@ class PhotoPostFragment : PostFragment() {
         /**
          * urls.size個の画像があるので、個数分のImageViewを生成して、PhotoListLayoutに追加する
          */
-        for ((i, url) in urls.enumerate()) {
+        for ((i, size) in sizes.enumerate()) {
             // gifだった場合はGif用のcustom image viewを使う
-            if (url.endsWith(".gif")) {
+            if (size.first.url.endsWith(".gif")) {
                 val gifView = createGifImageView(i != 0)
                 imageLayout?.addView(gifView)
-                DownloadUtils.downloadGif(url)
+                attachImageSaveListener(gifView, size.second.url)
+                DownloadUtils.downloadGif(size.first.url)
                         .subscribe { gif: ByteArray ->
                             gifView.setBytes(gif)
                             if (isVisibleToUser) {
@@ -133,12 +138,27 @@ class PhotoPostFragment : PostFragment() {
             } else {
                 val iView = createImageView(i != 0)
                 imageLayout?.addView(iView)
-                DownloadUtils.downloadPhoto(url)
+                attachImageSaveListener(iView, size.second.url)
+                DownloadUtils.downloadPhoto(size.first.url)
                         .subscribe { photo ->
                             iView.setImageBitmap(photo)
                             imageLayout?.removeView(loadingGifView)
                         }
             }
+        }
+    }
+
+    // ロングタップによる画像保存を実行するためのイベントを attach
+    private fun attachImageSaveListener(imageView: ImageView, url: String) {
+        imageView.setOnLongClickListener {
+            val fragment = ImageSaveDialogFragment()
+
+            val args = Bundle()
+            args.putString(ImageSaveDialogFragment.URL_KEY, url)
+            fragment.arguments = args
+
+            fragment.show(childFragmentManager, null)
+            true
         }
     }
 
@@ -218,5 +238,34 @@ class PhotoPostFragment : PostFragment() {
         }
         iView.scaleType = ImageView.ScaleType.FIT_CENTER
         iView.adjustViewBounds = true
+    }
+}
+
+class ImageSaveDialogFragment : DialogFragment() {
+
+    companion object {
+        private const val TAG = "ImageSaveDialogFragment"
+        const val URL_KEY = "url"
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return AlertDialog.Builder(activity)
+                .setMessage(R.string.save_image)
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    startSaveImage()
+                }.setNegativeButton(R.string.no, null)
+                .create()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
+    }
+
+    private fun startSaveImage() {
+        val url: String? = arguments.getString(ImageSaveDialogFragment.URL_KEY, null)
+        if (url != null) {
+            DownloadUtils.saveImage(activity as MainActivity, url)
+        }
     }
 }

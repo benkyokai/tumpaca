@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.tumpaca.tp">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tumpaca.tp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-            android:name="com.tumpaca.tp.MainApplication"
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="${appName}"
-            android:supportsRtl="true"
-            android:theme="@style/TumpacaTheme"
-            tools:replace="android:label">
+        android:name="com.tumpaca.tp.MainApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="${appName}"
+        android:supportsRtl="true"
+        android:theme="@style/TumpacaTheme"
+        tools:replace="android:label">
 
         <meta-data
             android:name="firebase_analytics_collection_enabled"

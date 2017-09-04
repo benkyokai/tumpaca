@@ -17,6 +17,9 @@
     <string name="unlike">Likeを解除しています…</string>
     <string name="reblogged_result">Reblogしました</string>
     <string name="reblog">Reblogしています…</string>
+    <string name="save_image">この画像を保存しますか？</string>
+    <string name="cant_access_storage">外部ストレージにアクセスできませんでした</string>
+    <string name="download_image">ダウンロードしています...</string>
 
     <!-- SettingsFragment -->
     <string name="tumpaca">Tumpaca</string>
