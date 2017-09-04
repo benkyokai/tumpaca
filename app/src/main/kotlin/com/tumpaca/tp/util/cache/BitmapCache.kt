@@ -26,19 +26,22 @@ abstract class AbstractCache<T> : Cache<T> {
     }
 
     override fun getIfNoneAndSet(key: String, f: () -> T?): T? {
+        val tag = getTag()
+        val cache = getLruCache()
+
         get(key)?.let {
-            Log.d(getTag(), "cache hit: key=$key, cache=${getLruCache()}, evict=${getLruCache().evictionCount()}")
+            Log.d(tag, "cache hit: key=$key, cache=$cache, evict=${cache.evictionCount()}")
             return it
         }
 
         try {
             f()?.let {
-                Log.d(getTag(), "cache not hit and set: key=$key, cache=${getLruCache()}, evict=${getLruCache().evictionCount()}")
+                Log.d(tag, "cache not hit and set: key=$key, cache=$cache, evict=${cache.evictionCount()}")
                 set(key, it)
                 return it
             }
         } catch (e: Throwable) {
-            Log.e(getTag(), "BitmapCache fetch error: ${e.message}", e)
+            Log.e(tag, "BitmapCache fetch error: ${e.message}", e)
         }
 
         return null
