@@ -70,3 +70,13 @@ class AvatarUrlCache : AbstractCache<String>() {
     override fun getTag(): String = "AvatarUrlCache"
     override fun getLruCache(): LruCache<String, String> = lruCache
 }
+
+class GifCache : AbstractCache<ByteArray>() {
+    private val MAX_SIZE = 32 * 1024 * 1024
+    private val lruCache = object : LruCache<String, ByteArray>(MAX_SIZE) {
+        override fun sizeOf(key: String, value: ByteArray): Int = value.size
+    }
+
+    override fun getTag(): String = "GifCache"
+    override fun getLruCache(): LruCache<String, ByteArray> = lruCache
+}

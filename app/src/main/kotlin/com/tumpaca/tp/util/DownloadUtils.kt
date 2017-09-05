@@ -51,11 +51,13 @@ class DownloadUtils {
             return Observable
                     .create { emitter: ObservableEmitter<ByteArray> ->
                         try {
-                            URL(url).openStream().use { stream ->
-                                val bytes = stream.readBytes()
-                                emitter.onNext(bytes)
-                                emitter.onComplete()
-                            }
+                            val gif = TPRuntime.gifCache.getIfNoneAndSet(url, {
+                                URL(url).openStream().use { stream ->
+                                    stream.readBytes()
+                                }
+                            })
+                            emitter.onNext(gif)
+                            emitter.onComplete()
                         } catch (e: Exception) {
                             Log.e("downloadGif", e.message.orEmpty(), e)
                             emitter.onError(e)
