@@ -49,6 +49,7 @@ abstract class AbstractCache<T> : Cache<T> {
 }
 
 class BitmapCache : AbstractCache<Bitmap>() {
+    // 単位はバイト
     private val MAX_SIZE = 32 * 1024 * 1024
     private val lruCache = object : LruCache<String, Bitmap>(MAX_SIZE) {
         override fun sizeOf(key: String, value: Bitmap): Int = value.allocationByteCount
@@ -59,8 +60,10 @@ class BitmapCache : AbstractCache<Bitmap>() {
 }
 
 class AvatarUrlCache : AbstractCache<String>() {
-    private val MAX_SIZE = 1 * 1024 * 1024
-    private val lruCache = object : LruCache<String, String>(MAX_SIZE) {
+    // 単位は文字数。
+    // 1URL = 100 文字として、100 アバター保存できれば十分と考える
+    private val MAX_CHAR_COUNT = 100 * 100
+    private val lruCache = object : LruCache<String, String>(MAX_CHAR_COUNT) {
         override fun sizeOf(key: String, value: String): Int = value.count()
     }
 
