@@ -170,9 +170,9 @@ class DashboardFragment : FragmentBase() {
         val errorMsg = resources.getString(R.string.error_reblog)
         currentPost
                 ?.reblogAsync(blogName, null)
-                ?.subscribe({ post ->
+                ?.subscribe({ _ ->
                     TPToastManager.show(msg)
-                }) { e ->
+                }) { _ ->
                     TPToastManager.show(errorMsg)
                 }
     }
