@@ -30,13 +30,13 @@ class DownloadUtils {
             return Observable
                     .create { emitter: ObservableEmitter<Bitmap> ->
                         try {
-                            val photo = TPRuntime.bitMapCache.getIfNoneAndSet(url, {
+                            val photo = TPRuntime.bitMapCache.getIfNoneAndSet(url) {
                                 URL(url).openStream().use { stream ->
                                     val options = BitmapFactory.Options()
                                     options.inDensity = DisplayMetrics.DENSITY_MEDIUM
                                     BitmapFactory.decodeStream(stream, null, options)
                                 }
-                            })
+                            }
                             emitter.onNext(photo)
                             emitter.onComplete()
                         } catch (e: Exception) {
@@ -53,11 +53,11 @@ class DownloadUtils {
             return Observable
                     .create { emitter: ObservableEmitter<ByteArray> ->
                         try {
-                            val gif = TPRuntime.gifCache.getIfNoneAndSet(url, {
+                            val gif = TPRuntime.gifCache.getIfNoneAndSet(url) {
                                 URL(url).openStream().use { stream ->
                                     stream.readBytes()
                                 }
-                            })
+                            }
                             emitter.onNext(gif)
                             emitter.onComplete()
                         } catch (e: Exception) {
