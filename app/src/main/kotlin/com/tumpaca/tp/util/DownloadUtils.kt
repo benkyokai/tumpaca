@@ -25,17 +25,18 @@ class DownloadUtils {
         // 対象の URL をこれに保存しておく。なお、画面が回転されたりしたら復元しないがそれは諦める。
         private var urlToSave: String? = null
 
-        @JvmStatic fun downloadPhoto(url: String): Observable<Bitmap> {
+        @JvmStatic
+        fun downloadPhoto(url: String): Observable<Bitmap> {
             return Observable
                     .create { emitter: ObservableEmitter<Bitmap> ->
                         try {
-                            val photo = TPRuntime.bitMapCache.getIfNoneAndSet(url, {
+                            val photo = TPRuntime.bitMapCache.getIfNoneAndSet(url) {
                                 URL(url).openStream().use { stream ->
                                     val options = BitmapFactory.Options()
                                     options.inDensity = DisplayMetrics.DENSITY_MEDIUM
                                     BitmapFactory.decodeStream(stream, null, options)
                                 }
-                            })
+                            }
                             emitter.onNext(photo)
                             emitter.onComplete()
                         } catch (e: Exception) {
@@ -47,15 +48,18 @@ class DownloadUtils {
                     .observeOn(AndroidSchedulers.mainThread())
         }
 
-        @JvmStatic fun downloadGif(url: String): Observable<ByteArray> {
+        @JvmStatic
+        fun downloadGif(url: String): Observable<ByteArray> {
             return Observable
                     .create { emitter: ObservableEmitter<ByteArray> ->
                         try {
-                            URL(url).openStream().use { stream ->
-                                val bytes = stream.readBytes()
-                                emitter.onNext(bytes)
-                                emitter.onComplete()
+                            val gif = TPRuntime.gifCache.getIfNoneAndSet(url) {
+                                URL(url).openStream().use { stream ->
+                                    stream.readBytes()
+                                }
                             }
+                            emitter.onNext(gif)
+                            emitter.onComplete()
                         } catch (e: Exception) {
                             Log.e("downloadGif", e.message.orEmpty(), e)
                             emitter.onError(e)
@@ -65,7 +69,8 @@ class DownloadUtils {
                     .observeOn(AndroidSchedulers.mainThread())
         }
 
-        @JvmStatic fun saveImage(activity: MainActivity, url: String) {
+        @JvmStatic
+        fun saveImage(activity: MainActivity, url: String) {
             if (!activity.checkStoragePermissions()) {
                 urlToSave = url
                 activity.requestStoragePermissions()
@@ -85,7 +90,8 @@ class DownloadUtils {
             Log.d(TAG, "startDownload started... fileName=$fileName,url=$url")
         }
 
-        @JvmStatic fun resumeSaveImage(activity: MainActivity) {
+        @JvmStatic
+        fun resumeSaveImage(activity: MainActivity) {
             if (urlToSave != null) {
                 val url: String = urlToSave as String
                 urlToSave = null
