@@ -43,4 +43,7 @@
     <string translatable="false" name="adpost_ad_unit_id">ca-app-pub-5569142544566797/6481951063</string>
 
     <string translatable="false" name="settings_banner_unit_id">ca-app-pub-5569142544566797/4695553061</string>
+    <string name="cant_access_storage">Couldn’t access external storage</string>
+    <string name="download_image">Downloading…</string>
+    <string name="save_image">Save this image?</string>
 </resources>
