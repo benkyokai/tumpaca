@@ -34,7 +34,7 @@ ext {
 
 android {
     // セマンティックバージョニングを利用してください
-    version "1.2.0"
+    version "1.2.1"
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
 
