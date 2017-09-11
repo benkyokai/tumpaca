@@ -37,7 +37,9 @@ class DownloadUtils {
                                     BitmapFactory.decodeStream(stream, null, options)
                                 }
                             }
-                            emitter.onNext(photo)
+                            photo?.let {
+                                emitter.onNext(it)
+                            }
                             emitter.onComplete()
                         } catch (e: Exception) {
                             Log.e("downloadPhoto", e.message.orEmpty(), e)
@@ -58,7 +60,9 @@ class DownloadUtils {
                                     stream.readBytes()
                                 }
                             }
-                            emitter.onNext(gif)
+                            gif?.let {
+                                emitter.onNext(gif)
+                            }
                             emitter.onComplete()
                         } catch (e: Exception) {
                             Log.e("downloadGif", e.message.orEmpty(), e)

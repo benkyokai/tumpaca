@@ -46,7 +46,7 @@ fun Post.likeAsync(callback: (Post, Boolean) -> Unit) {
                     like()
                 }
                 return true
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 Log.e("LikeTask", e.message.orEmpty(), e)
                 return false
             }
@@ -69,9 +69,11 @@ fun Post.reblogAsync(blogName: String, comment: String?): Observable<Post> {
                         mapOf("comment" to comment)
                     }
                     val post = reblog(blogName, option)
-                    emitter.onNext(post)
+                    post?.let {
+                        emitter.onNext(it)
+                    }
                     emitter.onComplete()
-                } catch(e: Exception) {
+                } catch (e: Exception) {
                     Log.e("ReblogTask", e.message.orEmpty(), e)
                     emitter.onError(e)
                 }
@@ -88,9 +90,11 @@ fun Post.blogAvatar(): Observable<Bitmap?> {
                         client.blogInfo(blogName).avatar()
                     })
                     Log.d("blogAvatar", "url=" + url)
-                    emitter.onNext(url)
+                    url?.let {
+                        emitter.onNext(it)
+                    }
                     emitter.onComplete()
-                } catch(e: Exception) {
+                } catch (e: Exception) {
                     Log.e("blogAvatar", e.message.orEmpty(), e)
                     emitter.onError(e)
                 }
