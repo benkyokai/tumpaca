@@ -62,7 +62,7 @@ class PhotoPostFragment : PostFragment() {
             }
         }
 
-        val webView = view.findViewById(R.id.sub) as WebView
+        val webView = view.findViewById<WebView>(R.id.sub)
         UIUtil.loadCss(webView)
 
         return view
@@ -82,7 +82,7 @@ class PhotoPostFragment : PostFragment() {
 
 
         // ImageViewを挿入するPhotoListLayoutを取得
-        imageLayout = view.findViewById(R.id.photo_list) as LinearLayout
+        imageLayout = view.findViewById<LinearLayout>(R.id.photo_list)
 
         // このポストにGIFがあったら、再生／停止判定を行うリスナーを追加する
         if (sizes.map { pair -> pair.first.url }.any { it.endsWith(".gif") }) {

@@ -33,7 +33,7 @@ object TPToastManager {
             toast.duration = Toast.LENGTH_SHORT
             val inflater = TPRuntime.mainApplication.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val layout = inflater.inflate(R.layout.toast, null)
-            val textView = layout.findViewById(R.id.tp_toast_text) as TextView
+            val textView = layout.findViewById<TextView>(R.id.tp_toast_text)
             textView.text = msg
             toast.view = layout
 

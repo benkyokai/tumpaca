@@ -34,9 +34,8 @@ ext {
 
 android {
     // セマンティックバージョニングを利用してください
-    version "1.2.1"
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    version "1.2.2"
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId "com.tumpaca.tp"
@@ -99,13 +98,13 @@ preBuild {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.daksh:loglr:1.0.0'
-    compile 'com.google.firebase:firebase-ads:10.0.1'
-    compile 'com.google.firebase:firebase-analytics:10.0.1'
-    compile 'com.google.firebase:firebase-crash:10.0.1'
+    compile 'com.google.firebase:firebase-ads:11.6.0'
+    compile 'com.google.firebase:firebase-analytics:11.6.0'
+    compile 'com.google.firebase:firebase-crash:11.6.0'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile "io.reactivex.rxjava2:rxjava:2.0.5"
     compile project(':jumblr')
