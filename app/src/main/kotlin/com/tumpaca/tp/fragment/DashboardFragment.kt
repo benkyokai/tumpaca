@@ -39,10 +39,10 @@ class DashboardFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fr_dashboard, container, false)
 
-        val page = view.findViewById(R.id.page) as TextView
-        val postCount = view.findViewById(R.id.post_count) as TextView
+        val page = view.findViewById<TextView>(R.id.page)
+        val postCount = view.findViewById<TextView>(R.id.post_count)
 
-        (view.findViewById(R.id.view_pager) as ViewPager).let {
+        (view.findViewById<ViewPager>(R.id.view_pager)).let {
             viewPager = it
             it.offscreenPageLimit = OFFSCREEN_PAGE_LIMIT
             it.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -63,7 +63,7 @@ class DashboardFragment : FragmentBase() {
         // PostList と ViewPage のバインド
         postList = TPRuntime.tumblrService.postList
 
-        val settingsButton = view.findViewById(R.id.settings_button)
+        val settingsButton = view.findViewById<View>(R.id.settings_button)
         settingsButton.setOnClickListener {
             val ft = fragmentManager.beginTransaction()
             ft.addToBackStack(null)
@@ -89,7 +89,7 @@ class DashboardFragment : FragmentBase() {
         dashboardAdapter?.onBind()
 
         // Like
-        (view.findViewById(R.id.like_button) as ImageButton).let {
+        (view.findViewById<ImageButton>(R.id.like_button)).let {
             likeButton = it
             it.setOnClickListener {
                 doLike()
@@ -97,7 +97,7 @@ class DashboardFragment : FragmentBase() {
         }
 
         // reblog
-        val reblogButton = view.findViewById(R.id.reblog_button)
+        val reblogButton = view.findViewById<View>(R.id.reblog_button)
         reblogButton.setOnClickListener {
             doReblog()
         }

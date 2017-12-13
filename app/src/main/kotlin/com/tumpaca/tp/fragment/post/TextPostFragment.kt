@@ -22,7 +22,7 @@ class TextPostFragment : PostFragment() {
 
         getPost {
             if (isAdded && it is TextPost) {
-                val titleView = view.findViewById(R.id.post_title) as TextView
+                val titleView = view.findViewById<TextView>(R.id.post_title)
                 if (it.title == null || it.title.isBlank()) {
                     titleView.visibility = View.GONE
                 } else {
@@ -32,7 +32,7 @@ class TextPostFragment : PostFragment() {
             }
         }
 
-        val webView = view.findViewById(R.id.sub) as WebView
+        val webView = view.findViewById<WebView>(R.id.sub)
         UIUtil.loadCss(webView)
 
         return view

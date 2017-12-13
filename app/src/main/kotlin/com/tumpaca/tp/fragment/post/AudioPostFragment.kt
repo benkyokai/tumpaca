@@ -24,7 +24,7 @@ class AudioPostFragment : PostFragment() {
             }
         }
 
-        val webView = view.findViewById(R.id.sub) as WebView
+        val webView = view.findViewById<WebView>(R.id.sub)
         UIUtil.loadCss(webView)
 
         return view

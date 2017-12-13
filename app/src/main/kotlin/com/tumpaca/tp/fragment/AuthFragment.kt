@@ -13,11 +13,11 @@ import com.tumpaca.tp.util.isOnline
 class AuthFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater?, @Nullable container: ViewGroup?, @Nullable savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fr_auth, container, false)
-        val auth = view?.findViewById(R.id.authorize)
+        val auth = view?.findViewById<View>(R.id.authorize)
         auth?.setOnClickListener {
             auth()
         }
-        val thumbnail = view?.findViewById(R.id.thumbnail)
+        val thumbnail = view?.findViewById<View>(R.id.thumbnail)
         thumbnail?.setOnClickListener {
             auth()
         }

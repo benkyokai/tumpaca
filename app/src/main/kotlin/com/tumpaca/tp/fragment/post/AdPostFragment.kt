@@ -19,7 +19,7 @@ class AdPostFragment : PostFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.post_ad, container, false)
 
-        val adView = view.findViewById(R.id.adView) as NativeExpressAdView
+        val adView = view.findViewById<NativeExpressAdView>(R.id.adView)
         val adRequest = AdRequest.Builder()
         if (BuildConfig.ADMOB_TEST) {
             adRequest.configureForTest()

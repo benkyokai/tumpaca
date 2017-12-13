@@ -48,10 +48,10 @@ abstract class PostFragment : FragmentBase() {
     }
 
     fun initStandardViews(view: View, blogName: String, subText: String, reblogged: String?, noteCount: Long) {
-        val titleView = view.findViewById(R.id.title) as TextView
+        val titleView = view.findViewById<TextView>(R.id.title)
         titleView.text = blogName
 
-        val subTextView = view.findViewById(R.id.sub) as WebView
+        val subTextView = view.findViewById<WebView>(R.id.sub)
         val mimeType = "text/html; charset=utf-8"
         subTextView.setBackgroundColor(Color.TRANSPARENT)
         subTextView.loadData(subText, mimeType, null)
@@ -59,18 +59,18 @@ abstract class PostFragment : FragmentBase() {
             subTextView.clipToOutline = true
         }
 
-        val rebloggedView = view.findViewById(R.id.reblogged) as TextView
+        val rebloggedView = view.findViewById<TextView>(R.id.reblogged)
         if (reblogged != null) {
             rebloggedView.text = reblogged
         } else { // reblogじゃない場合はリブログアイコンを非表示にする
-            val reblogInfoLayout = view.findViewById(R.id.post_info) as LinearLayout
-            val reblogIcon = view.findViewById(R.id.reblog_icon)
+            val reblogInfoLayout = view.findViewById<LinearLayout>(R.id.post_info)
+            val reblogIcon = view.findViewById<View>(R.id.reblog_icon)
             if (reblogIcon != null) {
                 reblogInfoLayout.removeView(reblogIcon)
             }
         }
 
-        val noteCountView = view.findViewById(R.id.notes) as TextView
+        val noteCountView = view.findViewById<TextView>(R.id.notes)
         // ここで getQuantityString を使っていないのは、count="one" が無視される言語
         // （日本語など）でもあえて one と other を区別したいため。
         val strId = if (noteCount == 1L) R.string.note_one else R.string.note_other
@@ -78,7 +78,7 @@ abstract class PostFragment : FragmentBase() {
     }
 
     fun setIcon(view: View, post: Post) {
-        val iconView = view.findViewById(R.id.icon) as ImageView
+        val iconView = view.findViewById<ImageView>(R.id.icon)
         post.blogAvatar()
                 .subscribe { avatar ->
                     iconView.setImageBitmap(avatar)

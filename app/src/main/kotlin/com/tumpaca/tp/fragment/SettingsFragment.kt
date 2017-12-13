@@ -31,26 +31,26 @@ class SettingsFragment : FragmentBase() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fr_settings, container, false)
 
-        val reloadButton = view.findViewById(R.id.reload)
+        val reloadButton = view.findViewById<View>(R.id.reload)
         reloadButton.setOnClickListener {
             TPRuntime.tumblrService.resetPosts()
             activity.finish()
             activity.startActivity(activity.intent)
         }
 
-        val logoutButton = view.findViewById(R.id.logout)
+        val logoutButton = view.findViewById<View>(R.id.logout)
         logoutButton.setOnClickListener {
             val fragment = LogoutDialogFragment()
             fragment.show(childFragmentManager, null)
         }
 
-        val versionLabel = view.findViewById(R.id.versionname) as TextView
+        val versionLabel = view.findViewById<TextView>(R.id.versionname)
         versionLabel.text = resources.getString(R.string.version_name, context.getVersionName())
 
         /**
          * 自分のポストを除外するかどうかの設定
          */
-        val excludeMyPosts = view.findViewById(R.id.exclude_my_posts) as Switch
+        val excludeMyPosts = view.findViewById<Switch>(R.id.exclude_my_posts)
         excludeMyPosts.isChecked = TPRuntime.settings.excludeMyPosts
         excludeMyPosts.setOnClickListener {
             TPRuntime.settings.excludeMyPosts = excludeMyPosts.isChecked
@@ -60,7 +60,7 @@ class SettingsFragment : FragmentBase() {
          * 写真ポストを除外するかどうかの設定
          * 除外の場合はPHOTO, VIDEO, AUDIOを除外する
          */
-        val excludePhoto = view.findViewById(R.id.exclude_photo) as Switch
+        val excludePhoto = view.findViewById<Switch>(R.id.exclude_photo)
         excludePhoto.isChecked = TPRuntime.settings.excludePhoto
         excludePhoto.setOnClickListener {
             TPRuntime.settings.excludePhoto = excludePhoto.isChecked
@@ -69,13 +69,13 @@ class SettingsFragment : FragmentBase() {
         /**
          * 写真を高画質で読み込むかどうかの設定
          */
-        val highResolutionPhoto = view.findViewById(R.id.high_resolution_photo) as Switch
+        val highResolutionPhoto = view.findViewById<Switch>(R.id.high_resolution_photo)
         highResolutionPhoto.isChecked = TPRuntime.settings.highResolutionPhoto
         highResolutionPhoto.setOnClickListener {
             TPRuntime.settings.highResolutionPhoto = highResolutionPhoto.isChecked
         }
 
-        val licenseButton = view.findViewById(R.id.viewLicense)
+        val licenseButton = view.findViewById<View>(R.id.viewLicense)
         licenseButton.setOnClickListener {
             val uri = Uri.parse("https://github.com/benkyokai/tumpaca/blob/master/docs/LICENSE.md")
             val intent = Intent(Intent.ACTION_VIEW, uri)
@@ -83,7 +83,7 @@ class SettingsFragment : FragmentBase() {
             startActivity(intent)
         }
 
-        val adView = view.findViewById(R.id.adView) as AdView
+        val adView = view.findViewById<AdView>(R.id.adView)
         if (TPRuntime.settings.showSettingsAd) {
             val adRequest = AdRequest.Builder()
             if (BuildConfig.ADMOB_TEST) {
