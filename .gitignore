@@ -47,3 +47,4 @@ app/google-services.json
 
 # Release keystore
 keystore.jks
+upload.jks
